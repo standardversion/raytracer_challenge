@@ -51,10 +51,71 @@ tuple_t tuple_t::operator+(const tuple_t& t) const
 
 tuple_t tuple_t::operator-(const tuple_t& t) const
 {
+	if (this->is_vector() && t.is_point())
+	{
+		throw std::invalid_argument("Cannot subtract point from vector");
+	}
 	return {
 		this->x - t.x,
 		this->y - t.y,
 		this->z - t.z,
 		this->w - t.w
 	};
+}
+
+tuple_t& tuple_t::operator-()
+{
+	this->x = -this->x;
+	this->y = -this->y;
+	this->z = -this->z;
+	this->w = -this->w;
+	return *this;
+}
+
+tuple_t tuple_t::operator-() const
+{
+	return {
+		-this->x,
+		-this->y,
+		-this->z,
+		-this->w
+	};
+}
+
+tuple_t tuple_t::operator*(const double factor) const
+{
+	return {
+		this->x * factor,
+		this->y * factor,
+		this->z * factor,
+		this->w * factor
+	};
+}
+
+tuple_t& tuple_t::operator*=(const double factor)
+{
+	this->x *= factor;
+	this->y *= factor;
+	this->z *= factor;
+	this->w *= factor;
+	return *this;
+}
+
+tuple_t tuple_t::operator/(const double factor) const
+{
+	return {
+		this->x / factor,
+		this->y / factor,
+		this->z / factor,
+		this->w / factor
+	};
+}
+
+tuple_t& tuple_t::operator/=(const double factor)
+{
+	this->x /= factor;
+	this->y /= factor;
+	this->z /= factor;
+	this->w /= factor;
+	return *this;
 }

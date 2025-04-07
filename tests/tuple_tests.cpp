@@ -140,7 +140,7 @@ TEST(tuple, should_implement_subtraction_operator_two_points_gives_a_vector)
 /*
 Scenario: Subtracting a vector from a point
   Given p ← point(3, 2, 1)
-	And v ← vector(5, 6, 7)
+   And v ← vector(5, 6, 7)
   Then p - v = point(-2, -4, -6)
 */
 TEST(tuple, should_result_is_a_point_when_vector_is_subtracted_from_a_point)
@@ -165,4 +165,132 @@ TEST(tuple, should_result_is_a_vector_when_two_vectors_are_subtracted)
 	const tuple_t r{ tuple_t::vector(-2, -4, -6) };
 	EXPECT_EQ(v1 - v2, r);
 	EXPECT_TRUE(r.is_vector());
+}
+
+/*
+Scenario: Subtracting a point from a vector
+  Given v ← vector(3, 2, 1)
+	And p ← point(3, 2, 1)
+   Then v - p throws invalid argument exception
+*/
+TEST(tuple, should_throw_invalid_arg_when_subtracting_point_from_vector)
+{
+	const tuple_t v{ tuple_t::vector(3, 2, 1) };
+	const tuple_t p{ tuple_t::point(3, 2, 1) };
+	EXPECT_THROW(v - p, std::invalid_argument);
+}
+
+/*
+Scenario: Subtracting a vector from the zero vector
+  Given zero ← vector(0, 0, 0)
+	And v ← vector(1, -2, 3)
+  Then zero - v = vector(-1, 2, -3)
+*/
+TEST(tuple, should_subtract_a_vector_from_the_zero_vector)
+{
+	const tuple_t zero{ tuple_t::vector(0, 0, 0) };
+	const tuple_t v{ tuple_t::vector(1, -2, 3) };
+	const tuple_t r{ tuple_t::vector(-1, 2, -3) };
+	EXPECT_EQ(zero - v, r);
+}
+
+/*
+Scenario: Negating a tuple in place
+  Given a ← tuple(1, -2, 3, -4)
+  Then -a = tuple(-1, 2, -3, 4)
+*/
+TEST(tuple, should_be_able_to_negate_a_tuple_in_place)
+{
+	tuple_t a{ 1, -2, 3, -4 };
+	const tuple_t r{ -1, 2, -3, 4 };
+	EXPECT_EQ(-a, r);
+}
+
+/*
+Scenario: Negating a tuple as a copy
+  Given a ← tuple(1, -2, 3, -4)
+	And r = -a
+  Then r = tuple(-1, 2, -3, 4)
+*/
+TEST(tuple, should_be_able_to_negate_a_tuple_as_a_copy)
+{
+	const tuple_t a{ 1, -2, 3, -4 };
+	const tuple_t r{ -a };
+	const tuple_t expected{ -1, 2, -3, 4 };
+	EXPECT_EQ(r, expected);
+}
+
+/*
+Scenario: Multiplying a tuple by a scalar returns a new tuple
+  Given a ← tuple(1, -2, 3, -4)
+  Then a * 3.5 = tuple(3.5, -7, 10.5, -14)
+*/
+TEST(tuple, should_multiply_a_tuple_by_a_scalar_as_a_copy)
+{
+	const tuple_t a{ 1, -2, 3, -4 };
+	const tuple_t r{ 3.5, -7, 10.5, -14 };
+	EXPECT_EQ(a * 3.5, r);
+}
+
+/*
+Scenario: Multiplying a tuple by a scalar modifies the tuple
+  Given a ← tuple(1, -2, 3, -4)
+	And a *= 3.5
+  Then a = tuple(3.5, -7, 10.5, -14)
+*/
+TEST(tuple, should_multiply_a_tuple_by_a_scalar_in_place)
+{
+	tuple_t a{ 1, -2, 3, -4 };
+	const tuple_t r{ 3.5, -7, 10.5, -14 };
+	EXPECT_EQ(a *= 3.5, r);
+}
+
+/*
+Scenario: Multiplying a tuple by a fraction returns a new tuple
+  Given a ← tuple(1, -2, 3, -4)
+  Then a * 0.5 = tuple(0.5, -1, 1.5, -2)
+*/
+TEST(tuple, should_multiply_a_tuple_by_a_fraction_as_a_copy)
+{
+	const tuple_t a{ 1, -2, 3, -4 };
+	const tuple_t r{ 0.5, -1, 1.5, -2 };
+	EXPECT_EQ(a * 0.5, r);
+}
+
+/*
+Scenario: Multiplying a tuple by a fraction modifies the tuple
+  Given a ← tuple(1, -2, 3, -4)
+	And a *= 0.5
+  Then a = tuple(0.5, -1, 1.5, -2)
+*/
+TEST(tuple, should_multiply_a_tuple_by_a_fraction_in_place)
+{
+	tuple_t a{ 1, -2, 3, -4 };
+	const tuple_t r{ 0.5, -1, 1.5, -2 };
+	EXPECT_EQ(a *= 0.5, r);
+}
+
+/*
+Scenario: Dividing a tuple by a scalar returns a new tuple
+  Given a ← tuple(1, -2, 3, -4)
+  Then a / 2 = tuple(0.5, -1, 1.5, -2)
+*/
+TEST(tuple, should_divide_a_tuple_by_a_scalar_as_a_copy)
+{
+	const tuple_t a{ 1, -2, 3, -4 };
+	const tuple_t r{ 0.5, -1, 1.5, -2 };
+	EXPECT_EQ(a / 2, r);
+}
+
+/*
+Scenario: Dividing a tuple by a scalar in place
+  Given a ← tuple(1, -2, 3, -4)
+	And a /= 2
+  Then a = tuple(0.5, -1, 1.5, -2)
+*/
+TEST(tuple, should_divide_a_tuple_by_a_scalar_in_place)
+{
+	tuple_t a{ 1, -2, 3, -4 };
+	const tuple_t r{ 0.5, -1, 1.5, -2 };
+	EXPECT_EQ(a /= 2, r);
 }

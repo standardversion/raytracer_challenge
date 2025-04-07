@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\lib\googletest\googletest\include;C:\lib\googletest\googlemock\include;C:\lib\cwt-cucumber\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\lib\googletest\build\lib\Debug;C:\lib\cwt-cucumber\include;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\lib\googletest\googletest\include;C:\lib\googletest\googlemock\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\stand\source\repos\raytracer_challenge\raytrace.33f6fe60\x64\Debug;C:\lib\googletest\build\lib\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>C:\lib\SDL2-2.30.10\include;C:\lib\googletest\googletest\include;C:\lib\googletest\googlemock\include;$(IncludePath)</IncludePath>
@@ -119,7 +119,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>gtest_main.lib;gtest.lib;gmock.lib;gmock_main.lib;cucumber.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gtest_main.lib;gtest.lib;gmock.lib;gmock_main.lib;tuple.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

@@ -17,4 +17,10 @@ struct tuple_t
 	bool operator==(const tuple_t& t) const;
 	tuple_t operator+(const tuple_t& t) const;
 	tuple_t operator-(const tuple_t& t) const;
+	tuple_t& operator-();
+	tuple_t operator-() const;
+	tuple_t operator*(const double factor) const;
+	tuple_t& operator*=(const double factor);
+	tuple_t operator/(const double factor) const;
+	tuple_t& operator/=(const double factor);
 };
