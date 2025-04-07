@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include "tuple.h"
 
+// STATIC FUNCTIONS
 tuple_t tuple_t::point(const double x, const double y, const double z)
 {
 	return { x, y, z, 1.0 };
@@ -12,6 +13,50 @@ tuple_t tuple_t::vector(const double x, const double y, const double z)
 	return { x, y, z, 0.0 };
 }
 
+double tuple_t::magnitude(const tuple_t& t)
+{
+	if (t.is_point())
+	{
+		throw std::invalid_argument("Cannot get magnitude of a point");
+	}
+	return std::sqrtf(std::pow(t.x, 2) + std::pow(t.y, 2) + std::pow(t.z, 2));
+}
+
+tuple_t tuple_t::normalize(const tuple_t& t)
+{
+	if (t.is_point())
+	{
+		throw std::invalid_argument("Cannot normalize a point");
+	}
+	const double magnitude{ tuple_t::magnitude(t) };
+	return {
+		t.x / magnitude,
+		t.y / magnitude,
+		t.z / magnitude,
+		0.0
+	};
+}
+
+double tuple_t::dot(const tuple_t& a, const tuple_t& b)
+{
+	return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
+tuple_t tuple_t::cross(const tuple_t& a, const tuple_t& b)
+{
+	if (a.is_point() || b.is_point())
+	{
+		throw std::invalid_argument("Cannot cross a point");
+	}
+	return tuple_t::vector(
+		a.y * b.z - a.z * b.y,
+		a.z * b.x - a.x * b.z,
+		a.x * b.y - a.y * b.x
+	);
+}
+
+
+// MEMBER FUNCTIONS
 bool tuple_t::is_point() const
 {
 	return w == 1.0 ? true : false;
@@ -20,6 +65,27 @@ bool tuple_t::is_point() const
 bool tuple_t::is_vector() const
 {
 	return w == 1.0 ? false : true;
+}
+
+double tuple_t::magnitude() const
+{
+	if (this->is_point())
+	{
+		throw std::invalid_argument("Cannot get magnitude of a point");
+	}
+	return std::sqrtf(std::pow(x, 2) + std::pow(y, 2) + std::pow(z, 2));
+}
+
+void tuple_t::normalize()
+{
+	if (is_point())
+	{
+		throw std::invalid_argument("Cannot normalize a point");
+	}
+	const double mag{ magnitude() };
+	x /= mag;
+	y /= mag;
+	z /= mag;
 }
 
 bool tuple_t::operator==(const tuple_t& t) const
@@ -35,6 +101,8 @@ bool tuple_t::operator==(const tuple_t& t) const
 	return false;
 }
 
+
+// OPERATORS
 tuple_t tuple_t::operator+(const tuple_t& t) const
 {
 	if (this->is_point() && t.is_point())

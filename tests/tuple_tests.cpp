@@ -1,7 +1,5 @@
-﻿#include <string>
-#include <vector>
+﻿#include <cmath>
 #include "gtest/gtest.h"
-#include "gmock/gmock.h"
 #include "../tuple.h"
 
 
@@ -293,4 +291,199 @@ TEST(tuple, should_divide_a_tuple_by_a_scalar_in_place)
 	tuple_t a{ 1, -2, 3, -4 };
 	const tuple_t r{ 0.5, -1, 1.5, -2 };
 	EXPECT_EQ(a /= 2, r);
+}
+
+/*
+Scenario: Computing the magnitude of vector(1, 0, 0)
+  Given v ← vector(1, 0, 0)
+  Then magnitude(v) = 1
+*/
+TEST(tuple, should_calculate_magnitude_of_a_vector_static)
+{
+	const tuple_t v{ tuple_t::vector(1, 0, 0) };
+	const double m{ tuple_t::magnitude(v) };
+	EXPECT_EQ(m, 1);
+}
+
+/*
+Scenario: Computing the magnitude of point(1, 0, 0)
+  Given p ← point(1, 0, 0)
+  Then magnitude(p) throws invalid argument exception
+*/
+TEST(tuple, should_throw_invalid_arg_when_getting_magnitude_of_a_point_static)
+{
+	const tuple_t p{ tuple_t::point(1, 0, 0) };
+	EXPECT_THROW(tuple_t::magnitude(p), std::invalid_argument);
+}
+
+/*
+Scenario: Computing the magnitude of vector(0, 1, 0)
+  Given v ← vector(0, 1, 0)
+  Then v.magnitude() = 1
+*/
+TEST(tuple, should_calculate_magnitude_of_a_vector)
+{
+	const tuple_t v{ tuple_t::vector(0, 1, 0) };
+	const double m{ v.magnitude() };
+	EXPECT_EQ(m, 1);
+}
+
+/*
+Scenario: Computing the magnitude of point(0, 1, 0)
+  Given p ← point(0, 1, 0)
+  Then p.magnitude() throws invalid argument exception
+*/
+TEST(tuple, should_throw_invalid_arg_when_getting_magnitude_of_a_point)
+{
+	const tuple_t p{ tuple_t::point(1, 0, 0) };
+	EXPECT_THROW(p.magnitude(), std::invalid_argument);
+}
+
+/*
+Scenario: Computing the magnitude of vector(0, 0, 1)
+  Given v ← vector(0, 0, 1)
+  Then magnitude(v) = 1
+*/
+TEST(tuple, should_calculate_magnitude_of_a_vector_static_2)
+{
+	const tuple_t v{ tuple_t::vector(0, 0, 1) };
+	const double m{ tuple_t::magnitude(v) };
+	EXPECT_EQ(m, 1);
+}
+
+/*
+Scenario: Computing the magnitude of vector(1, 2, 3)
+  Given v ← vector(1, 2, 3)
+  Then magnitude(v) = √14
+*/
+TEST(tuple, should_calculate_magnitude_of_a_vector_static_3)
+{
+	const tuple_t v{ tuple_t::vector(1, 2, 3) };
+	const double m{ tuple_t::magnitude(v) };
+	EXPECT_EQ(m, std::sqrtf(14));
+}
+
+/*
+Scenario: Computing the magnitude of vector(-1, -2, -3)
+  Given v ← vector(-1, -2, -3)
+  Then v.magnitude() = √14
+*/
+TEST(tuple, should_calculate_magnitude_of_a_vector_static_4)
+{
+	const tuple_t v{ tuple_t::vector(-1, -2, -3) };
+	const double m{ v.magnitude() };
+	EXPECT_EQ(m, std::sqrtf(14));
+}
+
+/*
+Scenario: Normalizing vector(4, 0, 0) gives (1, 0, 0)
+  Given v ← vector(4, 0, 0)
+  Then normalize(v) = vector(1, 0, 0)
+*/
+TEST(tuple, should_normalize_a_vector_static)
+{
+	const tuple_t v{ tuple_t::vector(4, 0, 0) };
+	const tuple_t n{ tuple_t::normalize(v) };
+	const tuple_t expected{ 1, 0, 0 };
+	EXPECT_EQ(n, expected);
+}
+
+/*
+Scenario: Normalizing a point(4, 0, 0)
+  Given p ← point(4, 0, 0)
+  Then normalize(p) throws invalid argument exception
+*/
+TEST(tuple, should_throw_invalid_arg_when_normalizing_a_point_static)
+{
+	const tuple_t p{ tuple_t::point(1, 0, 0) };
+	EXPECT_THROW(tuple_t::normalize(p), std::invalid_argument);
+}
+
+/*
+Scenario: Normalizing vector(1, 2, 3)
+  Given v ← vector(1, 2, 3)
+								  # vector(1/√14,   2/√14,   3/√14)
+  Then v.normalize() = approximately vector(0.26726, 0.53452, 0.80178)
+*/
+TEST(tuple, should_normalize_a_vector)
+{
+	tuple_t v{ tuple_t::vector(1, 2, 3) };
+	v.normalize();
+	const tuple_t expected{ 0.26726, 0.53452, 0.80178 };
+	EXPECT_EQ(v, expected);
+}
+
+/*
+Scenario: Normalizing a point(1, 2, 3)
+  Given p ← point(1, 2, 3)
+  Then p.normalize() throws invalid argument exception
+*/
+TEST(tuple, should_throw_invalid_arg_when_normalizing_a_point)
+{
+	tuple_t p{ tuple_t::point(1, 2, 3) };
+	EXPECT_THROW(p.normalize(), std::invalid_argument);
+}
+
+/*
+Scenario: The magnitude of a normalized vector
+  Given v ← vector(1, 2, 3)
+  When norm ← normalize(v)
+  Then magnitude(norm) = 1
+*/
+TEST(tuple, should_get_magnitude_of_a_normalized_vector)
+{
+	const tuple_t v{ tuple_t::vector(1, 2, 3) };
+	const tuple_t norm{ tuple_t::normalize(v) };
+	const double magnitude{ tuple_t::magnitude(norm) };
+	EXPECT_NEAR(magnitude, 1, 0.00001);
+}
+
+/*
+Scenario: The dot product of two tuples
+  Given a ← vector(1, 2, 3)
+	And b ← vector(2, 3, 4)
+  Then dot(a, b) = 20
+*/
+TEST(tuple, should_get_dot_product_of_two_vectors)
+{
+	const tuple_t a{ tuple_t::vector(1, 2, 3) };
+	const tuple_t b{ tuple_t::vector(2, 3, 4) };
+	const double r{ tuple_t::dot(a, b) };
+	EXPECT_EQ(r, 20);
+}
+
+/*
+Scenario: The cross product of two vectors
+  Given a ← vector(1, 2, 3)
+	And b ← vector(2, 3, 4)
+  Then cross(a, b) = vector(-1, 2, -1)
+	And cross(b, a) = vector(1, -2, 1)
+*/
+TEST(tuple, should_get_cross_product_of_two_vectors)
+{
+	const tuple_t a{ tuple_t::vector(1, 2, 3) };
+	const tuple_t b{ tuple_t::vector(2, 3, 4) };
+	const tuple_t a_x_b{ tuple_t::cross(a, b) };
+	const tuple_t a_x_b_expected{ tuple_t::vector(-1, 2, -1) };
+	const tuple_t b_x_a{ tuple_t::cross(b, a) };
+	const tuple_t b_x_a_expected{ tuple_t::vector(1, -2, 1) };
+	EXPECT_EQ(a_x_b, a_x_b_expected);
+	EXPECT_EQ(b_x_a, b_x_a_expected);
+}
+
+/*
+Scenario: Crossing vector with point or point with vector
+  Given v ← vector(1, 2, 3)
+	And p ← point(1, 2, 3)
+  Then cross(v, p) throws invalid argument exception
+  And cross(p, v) throws invalid argument exception
+  And cross(p, p) throws invalid argument exception
+*/
+TEST(tuple, should_throw_when_trying_to_cross_points)
+{
+	const tuple_t v{ tuple_t::vector(1, 2, 3) };
+	const tuple_t p{ tuple_t::point(1, 2, 3) };
+	EXPECT_THROW(tuple_t::cross(v, p), std::invalid_argument);
+	EXPECT_THROW(tuple_t::cross(p, v), std::invalid_argument);
+	EXPECT_THROW(tuple_t::cross(p, p), std::invalid_argument);
 }
