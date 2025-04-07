@@ -1,16 +1,10 @@
-#include <cwt-cucumber/cucumber.hpp>
+#include "gtest/gtest.h"
 
 int main(int argc, char** argv)
 {
 
-	cuke::results::test_status status{ cuke::entry_point(argc, const_cast<const char**>(argv)) };
+	testing::InitGoogleTest(&argc, argv);
+	int result = RUN_ALL_TESTS();
 
-	if (status == cuke::results::test_status::passed)
-	{
-		return 0;
-	}
-	else
-	{
-		return 1;
-	}
+	return result;
 }
