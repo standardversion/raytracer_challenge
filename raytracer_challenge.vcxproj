@@ -158,11 +158,14 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="colour.h" />
     <ClInclude Include="environment.h" />
     <ClInclude Include="projectile.h" />
+    <ClInclude Include="settings.h" />
     <ClInclude Include="tuple.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="colour.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="tuple.cpp" />
   </ItemGroup>
