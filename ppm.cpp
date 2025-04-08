@@ -1,8 +1,11 @@
+#include <fstream>
+#include <stdexcept>
+#include <filesystem>
+#include <vector>
 #include "ppm.h"
 #include "utils.h"
-#include <vector>
 
-// CONSTRUCTOR
+// CONSTRUCTORS
 ppm_t::ppm_t(const canvas_t& canvas, int max_chars)
 {
 	data += "P3\n";
@@ -53,4 +56,37 @@ ppm_t::ppm_t(const canvas_t& canvas, int max_chars)
 		}
 	}
 	data += "\n";
+}
+
+ppm_t::ppm_t(const char* filepath)
+{
+	std::ifstream infile(filepath);
+	if (!infile)
+	{
+		std::runtime_error("PPM file not found");
+	}
+
+	// Read the entire file into a string using a stringstream
+	std::stringstream buffer;
+	buffer << infile.rdbuf();  // Read the entire file into the stringstream
+
+	// Convert the stringstream buffer into a std::string
+	data = buffer.str();
+
+	infile.close();  // Close the file after reading
+}
+
+// MEMBER FUNCTIONS
+void ppm_t::write_to_file(const char* filepath) const
+{
+	std::ofstream outfile(filepath);
+	if (outfile.is_open())
+	{
+		outfile << data;
+		outfile.close();
+	}
+	else
+	{
+		std::runtime_error("Error while writing PPM file");
+	}
 }

@@ -7,7 +7,7 @@ struct ppm_t
 	// MEMBER VARIABLES
 	std::string data{};
 
-	// CONSTRUCTOR
+	// CONSTRUCTORS
 	/**
 	 * @brief Constructs a `ppm_t` object from a given canvas and optional maximum
 	 *        line length for the PPM file output.
@@ -33,4 +33,36 @@ struct ppm_t
 	 *       and the pixel data.
 	 */
 	ppm_t(const canvas_t& canvas, int max_chars = 70);
+
+	/**
+	 * @brief Constructs a `ppm_t` object by loading the contents of a PPM file.
+	 *
+	 * This constructor opens the specified PPM file, reads its contents,
+	 * and initializes the `ppm_t` object with the data from the file.
+	 * It assumes the file is in the PPM format (e.g., ASCII or binary).
+	 *
+	 * @param filepath The path to the PPM file that should be loaded.
+	 *
+	 * @throws std::runtime_error If the file cannot be opened or the contents
+	 *         do not conform to a valid PPM format.
+	 */
+	ppm_t(const char* filepath);
+
+	// MEMBER FUNCTIONS
+	/**
+	 * @brief Writes the PPM data to a file.
+	 *
+	 * This method takes the current PPM data stored in the object and writes it
+	 * to a file at the specified location. The file will be created if it does
+	 * not already exist, or overwritten if it does.
+	 *
+	 * The method assumes that the PPM data is in a valid format and that it is
+	 * ready to be written to the file. It supports writing in the standard
+	 * PPM format (ASCII or binary, depending on the implementation).
+	 *
+	 * @param filepath The path to the file where the PPM data will be written.
+	 *
+	 * @throws std::runtime_error If the file cannot be opened or written to.
+	 */
+	void write_to_file(const char* filepath) const;
 };

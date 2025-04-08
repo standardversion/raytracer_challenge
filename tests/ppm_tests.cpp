@@ -52,7 +52,7 @@ Scenario: Constructing the PPM pixel data
   When write_pixel(c, 0, 0, c1)
     And write_pixel(c, 2, 1, c2)
     And write_pixel(c, 4, 2, c3)
-    And ppm ← canvas_to_ppm(c)
+    And ppm ← ppm(c)
   Then lines 4-6 of ppm are
     """
     255 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -97,7 +97,7 @@ TEST(ppm, should_write_ppm_pixel_data_from_canvas)
 Scenario: Splitting long lines in PPM files
   Given c ← canvas(10, 2)
   When every pixel of c is set to color(1, 0.8, 0.6)
-    And ppm ← canvas_to_ppm(c)
+    And ppm ← ppm(c)
   Then lines 4-7 of ppm are
     """
     255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204
@@ -142,7 +142,7 @@ TEST(ppm, should_split_colour_data_lines_at_70_chars)
 /*
 Scenario: PPM files are terminated by a newline character
   Given c ← canvas(5, 3)
-  When ppm ← canvas_to_ppm(c)
+    And ppm ← ppm(c)
   Then ppm ends with a newline character
 */
 TEST(ppm, should_end_in_a_newline_char)
@@ -162,4 +162,43 @@ TEST(ppm, should_end_in_a_newline_char)
         }
         lines_read++;
     }
+}
+
+/*
+Scenario: PPM can be written to disk
+  Given c ← canvas(5, 3)
+    And c1 ← colour(1, 0, 0)
+    And c.fill(c1)
+    And ppm ← ppm(c)
+    And ppm.write_to_file("./out.ppm")
+  Then out.ppm is a readable ppm image file
+*/
+TEST(ppm, should_be_able_to_write_ppm_to_disk)
+{
+    canvas_t c{ 5, 3 };
+    const colour_t red{ 1, 0, 0 };
+    c.fill(red);
+    const ppm_t ppm{ c };
+    ppm.write_to_file("./out.ppm");
+    const ppm_t out_ppm{ ".\\out.ppm" };
+    EXPECT_STREQ(ppm.data.c_str(), out_ppm.data.c_str());
+}
+
+/*
+Scenario: PPM can be read from file
+  Given c ← canvas(5, 3)
+    And c1 ← colour(1, 0, 0)
+    And c.fill(c1)
+    And ppm ← ppm(c)
+    And in_ppm ← in_ppm("..\\..\\tests\\in.ppm")
+  Then ppm.data = in_ppm.data
+*/
+TEST(ppm, should_be_able_to_read_ppm_file_from_disk)
+{
+    canvas_t c{ 5, 3 };
+    const colour_t red{ 1, 0, 0 };
+    c.fill(red);
+    const ppm_t ppm{ c };
+    const ppm_t in_ppm{ "..\\..\\tests\\in.ppm" };
+    EXPECT_STREQ(ppm.data.c_str(), in_ppm.data.c_str());
 }
