@@ -158,13 +158,11 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="box.h" />
-    <ClInclude Include="dox.h" />
+    <ClInclude Include="tuple.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="box.cpp" />
-    <ClCompile Include="dox.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="tuple.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

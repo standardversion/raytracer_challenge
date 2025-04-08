@@ -71,12 +71,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\lib\googletest\googletest\include;C:\lib\googletest\googlemock\include;C:\lib\cwt-cucumber\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\lib\googletest\build\lib\Debug;C:\lib\cwt-cucumber\include;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\lib\googletest\googletest\include;C:\lib\googletest\googlemock\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\stand\source\repos\raytracer_challenge\raytrace.33f6fe60\x64\Debug;C:\lib\googletest\build\lib\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\lib\SDL2-2.30.10\include;C:\lib\googletest\googletest\include;C:\lib\googletest\googlemock\include;C:\lib\cwt-cucumber\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\stand\source\repos\raytracer_challenge\raytrace.33f6fe60\x64\Release;C:\lib\SDL2-2.30.10\lib\x64;C:\lib\googletest\build\lib\Release;C:\lib\cwt-cucumber\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\lib\SDL2-2.30.10\include;C:\lib\googletest\googletest\include;C:\lib\googletest\googlemock\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\stand\source\repos\raytracer_challenge\raytrace.33f6fe60\x64\Release;C:\lib\SDL2-2.30.10\lib\x64;C:\lib\googletest\build\lib\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -119,7 +119,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>gtest_main.lib;gtest.lib;gmock.lib;gmock_main.lib;cucumber.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gtest_main.lib;gtest.lib;gmock.lib;gmock_main.lib;tuple.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -139,20 +139,12 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;gtest_main.lib;gtest.lib;gmock.lib;gmock_main.lib;cucumber.lib;cucumber-no-main.lib;box.obj;dox.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;gtest_main.lib;gtest.lib;gmock.lib;gmock_main.lib;tuple.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="box.cpp" />
-    <ClCompile Include="dox.cpp" />
     <ClCompile Include="main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="sdl_mock.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="features\box.feature" />
-    <None Include="features\dox.feature" />
+    <ClCompile Include="tuple_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\raytracer_challenge.vcxproj">
