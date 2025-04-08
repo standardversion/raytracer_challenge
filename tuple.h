@@ -9,7 +9,7 @@ struct tuple_t
 	double z;
 	double w;
 
-	static constexpr const double EPSILON{ 0.00001 };
+	
 
 	// STATIC FUNCTIONS
 	/**

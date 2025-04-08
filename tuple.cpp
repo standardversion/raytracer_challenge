@@ -1,6 +1,7 @@
 #include <cmath>
 #include <stdexcept>
 #include "tuple.h"
+#include "settings.h"
 
 // STATIC FUNCTIONS
 tuple_t tuple_t::point(const double x, const double y, const double z)
