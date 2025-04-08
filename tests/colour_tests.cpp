@@ -87,3 +87,14 @@ TEST(colour, should_be_able_to_multiply_two_colours_to_get_new_colour)
     const colour_t expected{ 0.9, 0.2, 0.04, 1.0 };
     EXPECT_EQ(c1 * c2, expected);
 }
+
+/*
+Scenario: Convert to rgb 255 string
+  Given c ← colour(1, 0.8, 0.6)
+  Then c.to_rgb_255() = "255 204 153"
+*/
+TEST(colour, should_convert_to_rgb_255_string)
+{
+    const colour_t c{ 1, 0.8, 0.6 };
+    EXPECT_STREQ(c.to_rgb_255().c_str(), "255 204 153");
+}
