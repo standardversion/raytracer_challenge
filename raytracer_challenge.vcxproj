@@ -158,6 +158,8 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="environment.h" />
+    <ClInclude Include="projectile.h" />
     <ClInclude Include="tuple.h" />
   </ItemGroup>
   <ItemGroup>
