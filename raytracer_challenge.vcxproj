@@ -161,6 +161,7 @@
     <ClInclude Include="canvas.h" />
     <ClInclude Include="colour.h" />
     <ClInclude Include="environment.h" />
+    <ClInclude Include="matrix.h" />
     <ClInclude Include="ppm.h" />
     <ClInclude Include="projectile.h" />
     <ClInclude Include="settings.h" />
@@ -171,6 +172,7 @@
     <ClCompile Include="canvas.cpp" />
     <ClCompile Include="colour.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="matrix.cpp" />
     <ClCompile Include="ppm.cpp" />
     <ClCompile Include="tuple.cpp" />
     <ClCompile Include="utils.cpp" />
