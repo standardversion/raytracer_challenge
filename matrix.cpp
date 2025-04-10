@@ -3,6 +3,7 @@
 #include "matrix.h"
 #include "settings.h"
 
+// CONSTRUCTORS
 matrix_t::matrix_t(const std::size_t r, const std::size_t c)
 {
 	if (r <= 0 || c <= 0)
@@ -54,6 +55,122 @@ matrix_t::matrix_t(const tuple_t& t)
 	data[3][0] = t.w;
 }
 
+// STATIC FUNCTIONS
+
+
+// | 1  0  0  0 |
+// | 0  1  0  0 |
+// | 0  0  1  0 |
+// | 0  0  0  1 |
+matrix_t matrix_t::identity(const std::size_t r, const std::size_t c)
+{
+	matrix_t i{ 4, 4 };
+	i.data[0][0] = 1;
+	i.data[1][1] = 1;
+	i.data[2][2] = 1;
+	i.data[3][3] = 1;
+	return i;
+}
+
+// | 1  0  0  tx |
+// | 0  1  0  ty |
+// | 0  0  1  tz |
+// | 0  0  0  1  |
+matrix_t matrix_t::translation(const double tx, const double ty, const double tz)
+{
+	matrix_t t{ 4, 4 };
+	t.data[0][0] = 1;
+	t.data[1][1] = 1;
+	t.data[2][2] = 1;
+	t.data[3][3] = 1;
+	t.data[0][3] = tx;
+	t.data[1][3] = ty;
+	t.data[2][3] = tz;
+	return t;
+}
+
+// | sx  0  0  0 |
+// |  0 sy  0  0 |
+// |  0  0 sz  0 |
+// |  0  0  0  1 |
+matrix_t matrix_t::scaling(const double sx, const double sy, const double sz)
+{
+	matrix_t s{ 4, 4 };
+	s.data[0][0] = sx;
+	s.data[1][1] = sy;
+	s.data[2][2] = sz;
+	s.data[3][3] = 1;
+	return s;
+}
+
+// | 1  0  0  0 |
+// | 0  c -s  0 |
+// | 0  s  c  0 |
+// | 0  0  0  1 |
+matrix_t matrix_t::rotation_x(const double radians)
+{
+	matrix_t rx{ 4, 4 };
+	rx.data[0][0] = 1;
+	rx.data[1][1] = cos(radians);
+	rx.data[1][2] = -sin(radians);
+	rx.data[2][1] = sin(radians);
+	rx.data[2][2] = cos(radians);
+	rx.data[3][3] = 1;
+	return rx;
+}
+
+// |  c  0  s  0 |
+// |  0  1  0  0 |
+// | -s  0  c  0 |
+// |  0  0  0  1 |
+matrix_t matrix_t::rotation_y(const double radians)
+{
+	matrix_t ry{ 4, 4 };
+	ry.data[0][0] = cos(radians);
+	ry.data[0][2] = sin(radians);
+	ry.data[1][1] = 1;
+	ry.data[2][0] = -sin(radians);
+	ry.data[2][2] = cos(radians);
+	ry.data[3][3] = 1;
+	return ry;
+}
+
+// | c -s  0  0 |
+// | s  c  0  0 |
+// | 0  0  1  0 |
+// | 0  0  0  1 |
+matrix_t matrix_t::rotation_z(const double radians)
+{
+	matrix_t rz{ 4, 4 };
+	rz.data[0][0] = cos(radians);
+	rz.data[0][1] = -sin(radians);
+	rz.data[1][0] = sin(radians);
+	rz.data[1][1] = cos(radians);
+	rz.data[2][2] = 1;
+	rz.data[3][3] = 1;
+	return rz;
+}
+
+// | 1  Xy Xz  0 |
+// | Yx  1 Yz  0 |
+// | Zx  Zy 1  0 |
+// | 0  0  0   1 |
+matrix_t matrix_t::shearing(const double Xy, const double Xz, const double Yx, const double Yz, const double Zx, const double Zy)
+{
+	matrix_t s{ 4, 4 };
+	s.data[0][0] = 1;
+	s.data[0][1] = Xy;
+	s.data[0][2] = Xz;
+	s.data[1][0] = Yx;
+	s.data[1][1] = 1;
+	s.data[1][2] = Yz;
+	s.data[2][0] = Zx;
+	s.data[2][1] = Zy;
+	s.data[2][2] = 1;
+	s.data[3][3] = 1;
+	return s;
+}
+
 // MEMBER FUNCTIONS
 matrix_t matrix_t::transpose() const
 {
@@ -102,6 +219,12 @@ double matrix_t::determinant() const
 	}
 	if (rows == 2)
 	{
+		/*
+		* Determinant of a 2x2 matrix
+		* M = | a b |
+		*	  | c d |
+		* |M| = ad - bc
+		*/
 		return data[0][0] * data[1][1] - data[0][1] * data[1][0];
 	}
 	else {
@@ -121,18 +244,10 @@ double matrix_t::determinant() const
 			for (std::size_t y{ 0 }; y < columns; y++)
 			{
 				std::size_t xy{ x + y };
-				if (xy == 0)
-				{
-					det += data[x][y] * minors[xy];
-				}
-				else if (xy % 2)
-				{
-					det += data[x][y] * -minors[xy];
-				}
-				else
-				{
-					det += data[x][y] * minors[xy];
-				}
+				double minor{ minors[xy] };
+				// co-factors alternate between +ve & -ve
+				minor = xy % 2 ? (xy == 0 ? minor : -minor) : minor;
+				det += data[x][y] * minor;
 			}
 		}
 		return det;
@@ -158,22 +273,14 @@ matrix_t matrix_t::inverse() const
 			matrix_t sub_m{ sub_matrix(x, y) };
 			double minor{ sub_m.determinant() };
 			std::size_t xy{ x + y };
-			if (xy == 0)
-			{
-				co_factors.data[x][y] = minor;
-			}
-			else if (xy % 2)
-			{
-				co_factors.data[x][y] = -minor;
-			}
-			else
-			{
-				co_factors.data[x][y] = minor;
-			}
+			// co-factors alternate between +ve & -ve
+			minor = xy % 2 ? (xy == 0 ? minor : -minor) : minor;
+			// set [y][x] instead of [x][y] so we create a transposed matrix directly
+			// then we can skip the transpose step
+			co_factors.data[y][x] = minor;
 		}
 	}
-	matrix_t co_factor_transpose{ co_factors.transpose() };
-	matrix_t inverse{ co_factor_transpose / det };
+	matrix_t inverse{ co_factors / det };
 	return inverse;
 }
 
