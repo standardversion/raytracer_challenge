@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\lib\cwt-cucumber\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\lib\cwt-cucumber\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>C:\lib\SDL2-2.30.10\include;C:\lib\SDL2_image-2.8.8\include;$(IncludePath)</IncludePath>
@@ -125,7 +125,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\lib\SDL2-devel-2.30.10-VC\SDL2-2.30.10\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>cucumber.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "C:\lib\SDL2-2.30.10\lib\x64\SDL2.dll" "$(OutDir)"</Command>
@@ -161,6 +161,7 @@
     <ClInclude Include="canvas.h" />
     <ClInclude Include="colour.h" />
     <ClInclude Include="environment.h" />
+    <ClInclude Include="matrix.h" />
     <ClInclude Include="ppm.h" />
     <ClInclude Include="projectile.h" />
     <ClInclude Include="settings.h" />
@@ -171,6 +172,7 @@
     <ClCompile Include="canvas.cpp" />
     <ClCompile Include="colour.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="matrix.cpp" />
     <ClCompile Include="ppm.cpp" />
     <ClCompile Include="tuple.cpp" />
     <ClCompile Include="utils.cpp" />
