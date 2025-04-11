@@ -1,4 +1,6 @@
-﻿#include <vector>
+﻿#define _USE_MATH_DEFINES
+#include <cmath>
+#include <vector>
 #include "gtest/gtest.h"
 #include "../matrix.h"
 #include "../tuple.h"
@@ -663,4 +665,312 @@ TEST(matrix, should_get_og_matrix_when_mult_prod_by_inverse)
     const matrix_t B{ vecs2 };
     const matrix_t C{ A * B };
     EXPECT_EQ(C * B.inverse(), A);
+}
+
+/*
+Scenario: Multiplying by a translation matrix
+  Given transform ← translation(5, -3, 2)
+    And p ← point(-3, 4, 5)
+   Then transform * p = point(2, 1, 7)
+*/
+TEST(matrix, should_create_translation_4x4_matrix_and_multiply_the_point)
+{
+    const matrix_t transform{ matrix_t::translation(5, -3, 2) };
+    const tuple_t p{ tuple_t::point(-3, 4, 5) };
+    const tuple_t r{ tuple_t::point(2, 1, 7) };
+    EXPECT_EQ(transform * p, r);
+}
+
+/*
+Scenario: Multiplying by the inverse of a translation matrix
+  Given transform ← translation(5, -3, 2)
+    And inv ← transform.inverse()
+    And p ← point(-3, 4, 5)
+   Then inv * p = point(-8, 7, 3)
+*/
+TEST(matrix, should_reverse_the_translation_when_multilpied_by_inverse_translation)
+{
+    const matrix_t transform{ matrix_t::translation(5, -3, 2) };
+    const matrix_t inverse{ transform.inverse() };
+    const tuple_t p{ tuple_t::point(-3, 4, 5) };
+    const tuple_t r{ tuple_t::point(-8, 7, 3) };
+    EXPECT_EQ(inverse * p, r);
+}
+
+/*
+Scenario: Translation does not affect vectors
+  Given transform ← translation(5, -3, 2)
+    And v ← vector(-3, 4, 5)
+   Then transform * v = v
+*/
+TEST(matrix, should_return_same_vector_when_multilpied_by_translation)
+{
+    const matrix_t transform{ matrix_t::translation(5, -3, 2) };
+    const tuple_t v{ tuple_t::vector(-3, 4, 5) };
+    EXPECT_EQ(transform * v, v);
+}
+
+/*
+Scenario: A scaling matrix applied to a point
+  Given transform ← scaling(2, 3, 4)
+    And p ← point(-4, 6, 8)
+   Then transform * p = point(-8, 18, 32)
+*/
+TEST(matrix, should_scale_a_point)
+{
+    const matrix_t transform{ matrix_t::scaling(2, 3, 4) };
+    const tuple_t p{ tuple_t::point(-4, 6, 8) };
+    const tuple_t r{ tuple_t::point(-8, 18, 32) };
+    EXPECT_EQ(transform * p, r);
+}
+
+/*
+Scenario: A scaling matrix applied to a vector
+  Given transform ← scaling(2, 3, 4)
+    And v ← vector(-4, 6, 8)
+   Then transform * v = vector(-8, 18, 32)
+*/
+TEST(matrix, should_scale_a_vector)
+{
+    const matrix_t transform{ matrix_t::scaling(2, 3, 4) };
+    const tuple_t v{ tuple_t::vector(-4, 6, 8) };
+    const tuple_t r{ tuple_t::vector(-8, 18, 32) };
+    EXPECT_EQ(transform * v, r);
+}
+
+/*
+Scenario: Multiplying by the inverse of a scaling matrix
+  Given transform ← scaling(2, 3, 4)
+    And inv ← inverse(transform)
+    And v ← vector(-4, 6, 8)
+   Then inv * v = vector(-2, 2, 2)
+*/
+TEST(matrix, should_shrink_when_scaled_by_inverse)
+{
+    const matrix_t transform{ matrix_t::scaling(2, 3, 4) };
+    const matrix_t inverse{ transform.inverse() };
+    const tuple_t v{ tuple_t::vector(-4, 6, 8) };
+    const tuple_t r{ tuple_t::vector(-2, 2, 2) };
+    EXPECT_EQ(inverse * v, r);
+}
+
+/*
+Scenario: Reflection is scaling by a negative value
+  Given transform ← scaling(-1, 1, 1)
+    And p ← point(2, 3, 4)
+   Then transform * p = point(-2, 3, 4)
+*/
+TEST(matrix, should_reflect_a_point_when_scaled_by_negative_value)
+{
+    const matrix_t transform{ matrix_t::scaling(-1, 1, 1) };
+    const tuple_t p{ tuple_t::point(2, 3, 4) };
+    const tuple_t r{ tuple_t::point(-2, 3, 4) };
+    EXPECT_EQ(transform * p, r);
+}
+
+/*
+Scenario: Rotating a point around the x axis
+  Given p ← point(0, 1, 0)
+    And half_quarter ← rotation_x(π / 4)
+    And full_quarter ← rotation_x(π / 2)
+  Then half_quarter * p = point(0, √2/2, √2/2)
+    And full_quarter * p = point(0, 0, 1)
+*/
+TEST(matrix, should_rotate_a_point_around_x_axis)
+{
+    const tuple_t p{ tuple_t::point(0, 1, 0) };
+    const matrix_t half_quarter{ matrix_t::rotation_x(M_PI / 4) };
+    const matrix_t full_quarter{ matrix_t::rotation_x(M_PI / 2) };
+    const tuple_t r1{ tuple_t::point(0, std::sqrt(2) / 2, std::sqrt(2) / 2)};
+    const tuple_t r2{ tuple_t::point(0, 0, 1) };
+    EXPECT_EQ(half_quarter * p, r1);
+    EXPECT_EQ(full_quarter * p, r2);
+}
+
+/*
+Scenario: The inverse of an x-rotation rotates in the opposite direction
+  Given p ← point(0, 1, 0)
+    And half_quarter ← rotation_x(π / 4)
+    And inv ← inverse(half_quarter)
+  Then inv * p = point(0, √2/2, -√2/2)
+*/
+TEST(matrix, should_rotate_in_opposite_direction_when_rotated_by_inverse)
+{
+    const tuple_t p{ tuple_t::point(0, 1, 0) };
+    const matrix_t half_quarter{ matrix_t::rotation_x(M_PI / 4) };
+    const matrix_t inverse{ half_quarter.inverse() };
+    const tuple_t r{ tuple_t::point(0, std::sqrt(2) / 2, -std::sqrt(2) / 2) };
+    EXPECT_EQ(inverse * p, r);
+}
+
+/*
+Scenario: Rotating a point around the y axis
+  Given p ← point(0, 0, 1)
+    And half_quarter ← rotation_y(π / 4)
+    And full_quarter ← rotation_y(π / 2)
+  Then half_quarter * p = point(√2/2, 0, √2/2)
+    And full_quarter * p = point(1, 0, 0)
+*/
+TEST(matrix, should_rotate_a_point_around_y_axis)
+{
+    const tuple_t p{ tuple_t::point(0, 0, 1) };
+    const matrix_t half_quarter{ matrix_t::rotation_y(M_PI / 4) };
+    const matrix_t full_quarter{ matrix_t::rotation_y(M_PI / 2) };
+    const tuple_t r1{ tuple_t::point(std::sqrt(2) / 2, 0, std::sqrt(2) / 2) };
+    const tuple_t r2{ tuple_t::point(1, 0, 0) };
+    EXPECT_EQ(half_quarter * p, r1);
+    EXPECT_EQ(full_quarter * p, r2);
+}
+
+/*
+Scenario: Rotating a point around the z axis
+  Given p ← point(0, 1, 0)
+    And half_quarter ← rotation_z(π / 4)
+    And full_quarter ← rotation_z(π / 2)
+  Then half_quarter * p = point(-√2/2, √2/2, 0)
+    And full_quarter * p = point(-1, 0, 0)
+*/
+TEST(matrix, should_rotate_a_point_around_z_axis)
+{
+    const tuple_t p{ tuple_t::point(0, 1, 0) };
+    const matrix_t half_quarter{ matrix_t::rotation_z(M_PI / 4) };
+    const matrix_t full_quarter{ matrix_t::rotation_z(M_PI / 2) };
+    const tuple_t r1{ tuple_t::point(-std::sqrt(2) / 2, std::sqrt(2) / 2, 0) };
+    const tuple_t r2{ tuple_t::point(-1, 0, 0) };
+    EXPECT_EQ(half_quarter * p, r1);
+    EXPECT_EQ(full_quarter * p, r2);
+}
+
+/*
+Scenario: A shearing transformation moves x in proportion to y
+  Given transform ← shearing(1, 0, 0, 0, 0, 0)
+    And p ← point(2, 3, 4)
+  Then transform * p = point(5, 3, 4)
+*/
+TEST(matrix, should_move_x_in_proportion_to_y_when_sheared)
+{
+    const matrix_t transform{ matrix_t::shearing(1, 0, 0, 0, 0, 0) };
+    const tuple_t p{ tuple_t::point(2, 3, 4) };
+    const tuple_t r{ tuple_t::point(5, 3, 4) };
+    EXPECT_EQ(transform * p, r);
+}
+
+/*
+Scenario: A shearing transformation moves x in proportion to z
+  Given transform ← shearing(0, 1, 0, 0, 0, 0)
+    And p ← point(2, 3, 4)
+  Then transform * p = point(6, 3, 4)
+*/
+TEST(matrix, should_move_x_in_proportion_to_z_when_sheared)
+{
+    const matrix_t transform{ matrix_t::shearing(0, 1, 0, 0, 0, 0) };
+    const tuple_t p{ tuple_t::point(2, 3, 4) };
+    const tuple_t r{ tuple_t::point(6, 3, 4) };
+    EXPECT_EQ(transform * p, r);
+}
+
+/*
+Scenario: A shearing transformation moves y in proportion to x
+  Given transform ← shearing(0, 0, 1, 0, 0, 0)
+    And p ← point(2, 3, 4)
+  Then transform * p = point(2, 5, 4)
+*/
+TEST(matrix, should_move_y_in_proportion_to_x_when_sheared)
+{
+    const matrix_t transform{ matrix_t::shearing(0, 0, 1, 0, 0, 0) };
+    const tuple_t p{ tuple_t::point(2, 3, 4) };
+    const tuple_t r{ tuple_t::point(2, 5, 4) };
+    EXPECT_EQ(transform * p, r);
+}
+
+/*
+Scenario: A shearing transformation moves y in proportion to z
+  Given transform ← shearing(0, 0, 0, 1, 0, 0)
+    And p ← point(2, 3, 4)
+  Then transform * p = point(2, 7, 4)
+*/
+TEST(matrix, should_move_y_in_proportion_to_z_when_sheared)
+{
+    const matrix_t transform{ matrix_t::shearing(0, 0, 0, 1, 0, 0) };
+    const tuple_t p{ tuple_t::point(2, 3, 4) };
+    const tuple_t r{ tuple_t::point(2, 7, 4) };
+    EXPECT_EQ(transform * p, r);
+}
+
+/*
+Scenario: A shearing transformation moves z in proportion to x
+  Given transform ← shearing(0, 0, 0, 0, 1, 0)
+    And p ← point(2, 3, 4)
+  Then transform * p = point(2, 3, 6)
+*/
+TEST(matrix, should_move_z_in_proportion_to_x_when_sheared)
+{
+    const matrix_t transform{ matrix_t::shearing(0, 0, 0, 0, 1, 0) };
+    const tuple_t p{ tuple_t::point(2, 3, 4) };
+    const tuple_t r{ tuple_t::point(2, 3, 6) };
+    EXPECT_EQ(transform * p, r);
+}
+
+/*
+Scenario: A shearing transformation moves z in proportion to y
+  Given transform ← shearing(0, 0, 0, 0, 0, 1)
+    And p ← point(2, 3, 4)
+  Then transform * p = point(2, 3, 7)
+*/
+TEST(matrix, should_move_z_in_proportion_to_y_when_sheared)
+{
+    const matrix_t transform{ matrix_t::shearing(0, 0, 0, 0, 0, 1) };
+    const tuple_t p{ tuple_t::point(2, 3, 4) };
+    const tuple_t r{ tuple_t::point(2, 3, 7) };
+    EXPECT_EQ(transform * p, r);
+}
+
+/*
+Scenario: Individual transformations are applied in sequence
+  Given p ← point(1, 0, 1)
+    And A ← rotation_x(π / 2)
+    And B ← scaling(5, 5, 5)
+    And C ← translation(10, 5, 7)
+  # apply rotation first
+  When p2 ← A * p
+  Then p2 = point(1, -1, 0)
+  # then apply scaling
+  When p3 ← B * p2
+  Then p3 = point(5, -5, 0)
+  # then apply translation
+  When p4 ← C * p3
+  Then p4 = point(15, 0, 7)
+*/
+TEST(matrix, should_apply_individual_transforms_sequntially)
+{
+    const tuple_t p{ tuple_t::point(1, 0, 1) };
+    const matrix_t A{ matrix_t::rotation_x(M_PI / 2)};
+    const matrix_t B{ matrix_t::scaling(5, 5, 5) };
+    const matrix_t C{ matrix_t::translation(10, 5, 7) };
+    const tuple_t p2{ tuple_t::point(1, -1, 0) };
+    const tuple_t p3{ tuple_t::point(5, -5, 0) };
+    const tuple_t p4{ tuple_t::point(15, 0, 7) };
+    EXPECT_EQ(A * p, p2);
+    EXPECT_EQ(B * p2, p3);
+    EXPECT_EQ(C * p3, p4);
+}
+
+/*
+Scenario: Chained transformations must be applied in reverse order
+  Given p ← point(1, 0, 1)
+    And A ← rotation_x(π / 2)
+    And B ← scaling(5, 5, 5)
+    And C ← translation(10, 5, 7)
+  When T ← C * B * A
+  Then T * p = point(15, 0, 7)
+*/
+TEST(matrix, should_apply_chained_transforms_in_reverse_order)
+{
+    const tuple_t p{ tuple_t::point(1, 0, 1) };
+    const matrix_t A{ matrix_t::rotation_x(M_PI / 2) };
+    const matrix_t B{ matrix_t::scaling(5, 5, 5) };
+    const matrix_t C{ matrix_t::translation(10, 5, 7) };
+    const matrix_t transform{ C * B * A };
+    const tuple_t r{ tuple_t::point(15, 0, 7) };
+    EXPECT_EQ(transform * p, r);
 }

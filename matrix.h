@@ -39,6 +39,95 @@ struct matrix_t
 	 */
 	matrix_t(const tuple_t& t);
 
+	// STATIC FUNCTIONS
+	/**
+	 * @brief Creates an identity matrix.
+	 * | 1  0  0  0 |
+	 * | 0  1  0  0 |
+	 * | 0  0  1  0 |
+	 * | 0  0  0  1 |
+	 * @param r Number of rows (default is 4).
+	 * @param c Number of columns (default is 4).
+	 * @return A matrix_t representing the identity matrix of size r x c.
+	 */
+	static matrix_t identity(const std::size_t r = 4, const std::size_t c = 4);
+
+	/**
+	 * @brief Creates a translation matrix.
+	 * | 1  0  0  tx |
+	 * | 0  1  0  ty |
+	 * | 0  0  1  tz |
+	 * | 0  0  0  1  |
+	 * @param tx Translation distance along the X-axis.
+	 * @param ty Translation distance along the Y-axis.
+	 * @param tz Translation distance along the Z-axis.
+	 * @return A matrix_t representing the translation transformation.
+	 */
+	static matrix_t translation(const double tx, const double ty, const double tz);
+
+	/**
+	 * @brief Creates a scaling matrix.
+	 * | sx  0  0  0 |
+	 * | 0  sy  0  0 |
+	 * | 0  0  sz  0 |
+	 * | 0  0  0   1 |
+	 * @param sx Scaling factor along the X-axis.
+	 * @param sy Scaling factor along the Y-axis.
+	 * @param sz Scaling factor along the Z-axis.
+	 * @return A matrix_t representing the scaling transformation.
+	 */
+	static matrix_t scaling(const double sx, const double sy, const double sz);
+
+	/**
+	 * @brief Creates a rotation matrix around the X-axis.
+	 * | 1  0  0  0 |
+	 * | 0  c -s  0 |
+	 * | 0  s  c  0 |
+	 * | 0  0  0  1 |
+	 * @param radians Rotation angle in radians.
+	 * @return A matrix_t representing the rotation around the X-axis.
+	 */
+	static matrix_t rotation_x(const double radians);
+
+	/**
+	 * @brief Creates a rotation matrix around the Y-axis.
+	 * |  c  0  s  0 |
+	 * |  0  1  0  0 |
+	 * | -s  0  c  0 |
+	 * |  0  0  0  1 |
+	 * @param radians Rotation angle in radians.
+	 * @return A matrix_t representing the rotation around the Y-axis.
+	 */
+	static matrix_t rotation_y(const double radians);
+
+	/**
+	 * @brief Creates a rotation matrix around the Z-axis.
+	 * | c -s  0  0 |
+	 * | s  c  0  0 |
+	 * | 0  0  1  0 |
+	 * | 0  0  0  1 |
+	 * @param radians Rotation angle in radians.
+	 * @return A matrix_t representing the rotation around the Z-axis.
+	 */
+	static matrix_t rotation_z(const double radians);
+
+	/**
+	 * @brief Creates a shearing transformation matrix.
+	 * | 1  Xy Xz  0 |
+	 * | Yx  1 Yz  0 |
+	 * | Zx  Zy 1  0 |
+	 * | 0  0  0   1 |
+	 * @param Xy Shear factor of X in proportion to Y.
+	 * @param Xz Shear factor of X in proportion to Z.
+	 * @param Yx Shear factor of Y in proportion to X.
+	 * @param Yz Shear factor of Y in proportion to Z.
+	 * @param Zx Shear factor of Z in proportion to X.
+	 * @param Zy Shear factor of Z in proportion to Y.
+	 * @return A matrix_t representing the shearing transformation.
+	 */
+	static matrix_t shearing(const double Xy, const double Xz, const double Yx, const double Yz, const double Zx, const double Zy);
+
+
 
 	// MEMBER FUNCTIONS
 	/**
