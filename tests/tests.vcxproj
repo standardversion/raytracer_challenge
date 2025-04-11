@@ -139,7 +139,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;gtest_main.lib;gtest.lib;gmock.lib;gmock_main.lib;tuple.obj;colour.obj;canvas.obj;ppm.obj;utils.obj;matrix.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;gtest_main.lib;gtest.lib;gmock.lib;gmock_main.lib;tuple.obj;colour.obj;canvas.obj;ppm.obj;utils.obj;matrix.obj;ray.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -148,6 +148,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="matrix_tests.cpp" />
     <ClCompile Include="ppm_tests.cpp" />
+    <ClCompile Include="ray_tests.cpp" />
     <ClCompile Include="tuple_tests.cpp" />
     <ClCompile Include="utils_tests.cpp" />
   </ItemGroup>
