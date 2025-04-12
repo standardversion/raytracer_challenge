@@ -1,6 +1,7 @@
 ﻿#include "gtest/gtest.h"
 #include "../tuple.h"
 #include "../ray.h"
+#include "../matrix.h"
 
 /*
 Scenario: Creating and querying a ray
@@ -40,4 +41,46 @@ TEST(ray, should_compute_a_point_from_a_distance)
 	EXPECT_EQ(ray.position(1), p2);
 	EXPECT_EQ(ray.position(-1), p3);
 	EXPECT_EQ(ray.position(2.5), p4);
+}
+
+/*
+Scenario: Translating a ray
+  Given r ← ray(point(1, 2, 3), vector(0, 1, 0))
+	And m ← translation(3, 4, 5)
+  When r2 ← r.transform(m)
+  Then r2.origin = point(4, 6, 8)
+	And r2.direction = vector(0, 1, 0)
+*/
+TEST(ray, should_be_able_to_translate_a_ray)
+{
+	const tuple_t origin{ tuple_t::point(1, 2, 3) };
+	const tuple_t direction{ tuple_t::vector(0, 1, 0) };
+	const ray_t ray{ origin, direction };
+	const matrix_t m{ matrix_t ::translation(3, 4, 5)};
+	const tuple_t p{ tuple_t::point(4, 6, 8) };
+	const tuple_t d{ tuple_t::vector(0, 1, 0) };
+	const ray_t ray2{ ray.transform(m)};
+	EXPECT_EQ(ray2.origin, p);
+	EXPECT_EQ(ray2.direction, d);
+}
+
+/*
+Scenario: Scaling a ray
+  Given r ← ray(point(1, 2, 3), vector(0, 1, 0))
+	And m ← scaling(2, 3, 4)
+  When r2 ← r.transform(m)
+  Then r2.origin = point(2, 6, 12)
+	And r2.direction = vector(0, 3, 0)
+*/
+TEST(ray, should_be_able_to_scale_a_ray)
+{
+	const tuple_t origin{ tuple_t::point(1, 2, 3) };
+	const tuple_t direction{ tuple_t::vector(0, 1, 0) };
+	const ray_t ray{ origin, direction };
+	const matrix_t m{ matrix_t::scaling(2, 3, 4) };
+	const tuple_t p{ tuple_t::point(2, 6, 12) };
+	const tuple_t d{ tuple_t::vector(0, 3, 0) };
+	const ray_t ray2{ ray.transform(m) };
+	EXPECT_EQ(ray2.origin, p);
+	EXPECT_EQ(ray2.direction, d);
 }

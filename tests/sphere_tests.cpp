@@ -2,6 +2,7 @@
 #include "../sphere.h"
 #include "../ray.h"
 #include "../intersection.h"
+#include "../matrix.h"
 
 /*
 Scenario: Creating and querying a sphere
@@ -135,4 +136,81 @@ TEST(sphere, should_intersect_sphere_even_if_ray_is_behind_sphere)
 	EXPECT_EQ(intersections.entries.size(), 2);
 	EXPECT_EQ(intersections[0].time, -6.0);
 	EXPECT_EQ(intersections[1].time, -4.0);
+}
+
+/*
+Scenario: A sphere's default transformation
+  Given s ← sphere()
+  Then s.transform = identity_matrix
+*/
+TEST(sphere, should_have_default_transform_for_sphere)
+{
+	const tuple_t origin{ tuple_t::point(0, 0, 5) };
+	const tuple_t direction{ tuple_t::vector(0, 0, 1) };
+	const matrix_t i{ matrix_t::identity() };
+	sphere_t s{};
+	EXPECT_EQ(s.transform, i);
+}
+
+/*
+Scenario: Changing a sphere's transformation
+  Given s ← sphere()
+	And t ← translation(2, 3, 4)
+  When s.transform = t
+  Then s.transform = t
+*/
+TEST(sphere, should_be_able_to_set_spheres_transform)
+{
+	const tuple_t origin{ tuple_t::point(0, 0, 5) };
+	const tuple_t direction{ tuple_t::vector(0, 0, 1) };
+	const matrix_t t{ matrix_t::translation(2, 3, 4) };
+	sphere_t s{};
+	s.transform = t;
+	EXPECT_EQ(s.transform, t);
+}
+
+/*
+Scenario: Intersecting a scaled sphere with a ray
+  Given r ← ray(point(0, 0, -5), vector(0, 0, 1))
+	And s ← sphere()
+  When s.transform = scaling(2, 2, 2)
+	And xs ← s.intersect(r)
+  Then xs.count = 2
+	And xs[0].t = 3
+	And xs[1].t = 7
+*/
+TEST(sphere, should_intersect_scaled_sphere)
+{
+	const tuple_t origin{ tuple_t::point(0, 0, -5) };
+	const tuple_t direction{ tuple_t::vector(0, 0, 1) };
+	const ray_t r{ origin, direction };
+	sphere_t s{};
+	const matrix_t t{ matrix_t::scaling(2, 2, 2) };
+	s.transform = t;
+	intersections_t intersections{};
+	s.intersect(r, intersections);
+	EXPECT_EQ(intersections.entries.size(), 2);
+	EXPECT_EQ(intersections[0].time, 3);
+	EXPECT_EQ(intersections[1].time, 7);
+}
+
+/*
+Scenario: Intersecting a translated sphere with a ray
+  Given r ← ray(point(0, 0, -5), vector(0, 0, 1))
+	And s ← sphere()
+  When set_transform(s, translation(5, 0, 0))
+	And xs ← s.intersect(r)
+  Then xs.count = 0
+*/
+TEST(sphere, should_intersect_translated_sphere)
+{
+	const tuple_t origin{ tuple_t::point(0, 0, -5) };
+	const tuple_t direction{ tuple_t::vector(0, 0, 1) };
+	const ray_t r{ origin, direction };
+	sphere_t s{};
+	const matrix_t t{ matrix_t::translation(5, 0, 0) };
+	s.transform = t;
+	intersections_t intersections{};
+	s.intersect(r, intersections);
+	EXPECT_EQ(intersections.entries.size(), 0);
 }
