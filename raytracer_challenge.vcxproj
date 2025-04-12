@@ -161,21 +161,25 @@
     <ClInclude Include="canvas.h" />
     <ClInclude Include="colour.h" />
     <ClInclude Include="environment.h" />
+    <ClInclude Include="intersection.h" />
     <ClInclude Include="matrix.h" />
     <ClInclude Include="ppm.h" />
     <ClInclude Include="projectile.h" />
     <ClInclude Include="ray.h" />
     <ClInclude Include="settings.h" />
+    <ClInclude Include="sphere.h" />
     <ClInclude Include="tuple.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="canvas.cpp" />
     <ClCompile Include="colour.cpp" />
+    <ClCompile Include="intersection.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="matrix.cpp" />
     <ClCompile Include="ppm.cpp" />
     <ClCompile Include="ray.cpp" />
+    <ClCompile Include="sphere.cpp" />
     <ClCompile Include="tuple.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
