@@ -1,6 +1,7 @@
 #pragma once
 #include "ray.h"
 #include "matrix.h"
+#include "tuple.h"
 
 //forward declaratio to avoid circular dep
 struct intersection_t;
@@ -39,5 +40,7 @@ struct sphere_t
 	 * or outside the sphere, and accounts for all valid real intersections.
 	 */
 	void intersect(const ray_t& ray, intersections_t& intersections) const;
+
+	tuple_t normal_at(const tuple_t& point) const;
 
 };

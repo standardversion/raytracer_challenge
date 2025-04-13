@@ -36,3 +36,13 @@ void sphere_t::intersect(const ray_t& ray, intersections_t& intersections) const
 		intersections.add(t1, this);
 	}
 }
+
+tuple_t sphere_t::normal_at(const tuple_t& point) const
+{
+	const tuple_t point_in_obj_space{ transform.inverse() * point };
+	const tuple_t normal_in_obj_space{ point_in_obj_space - tuple_t::point(0, 0, 0) };
+	tuple_t normal_in_world_space{ transform.inverse().transpose() * normal_in_obj_space };
+	normal_in_world_space.w = 0;
+	normal_in_world_space.normalize();
+	return normal_in_world_space;
+}

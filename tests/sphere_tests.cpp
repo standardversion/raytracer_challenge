@@ -3,6 +3,7 @@
 #include "../ray.h"
 #include "../intersection.h"
 #include "../matrix.h"
+#include "../settings.h"
 
 /*
 Scenario: Creating and querying a sphere
@@ -213,4 +214,110 @@ TEST(sphere, should_intersect_translated_sphere)
 	intersections_t intersections{};
 	s.intersect(r, intersections);
 	EXPECT_EQ(intersections.entries.size(), 0);
+}
+
+/*
+Scenario: The normal on a sphere at a point on the x axis
+  Given s ← sphere()
+  When n ← s.normal_at(point(1, 0, 0))
+  Then n = vector(1, 0, 0)
+*/
+TEST(sphere, should_return_the_normal_on_a_sphere_at_a_point_on_the_x_axis)
+{
+	sphere_t s{};
+	const tuple_t r{ tuple_t::vector(1, 0, 0) };
+	const tuple_t n{ s.normal_at(tuple_t::point(1, 0, 0)) };
+	EXPECT_EQ(n, r);
+}
+
+/*
+Scenario: The normal on a sphere at a point on the y axis
+  Given s ← sphere()
+  When n ← s.normal_at(point(0, 1, 0))
+  Then n = vector(0, 1, 0)
+*/
+TEST(sphere, should_return_the_normal_on_a_sphere_at_a_point_on_the_y_axis)
+{
+	sphere_t s{};
+	const tuple_t r{ tuple_t::vector(0, 1, 0) };
+	const tuple_t n{ s.normal_at(tuple_t::point(0, 1, 0)) };
+	EXPECT_EQ(n, r);
+}
+
+/*
+Scenario: The normal on a sphere at a point on the z axis
+  Given s ← sphere()
+  When n ← s.normal_at(point(0, 0, 1))
+  Then n = vector(0, 0, 1)
+*/
+TEST(sphere, should_return_the_normal_on_a_sphere_at_a_point_on_the_z_axis)
+{
+	sphere_t s{};
+	const tuple_t r{ tuple_t::vector(0, 0, 1) };
+	const tuple_t n{ s.normal_at(tuple_t::point(0, 0, 1)) };
+	EXPECT_EQ(n, r);
+}
+
+/*
+Scenario: The normal on a sphere at a nonaxial point
+  Given s ← sphere()
+  When n ← s.normal_at(point(√3/3, √3/3, √3/3))
+  Then n = vector(√3/3, √3/3, √3/3)
+*/
+TEST(sphere, should_return_the_normal_on_a_sphere_at_a_nonaxial_point)
+{
+	sphere_t s{};
+	const tuple_t r{ tuple_t::vector(std::sqrt(3) /3, std::sqrt(3) / 3, std::sqrt(3) / 3)};
+	const tuple_t n{ s.normal_at(tuple_t::point(std::sqrt(3) / 3, std::sqrt(3) / 3, std::sqrt(3) / 3)) };
+	EXPECT_EQ(n, r);
+}
+
+/*
+Scenario: The normal is a normalized vector
+  Given s ← sphere()
+  When n ← s.normal_at(point(√3/3, √3/3, √3/3))
+  Then n = normalize(n)
+*/
+TEST(sphere, should_return_the_normalized_normal)
+{
+	sphere_t s{};
+	tuple_t r{ tuple_t::vector(std::sqrt(3) / 3, std::sqrt(3) / 3, std::sqrt(3) / 3) };
+	const tuple_t n{ s.normal_at(tuple_t::point(std::sqrt(3) / 3, std::sqrt(3) / 3, std::sqrt(3) / 3)) };
+	r.normalize();
+	EXPECT_EQ(n, r);
+}
+
+/*
+Scenario: Computing the normal on a translated sphere
+  Given s ← sphere()
+	And s.transform = translation(0, 1, 0)
+  When n ← s.normal_at(point(0, 1.70711, -0.70711))
+  Then n = vector(0, 0.70711, -0.70711)
+*/
+TEST(sphere, should_compute_normal_on_a_translated_sphere)
+{
+	sphere_t s{};
+	s.transform = matrix_t::translation(0, 1, 0);
+	tuple_t r{ tuple_t::vector(0, 0.70711, -0.70711) };
+	const tuple_t n{ s.normal_at(tuple_t::point(0, 1.70711, -0.70711)) };
+	r.normalize();
+	EXPECT_EQ(n, r);
+}
+
+/*
+Scenario: Computing the normal on a transformed sphere
+  Given s ← sphere()
+	And m ← scaling(1, 0.5, 1) * rotation_z(π/5)
+	And s.transform = m
+  When n ← s.normal_at(point(0, √2/2, -√2/2))
+  Then n = vector(0, 0.97014, -0.24254)
+
+*/
+TEST(sphere, should_compute_normal_on_a_transformed_sphere)
+{
+	sphere_t s{};
+	s.transform = matrix_t::scaling(1, 0.5, 1) * matrix_t::rotation_z(PI / 5);
+	tuple_t r{ tuple_t::vector(0, 0.97014, -0.24254) };
+	const tuple_t n{ s.normal_at(tuple_t::point(0, std::sqrt(2) / 2, -std::sqrt(2) / 2)) };
+	EXPECT_EQ(n, r);
 }

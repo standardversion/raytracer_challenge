@@ -487,3 +487,33 @@ TEST(tuple, should_throw_when_trying_to_cross_points)
 	EXPECT_THROW(tuple_t::cross(p, v), std::invalid_argument);
 	EXPECT_THROW(tuple_t::cross(p, p), std::invalid_argument);
 }
+
+/*
+Scenario: Reflecting a vector approaching at 45°
+  Given v ← vector(1, -1, 0)
+	And n ← vector(0, 1, 0)
+  When r ← v.reflect(n)
+  Then r = vector(1, 1, 0)
+*/
+TEST(tuple, should_reflect_about_a_normal)
+{
+	const tuple_t v{ tuple_t::vector(1, -1, 0) };
+	const tuple_t n{ tuple_t::vector(0, 1, 0) };
+	const tuple_t r{ tuple_t::vector(1, 1, 0) };
+	EXPECT_EQ(v.reflect(n), r);
+}
+
+/*
+Scenario: Reflecting a vector off a slanted surface
+  Given v ← vector(0, -1, 0)
+	And n ← vector(√2/2, √2/2, 0)
+  When r ← v.reflect(n)
+  Then r = vector(1, 0, 0)
+*/
+TEST(tuple, should_reflect_about_a_normal_off_a_slanted_surface)
+{
+	const tuple_t v{ tuple_t::vector(0, -1, 0) };
+	const tuple_t n{ tuple_t::vector(std::sqrt(2) / 2, std::sqrt(2) / 2, 0)};
+	const tuple_t r{ tuple_t::vector(1, 0, 0) };
+	EXPECT_EQ(v.reflect(n), r);
+}

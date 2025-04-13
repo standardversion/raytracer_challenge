@@ -122,6 +122,8 @@ struct tuple_t
 	 */
 	void normalize();
 
+	tuple_t reflect(const tuple_t& normal) const;
+
 
 	// OPERATORS
 	/**
