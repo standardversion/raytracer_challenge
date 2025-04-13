@@ -4,23 +4,23 @@
 
 // CONSTRUCTOR
 
-sphere_t::sphere_t(const double r)
-	: radius{ r }, id{ sph_id_counter++ }
+Sphere::Sphere(const double r)
+	: Object{}, radius{ r }
 {
-	transform = matrix_t::identity();
+
 }
 
 // MEMBER FUNCTIONS
 
-void sphere_t::intersect(const ray_t& ray, intersections_t& intersections) const
+void Sphere::intersect(const ray_t& ray, intersections_t& intersections) const
 {
 	ray_t transformed_ray{ ray.transform(transform.inverse()) };
 	const tuple_t origin{ tuple_t::point(0, 0, 0) };
 	// sphere is at origin
-	tuple_t sphere_to_ray{ transformed_ray.origin - origin };
+	tuple_t Sphereo_ray{ transformed_ray.origin - origin };
 	const double a{ tuple_t::dot(transformed_ray.direction, transformed_ray.direction) };
-	const double b{ 2 * tuple_t::dot(transformed_ray.direction, sphere_to_ray) };
-	const double c{ tuple_t::dot(sphere_to_ray, sphere_to_ray) - std::pow(radius, 2) };
+	const double b{ 2 * tuple_t::dot(transformed_ray.direction, Sphereo_ray) };
+	const double c{ tuple_t::dot(Sphereo_ray, Sphereo_ray) - std::pow(radius, 2) };
 
 	const double discriminant{ std::pow(b, 2) - (4 * a * c) };
 	if (discriminant >= 0)
@@ -37,12 +37,7 @@ void sphere_t::intersect(const ray_t& ray, intersections_t& intersections) const
 	}
 }
 
-tuple_t sphere_t::normal_at(const tuple_t& point) const
+tuple_t Sphere::local_normal_at(const tuple_t& local_point) const
 {
-	const tuple_t point_in_obj_space{ transform.inverse() * point };
-	const tuple_t normal_in_obj_space{ point_in_obj_space - tuple_t::point(0, 0, 0) };
-	tuple_t normal_in_world_space{ transform.inverse().transpose() * normal_in_obj_space };
-	normal_in_world_space.w = 0;
-	normal_in_world_space.normalize();
-	return normal_in_world_space;
+	return (local_point - tuple_t::point(0, 0, 0));
 }

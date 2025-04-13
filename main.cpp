@@ -74,7 +74,7 @@ void sphere_shadow_exercise()
 	const double half_wall_size{ wall_size / 2 };
 	canvas_t canvas{ (int)canvas_pixels, (int)canvas_pixels };
 	const colour_t red{ 1, 0, 0 };
-	const sphere_t sphere{};
+	const Sphere sphere{};
 	for (int y{ 0 }; y < canvas_pixels - 1; y++)
 	{
 		const double world_y{ half_wall_size - pixel_size * y };
@@ -107,7 +107,7 @@ void sphere_phong_exercise()
 	const double pixel_size{ wall_size / canvas_pixels };
 	const double half_wall_size{ wall_size / 2 };
 	canvas_t canvas{ (int)canvas_pixels, (int)canvas_pixels };
-	sphere_t sphere{};
+	Sphere sphere{};
 	sphere.material.colour = { 1, 0.2, 1 };
 	const light_t light{ tuple_t::point(-10, 10, -10), colour_t{1, 1, 1} };
 	for (int y{ 0 }; y < canvas_pixels - 1; y++)

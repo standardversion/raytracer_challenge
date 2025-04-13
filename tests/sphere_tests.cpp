@@ -20,9 +20,9 @@ Scenario: Creating and querying a sphere
 */
 TEST(sphere, should_create_spheres_with_unique_ids)
 {
-	const sphere_t s{ 1 };
-	const sphere_t s2{ 5 };
-	const sphere_t s3{ 4 };
+	const Sphere s{ 1 };
+	const Sphere s2{ 5 };
+	const Sphere s3{ 4 };
 	EXPECT_EQ(s.radius, 1);
 	EXPECT_EQ(s2.radius, 5);
 	EXPECT_EQ(s3.radius, 4);
@@ -44,7 +44,7 @@ TEST(sphere, should_intersect_sphere_at_2_points)
 	const tuple_t origin{ tuple_t::point(0, 0, -5) };
 	const tuple_t direction{ tuple_t::vector(0, 0, 1) };
 	const ray_t r{ origin, direction };
-	const sphere_t s{};
+	const Sphere s{};
 	intersections_t intersections{};
 	s.intersect(r, intersections);
 	EXPECT_EQ(intersections.entries.size(), 2);
@@ -67,7 +67,7 @@ TEST(sphere, should_intersect_sphere_at_tangent)
 	const tuple_t origin{ tuple_t::point(0, 1, -5) };
 	const tuple_t direction{ tuple_t::vector(0, 0, 1) };
 	const ray_t r{ origin, direction };
-	const sphere_t s{};
+	const Sphere s{};
 	intersections_t intersections{};
 	s.intersect(r, intersections);
 	EXPECT_EQ(intersections.entries.size(), 2);
@@ -88,7 +88,7 @@ TEST(sphere, should_miss_sphere)
 	const tuple_t origin{ tuple_t::point(0, 2, -5) };
 	const tuple_t direction{ tuple_t::vector(0, 0, 1) };
 	const ray_t r{ origin, direction };
-	const sphere_t s{};
+	const Sphere s{};
 	intersections_t intersections{};
 	s.intersect(r, intersections);
 	EXPECT_EQ(intersections.entries.size(), 0);
@@ -109,7 +109,7 @@ TEST(sphere, should_intersect_sphere_even_if_ray_originates_inside_sphere)
 	const tuple_t origin{ tuple_t::point(0, 0, 0) };
 	const tuple_t direction{ tuple_t::vector(0, 0, 1) };
 	const ray_t r{ origin, direction };
-	const sphere_t s{};
+	const Sphere s{};
 	intersections_t intersections{};
 	s.intersect(r, intersections);
 	EXPECT_EQ(intersections.entries.size(), 2);
@@ -132,7 +132,7 @@ TEST(sphere, should_intersect_sphere_even_if_ray_is_behind_sphere)
 	const tuple_t origin{ tuple_t::point(0, 0, 5) };
 	const tuple_t direction{ tuple_t::vector(0, 0, 1) };
 	const ray_t r{ origin, direction };
-	const sphere_t s{};
+	const Sphere s{};
 	intersections_t intersections{};
 	s.intersect(r, intersections);
 	EXPECT_EQ(intersections.entries.size(), 2);
@@ -150,7 +150,7 @@ TEST(sphere, should_have_default_transform_for_sphere)
 	const tuple_t origin{ tuple_t::point(0, 0, 5) };
 	const tuple_t direction{ tuple_t::vector(0, 0, 1) };
 	const matrix_t i{ matrix_t::identity() };
-	sphere_t s{};
+	Sphere s{};
 	EXPECT_EQ(s.transform, i);
 }
 
@@ -166,7 +166,7 @@ TEST(sphere, should_be_able_to_set_spheres_transform)
 	const tuple_t origin{ tuple_t::point(0, 0, 5) };
 	const tuple_t direction{ tuple_t::vector(0, 0, 1) };
 	const matrix_t t{ matrix_t::translation(2, 3, 4) };
-	sphere_t s{};
+	Sphere s{};
 	s.transform = t;
 	EXPECT_EQ(s.transform, t);
 }
@@ -186,7 +186,7 @@ TEST(sphere, should_intersect_scaled_sphere)
 	const tuple_t origin{ tuple_t::point(0, 0, -5) };
 	const tuple_t direction{ tuple_t::vector(0, 0, 1) };
 	const ray_t r{ origin, direction };
-	sphere_t s{};
+	Sphere s{};
 	const matrix_t t{ matrix_t::scaling(2, 2, 2) };
 	s.transform = t;
 	intersections_t intersections{};
@@ -209,7 +209,7 @@ TEST(sphere, should_intersect_translated_sphere)
 	const tuple_t origin{ tuple_t::point(0, 0, -5) };
 	const tuple_t direction{ tuple_t::vector(0, 0, 1) };
 	const ray_t r{ origin, direction };
-	sphere_t s{};
+	Sphere s{};
 	const matrix_t t{ matrix_t::translation(5, 0, 0) };
 	s.transform = t;
 	intersections_t intersections{};
@@ -225,7 +225,7 @@ Scenario: The normal on a sphere at a point on the x axis
 */
 TEST(sphere, should_return_the_normal_on_a_sphere_at_a_point_on_the_x_axis)
 {
-	sphere_t s{};
+	Sphere s{};
 	const tuple_t r{ tuple_t::vector(1, 0, 0) };
 	const tuple_t n{ s.normal_at(tuple_t::point(1, 0, 0)) };
 	EXPECT_EQ(n, r);
@@ -239,7 +239,7 @@ Scenario: The normal on a sphere at a point on the y axis
 */
 TEST(sphere, should_return_the_normal_on_a_sphere_at_a_point_on_the_y_axis)
 {
-	sphere_t s{};
+	Sphere s{};
 	const tuple_t r{ tuple_t::vector(0, 1, 0) };
 	const tuple_t n{ s.normal_at(tuple_t::point(0, 1, 0)) };
 	EXPECT_EQ(n, r);
@@ -253,7 +253,7 @@ Scenario: The normal on a sphere at a point on the z axis
 */
 TEST(sphere, should_return_the_normal_on_a_sphere_at_a_point_on_the_z_axis)
 {
-	sphere_t s{};
+	Sphere s{};
 	const tuple_t r{ tuple_t::vector(0, 0, 1) };
 	const tuple_t n{ s.normal_at(tuple_t::point(0, 0, 1)) };
 	EXPECT_EQ(n, r);
@@ -267,7 +267,7 @@ Scenario: The normal on a sphere at a nonaxial point
 */
 TEST(sphere, should_return_the_normal_on_a_sphere_at_a_nonaxial_point)
 {
-	sphere_t s{};
+	Sphere s{};
 	const tuple_t r{ tuple_t::vector(std::sqrt(3) /3, std::sqrt(3) / 3, std::sqrt(3) / 3)};
 	const tuple_t n{ s.normal_at(tuple_t::point(std::sqrt(3) / 3, std::sqrt(3) / 3, std::sqrt(3) / 3)) };
 	EXPECT_EQ(n, r);
@@ -281,7 +281,7 @@ Scenario: The normal is a normalized vector
 */
 TEST(sphere, should_return_the_normalized_normal)
 {
-	sphere_t s{};
+	Sphere s{};
 	tuple_t r{ tuple_t::vector(std::sqrt(3) / 3, std::sqrt(3) / 3, std::sqrt(3) / 3) };
 	const tuple_t n{ s.normal_at(tuple_t::point(std::sqrt(3) / 3, std::sqrt(3) / 3, std::sqrt(3) / 3)) };
 	r.normalize();
@@ -297,7 +297,7 @@ Scenario: Computing the normal on a translated sphere
 */
 TEST(sphere, should_compute_normal_on_a_translated_sphere)
 {
-	sphere_t s{};
+	Sphere s{};
 	s.transform = matrix_t::translation(0, 1, 0);
 	tuple_t r{ tuple_t::vector(0, 0.70711, -0.70711) };
 	const tuple_t n{ s.normal_at(tuple_t::point(0, 1.70711, -0.70711)) };
@@ -316,7 +316,7 @@ Scenario: Computing the normal on a transformed sphere
 */
 TEST(sphere, should_compute_normal_on_a_transformed_sphere)
 {
-	sphere_t s{};
+	Sphere s{};
 	s.transform = matrix_t::scaling(1, 0.5, 1) * matrix_t::rotation_z(PI / 5);
 	tuple_t r{ tuple_t::vector(0, 0.97014, -0.24254) };
 	const tuple_t n{ s.normal_at(tuple_t::point(0, std::sqrt(2) / 2, -std::sqrt(2) / 2)) };
@@ -331,7 +331,7 @@ Scenario: A sphere has a default material
 */
 TEST(sphere, should_has_a_default_material)
 {
-	sphere_t s{};
+	Sphere s{};
 	const material_t m{};
 	EXPECT_EQ(s.material, m);
 }
@@ -346,7 +346,7 @@ Scenario: A sphere may be assigned a material
 */
 TEST(sphere, should_be_able_to_assign_material)
 {
-	sphere_t s{};
+	Sphere s{};
 	material_t m{};
 	m.ambient = 1;
 	s.material = m;

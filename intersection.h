@@ -2,14 +2,14 @@
 #include <vector>
 
 //forward declaratio to avoid circular dep
-struct sphere_t;
+class Object;
 
 struct intersection_t
 {
 	// MEMBER VARIABLES
 
 	double time{};
-	const sphere_t* object{ nullptr };
+	const Object* object{ nullptr };
 
 	// OPERATORS
 
@@ -41,7 +41,7 @@ struct intersections_t
 	 * Stores the intersection data (typically time and object pointer)
 	 * for later processing, such as determining the closest visible hit.
 	 */
-	void add(const double time, const sphere_t* sph);
+	void add(const double time, const Object* sph);
 
 	/**
 	 * @brief Adds one or more intersections to the collection.

@@ -14,7 +14,7 @@ Scenario: An intersection encapsulates t and object
 */
 TEST(intersect, should_have_time_and_object_attrs)
 {
-    const sphere_t s{};
+    const Sphere s{};
     const double t{ 3.5 };
     intersections_t intersections{};
     intersections.add(t, &s);
@@ -35,7 +35,7 @@ Scenario: Aggregating intersections
 */
 TEST(intersect, should_be_able_to_aggregate_intersection)
 {
-    const sphere_t s{};
+    const Sphere s{};
     const double t{ 3.5 };
     const double t2{ 7.0 };
     intersections_t intersections{};
@@ -60,7 +60,7 @@ Scenario: The hit, when all intersections have positive t
 */
 TEST(intersect, should_return_lowest_positive_intersection)
 {
-    const sphere_t s{};
+    const Sphere s{};
     const double t{ 1 };
     const double t2{ 2 };
     const intersection_t i{ t, &s };
@@ -84,7 +84,7 @@ Scenario: The hit, when some intersections have negative t
 */
 TEST(intersect, should_return_lowest_positive_intersection_even_when_negative_t_exist)
 {
-    const sphere_t s{};
+    const Sphere s{};
     const double t{ -1 };
     const double t2{ 1 };
     const intersection_t i{ t2, &s };
@@ -108,7 +108,7 @@ Scenario: The hit, when all intersections have negative t
 */
 TEST(intersect, should_return_empty_intersection_even_only_negative_t_exist)
 {
-    const sphere_t s{};
+    const Sphere s{};
     const double t{ -2 };
     const double t2{ -1 };
     const intersection_t i{ t2, &s };
@@ -133,7 +133,7 @@ When ir ← intersections.hit()
 */
 TEST(intersect, should_always_return_lowest_positive_intersection)
 {
-    const sphere_t s{};
+    const Sphere s{};
     const double t{ 5 };
     const double t2{ 7 };
     const double t3{ -3 };

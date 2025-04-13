@@ -118,7 +118,7 @@
       <AdditionalOptions>/w44365 %(AdditionalOptions)</AdditionalOptions>
       <TreatWarningAsError>false</TreatWarningAsError>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -165,6 +165,7 @@
     <ClInclude Include="light.h" />
     <ClInclude Include="material.h" />
     <ClInclude Include="matrix.h" />
+    <ClInclude Include="object.h" />
     <ClInclude Include="ppm.h" />
     <ClInclude Include="projectile.h" />
     <ClInclude Include="ray.h" />
@@ -180,6 +181,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="material.cpp" />
     <ClCompile Include="matrix.cpp" />
+    <ClCompile Include="object.cpp" />
     <ClCompile Include="ppm.cpp" />
     <ClCompile Include="ray.cpp" />
     <ClCompile Include="sphere.cpp" />

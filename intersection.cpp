@@ -22,7 +22,7 @@ intersection_t intersections_t::operator[](const std::size_t i) const
 }
 
 // MEMBER FUNCTIONS
-void intersections_t::add(const double time, const sphere_t* sph)
+void intersections_t::add(const double time, const Object* sph)
 {
 	intersection_t intersection{ time, sph };
 	entries.push_back(intersection);
