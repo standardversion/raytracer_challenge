@@ -88,7 +88,7 @@ void tuple_t::normalize()
 	y /= mag;
 	z /= mag;
 }
-
+//https://www.contemporarycalculus.com/dh/Calculus_all/CC11_7_VectorReflections.pdf
 tuple_t tuple_t::reflect(const tuple_t& normal) const
 {
 	return *this - normal * 2 * dot(*this, normal);

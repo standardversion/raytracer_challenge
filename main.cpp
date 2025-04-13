@@ -11,6 +11,8 @@
 #include "sphere.h"
 #include "ray.h"
 #include "intersection.h"
+#include "material.h"
+#include "light.h"
 
 projectile_t update_projectile(const projectile_t& proj, const environment_t& env)
 {
@@ -67,7 +69,7 @@ void sphere_shadow_exercise()
 	const tuple_t ray_origin{ tuple_t::point(0, 0, -5) };
 	const double wall_z{ 10 };
 	const double wall_size{ 7 };
-	const double canvas_pixels{ 100 };
+	const double canvas_pixels{ 1000 };
 	const double pixel_size{ wall_size / canvas_pixels };
 	const double half_wall_size{ wall_size / 2 };
 	canvas_t canvas{ (int)canvas_pixels, (int)canvas_pixels };
@@ -96,10 +98,50 @@ void sphere_shadow_exercise()
 	ppm.write_to_file("./x64/Release/sphere_shadow.ppm");
 }
 
+void sphere_phong_exercise()
+{
+	const tuple_t ray_origin{ tuple_t::point(0, 0, -5) };
+	const double wall_z{ 10 };
+	const double wall_size{ 7 };
+	const double canvas_pixels{ 1000 };
+	const double pixel_size{ wall_size / canvas_pixels };
+	const double half_wall_size{ wall_size / 2 };
+	canvas_t canvas{ (int)canvas_pixels, (int)canvas_pixels };
+	sphere_t sphere{};
+	sphere.material.colour = { 1, 0.2, 1 };
+	const light_t light{ tuple_t::point(-10, 10, -10), colour_t{1, 1, 1} };
+	for (int y{ 0 }; y < canvas_pixels - 1; y++)
+	{
+		const double world_y{ half_wall_size - pixel_size * y };
+		for (int x{ 0 }; x < canvas_pixels - 1; x++)
+		{
+			const double world_x{ -half_wall_size + pixel_size * x };
+			const tuple_t position{ tuple_t::point(world_x, world_y, wall_z) };
+			tuple_t direction{ (position - ray_origin) };
+			direction.normalize();
+			ray_t ray{ ray_origin, direction };
+			intersections_t intersections{};
+			sphere.intersect(ray, intersections);
+			const intersection_t intersection{ intersections.hit() };
+			if (intersection.object != nullptr)
+			{
+				const tuple_t point_on_sphere{ ray.position(intersection.time) };
+				const tuple_t normal{ intersection.object->normal_at(point_on_sphere) };
+				const tuple_t eye{ -ray.direction };
+				const colour_t pixel_colour{ intersection.object->material.lighting(light, point_on_sphere, eye, normal) };
+				canvas.write_pixel(x, y, pixel_colour);
+			}
+		}
+	}
+	const ppm_t ppm{ canvas };
+	ppm.write_to_file("./x64/Release/sphere_phong.ppm");
+}
+
 int main()
 {
 	projectile_exercise();
 	clock_exercise();
 	sphere_shadow_exercise();
+	sphere_phong_exercise();
 	return 0;
 }

@@ -4,6 +4,7 @@
 #include "../intersection.h"
 #include "../matrix.h"
 #include "../settings.h"
+#include "../material.h"
 
 /*
 Scenario: Creating and querying a sphere
@@ -320,4 +321,34 @@ TEST(sphere, should_compute_normal_on_a_transformed_sphere)
 	tuple_t r{ tuple_t::vector(0, 0.97014, -0.24254) };
 	const tuple_t n{ s.normal_at(tuple_t::point(0, std::sqrt(2) / 2, -std::sqrt(2) / 2)) };
 	EXPECT_EQ(n, r);
+}
+
+/*
+Scenario: A sphere has a default material
+  Given s ← sphere()
+  When m ← s.material
+  Then m = material()
+*/
+TEST(sphere, should_has_a_default_material)
+{
+	sphere_t s{};
+	const material_t m{};
+	EXPECT_EQ(s.material, m);
+}
+
+/*
+Scenario: A sphere may be assigned a material
+  Given s ← sphere()
+	And m ← material()
+	And m.ambient ← 1
+  When s.material ← m
+  Then s.material = m
+*/
+TEST(sphere, should_be_able_to_assign_material)
+{
+	sphere_t s{};
+	material_t m{};
+	m.ambient = 1;
+	s.material = m;
+	EXPECT_EQ(s.material, m);
 }

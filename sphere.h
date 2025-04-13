@@ -2,6 +2,7 @@
 #include "ray.h"
 #include "matrix.h"
 #include "tuple.h"
+#include "material.h"
 
 //forward declaratio to avoid circular dep
 struct intersection_t;
@@ -14,6 +15,7 @@ struct sphere_t
 	double radius{ 1.0 };
 	int id{ 0 };
 	matrix_t transform{ matrix_t::identity()};
+	material_t material{};
 
 	// CONSTRUCTOR
 	/**
@@ -41,6 +43,12 @@ struct sphere_t
 	 */
 	void intersect(const ray_t& ray, intersections_t& intersections) const;
 
+	/**
+	 * @brief Computes the surface normal vector at a given point on the object.
+	 *
+	 * @param point The point on the object's surface where the normal is being calculated.
+	 * @return tuple_t The normalized surface normal vector at the given point.
+	 */
 	tuple_t normal_at(const tuple_t& point) const;
 
 };
