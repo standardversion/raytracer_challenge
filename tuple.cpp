@@ -88,7 +88,13 @@ void tuple_t::normalize()
 	y /= mag;
 	z /= mag;
 }
+//https://www.contemporarycalculus.com/dh/Calculus_all/CC11_7_VectorReflections.pdf
+tuple_t tuple_t::reflect(const tuple_t& normal) const
+{
+	return *this - normal * 2 * dot(*this, normal);
+}
 
+// OPERATORS
 bool tuple_t::operator==(const tuple_t& t) const
 {
 	const double x_comp{ std::fabs(this->x - t.x) };
@@ -102,8 +108,6 @@ bool tuple_t::operator==(const tuple_t& t) const
 	return false;
 }
 
-
-// OPERATORS
 tuple_t tuple_t::operator+(const tuple_t& t) const
 {
 	if (this->is_point() && t.is_point())

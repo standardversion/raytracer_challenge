@@ -122,6 +122,14 @@ struct tuple_t
 	 */
 	void normalize();
 
+	/**
+	 * @brief Computes the reflection vector given a surface normal.
+	 *
+	 * @param normal The normal vector at the point of reflection.
+	 * @return tuple_t The reflected vector, assuming this is the incoming vector.
+	 */
+	tuple_t reflect(const tuple_t& normal) const;
+
 
 	// OPERATORS
 	/**
