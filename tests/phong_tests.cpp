@@ -1,22 +1,22 @@
 ﻿#include <cmath>
 #include "gtest/gtest.h"
-#include "../material.h"
+#include "../phong.h"
 #include "../colour.h"
 #include "../tuple.h"
 #include "../light.h"
 
 /*
-Scenario: The default material
-  Given m ← material()
+Scenario: The default phong
+  Given m ← phong()
   Then m.color = color(1, 1, 1)
     And m.ambient = 0.1
     And m.diffuse = 0.9
     And m.specular = 0.9
     And m.shininess = 200.0
 */
-TEST(material, should_create_default_material)
+TEST(phong, should_create_default_material)
 {
-    const material_t m{};
+    const Phong m{};
     const colour_t c{ 1, 1, 1 };
     EXPECT_EQ(m.colour, c);
     EXPECT_EQ(m.ambient, 0.1);
@@ -33,9 +33,9 @@ Scenario: Lighting with the eye between the light and the surface
   When result ← m.lighting(light, position, eyev, normalv)
   Then result = color(1.9, 1.9, 1.9)
 */
-TEST(material, should_return_colur_when_the_eye_between_the_light_and_the_surface)
+TEST(phong, should_return_colur_when_the_eye_between_the_light_and_the_surface)
 {
-    const material_t m{};
+    const Phong m{};
     const tuple_t position{ tuple_t::point(0, 0, 0) };
     const tuple_t eye_vector{ tuple_t::vector(0, 0, -1) };
     const tuple_t normal_vector{ tuple_t::vector(0, 0, -1) };
@@ -53,9 +53,9 @@ Scenario: Lighting with the eye between light and surface, eye offset 45°
   When result ← m.lighting(light, position, eyev, normalv)
   Then result = color(1.0, 1.0, 1.0)
 */
-TEST(material, should_return_colur_when_the_eye_between_the_light_and_the_surface_eye_offset_45)
+TEST(phong, should_return_colur_when_the_eye_between_the_light_and_the_surface_eye_offset_45)
 {
-    const material_t m{};
+    const Phong m{};
     const tuple_t position{ tuple_t::point(0, 0, 0) };
     const tuple_t eye_vector{ tuple_t::vector(0, std::sqrt(2) / 2, -std::sqrt(2) / 2)};
     const tuple_t normal_vector{ tuple_t::vector(0, 0, -1) };
@@ -73,9 +73,9 @@ Scenario: Lighting with eye opposite surface, light offset 45°
   When result ← m.lighting(light, position, eyev, normalv)
   Then result = color(0.7364, 0.7364, 0.7364)
 */
-TEST(material, should_return_colur_when_the_eye_between_the_light_and_the_surface_light_offset_45)
+TEST(phong, should_return_colur_when_the_eye_between_the_light_and_the_surface_light_offset_45)
 {
-    const material_t m{};
+    const Phong m{};
     const tuple_t position{ tuple_t::point(0, 0, 0) };
     const tuple_t eye_vector{ tuple_t::vector(0, 0, -1) };
     const tuple_t normal_vector{ tuple_t::vector(0, 0, -1) };
@@ -93,9 +93,9 @@ Scenario: Lighting with eye in the path of the reflection vector
   When result ← m.lighting(light, position, eyev, normalv)
   Then result = color(1.6364, 1.6364, 1.6364)
 */
-TEST(material, should_return_colur_when_the_eye_in_the_path_of_reflection_vector)
+TEST(phong, should_return_colur_when_the_eye_in_the_path_of_reflection_vector)
 {
-    const material_t m{};
+    const Phong m{};
     const tuple_t position{ tuple_t::point(0, 0, 0) };
     const tuple_t eye_vector{ tuple_t::vector(0, -std::sqrt(2) / 2, -std::sqrt(2) / 2) };
     const tuple_t normal_vector{ tuple_t::vector(0, 0, -1) };
@@ -114,9 +114,9 @@ Scenario: Lighting with the light behind the surface
   When result ← lighting(m, light, position, eyev, normalv)
   Then result = color(0.1, 0.1, 0.1)
 */
-TEST(material, should_return_colur_when_the_eye_behind_the_surface)
+TEST(phong, should_return_colur_when_the_eye_behind_the_surface)
 {
-    const material_t m{};
+    const Phong m{};
     const tuple_t position{ tuple_t::point(0, 0, 0) };
     const tuple_t eye_vector{ tuple_t::vector(0, 0, -1) };
     const tuple_t normal_vector{ tuple_t::vector(0, 0, -1) };

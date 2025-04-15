@@ -20,7 +20,7 @@ public:
      *
      * Determines the surface properties (color, reflectivity, etc.).
      */
-    std::shared_ptr<material_t> material{ std::make_shared<material_t>() };
+    std::shared_ptr<Material> material;
 
     /**
      * @brief Calculates the normal vector at a given point in the object's local space.

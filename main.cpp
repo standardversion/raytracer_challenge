@@ -14,6 +14,7 @@
 #include "intersection.h"
 #include "material.h"
 #include "light.h"
+#include "phong.h"
 
 projectile_t update_projectile(const projectile_t& proj, const environment_t& env)
 {
@@ -109,7 +110,10 @@ void sphere_phong_exercise()
 	const double half_wall_size{ wall_size / 2 };
 	canvas_t canvas{ (int)canvas_pixels, (int)canvas_pixels };
 	auto sphere{ Sphere::create() };
-	sphere->material->colour = { 1, 0.2, 1 };
+	auto phong = std::dynamic_pointer_cast<Phong>(sphere->material);
+	if (phong) {
+		phong->colour = { 1, 0.2, 1 };
+	}
 	Light light{ colour_t{1, 1, 1} };
 	light.transform = matrix_t::translation(-10, 10, -10);
 	for (int y{ 0 }; y < canvas_pixels - 1; y++)

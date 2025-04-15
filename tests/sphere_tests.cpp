@@ -4,7 +4,7 @@
 #include "../intersection.h"
 #include "../matrix.h"
 #include "../settings.h"
-#include "../material.h"
+#include "../phong.h"
 
 /*
 Scenario: Creating and querying a sphere
@@ -330,7 +330,7 @@ Scenario: A sphere has a default material
 TEST(sphere, should_has_a_default_material)
 {
 	const auto s{ Sphere::create() };
-	std::shared_ptr<material_t> m = std::make_shared<material_t>();
+	std::shared_ptr<Phong> m = std::make_shared<Phong>();
 	EXPECT_EQ(*s->material, *m);
 }
 
@@ -345,7 +345,7 @@ Scenario: A sphere may be assigned a material
 TEST(sphere, should_be_able_to_assign_material)
 {
 	const auto s{ Sphere::create() };
-	std::shared_ptr<material_t> m{ std::make_shared<material_t>() };
+	std::shared_ptr<Phong> m{ std::make_shared<Phong>() };
 	m->ambient = 1;
 	s->material = m;
 	EXPECT_EQ(s->material.get(), m.get());

@@ -1,11 +1,12 @@
+#include <cmath>
 #include "sphere.h"
 #include "intersection.h"
-#include <cmath>
+#include "phong.h"
 
 Sphere::Sphere(const double r)
 	: Geometry{}, radius{ r }
 {
-
+	material = std::make_shared<Phong>();
 }
 
 std::shared_ptr<Sphere> Sphere::create(double radius)
