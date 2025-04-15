@@ -1,7 +1,6 @@
 #include <algorithm>
 #include "canvas.h"
 
-// CONSTRUCTOR
 canvas_t::canvas_t(const int w, const int h)
 	: width{ w }, height{ h }
 {
@@ -10,7 +9,6 @@ canvas_t::canvas_t(const int w, const int h)
 	std::fill(colour_buffer, colour_buffer + (width * height), black);
 }
 
-// MEMBER FUNCTIONS
 void canvas_t::write_pixel(const int x, const int y, const colour_t& colour)
 {
 	const int index{ (width * y) + x };

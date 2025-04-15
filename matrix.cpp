@@ -3,7 +3,6 @@
 #include "matrix.h"
 #include "settings.h"
 
-// CONSTRUCTORS
 matrix_t::matrix_t(const std::size_t r, const std::size_t c)
 {
 	if (r <= 0 || c <= 0)
@@ -54,8 +53,6 @@ matrix_t::matrix_t(const tuple_t& t)
 	data[2][0] = t.z;
 	data[3][0] = t.w;
 }
-
-// STATIC FUNCTIONS
 
 
 // | 1  0  0  0 |
@@ -171,7 +168,6 @@ matrix_t matrix_t::shearing(const double Xy, const double Xz, const double Yx, c
 	return s;
 }
 
-// MEMBER FUNCTIONS
 matrix_t matrix_t::transpose() const
 {
 	matrix_t r{ rows, columns };
@@ -284,7 +280,6 @@ matrix_t matrix_t::inverse() const
 	return inverse;
 }
 
-// OPERATORS
 double matrix_t::operator()(const std::size_t row, const std::size_t column) const
 {
 	if (row < 0 || row > rows || column < 0 || column > columns)

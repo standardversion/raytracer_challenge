@@ -39,7 +39,8 @@ TEST(material, should_return_colur_when_the_eye_between_the_light_and_the_surfac
     const tuple_t position{ tuple_t::point(0, 0, 0) };
     const tuple_t eye_vector{ tuple_t::vector(0, 0, -1) };
     const tuple_t normal_vector{ tuple_t::vector(0, 0, -1) };
-    const light_t light{ tuple_t::point(0, 0, -10), colour_t{1, 1, 1} };
+    Light light{ colour_t{1, 1, 1} };
+    light.transform = matrix_t::translation(0, 0, -10);
     const colour_t r{ 1.9, 1.9, 1.9 };
     EXPECT_EQ(m.lighting(light, position, eye_vector, normal_vector), r);
 }
@@ -58,7 +59,8 @@ TEST(material, should_return_colur_when_the_eye_between_the_light_and_the_surfac
     const tuple_t position{ tuple_t::point(0, 0, 0) };
     const tuple_t eye_vector{ tuple_t::vector(0, std::sqrt(2) / 2, -std::sqrt(2) / 2)};
     const tuple_t normal_vector{ tuple_t::vector(0, 0, -1) };
-    const light_t light{ tuple_t::point(0, 0, -10), colour_t{1, 1, 1} };
+    Light light{ colour_t{1, 1, 1} };
+    light.transform = matrix_t::translation(0, 0, -10);
     const colour_t r{ 1.0, 1.0, 1.0 };
     EXPECT_EQ(m.lighting(light, position, eye_vector, normal_vector), r);
 }
@@ -77,7 +79,8 @@ TEST(material, should_return_colur_when_the_eye_between_the_light_and_the_surfac
     const tuple_t position{ tuple_t::point(0, 0, 0) };
     const tuple_t eye_vector{ tuple_t::vector(0, 0, -1) };
     const tuple_t normal_vector{ tuple_t::vector(0, 0, -1) };
-    const light_t light{ tuple_t::point(0, 10, -10), colour_t{1, 1, 1} };
+    Light light{ colour_t{1, 1, 1} };
+    light.transform = matrix_t::translation(0, 10, -10);
     const colour_t r{ 0.7364, 0.7364, 0.7364 };
     EXPECT_EQ(m.lighting(light, position, eye_vector, normal_vector), r);
 }
@@ -96,7 +99,8 @@ TEST(material, should_return_colur_when_the_eye_in_the_path_of_reflection_vector
     const tuple_t position{ tuple_t::point(0, 0, 0) };
     const tuple_t eye_vector{ tuple_t::vector(0, -std::sqrt(2) / 2, -std::sqrt(2) / 2) };
     const tuple_t normal_vector{ tuple_t::vector(0, 0, -1) };
-    const light_t light{ tuple_t::point(0, 10, -10), colour_t{1, 1, 1} };
+    Light light{ colour_t{1, 1, 1} };
+    light.transform = matrix_t::translation(0, 10, -10);
     const colour_t expected{ 1.6364, 1.6364, 1.6364 };
     const colour_t r{ m.lighting(light, position, eye_vector, normal_vector) };
     EXPECT_EQ(r, expected);
@@ -116,7 +120,8 @@ TEST(material, should_return_colur_when_the_eye_behind_the_surface)
     const tuple_t position{ tuple_t::point(0, 0, 0) };
     const tuple_t eye_vector{ tuple_t::vector(0, 0, -1) };
     const tuple_t normal_vector{ tuple_t::vector(0, 0, -1) };
-    const light_t light{ tuple_t::point(0, 0, 10), colour_t{1, 1, 1} };
+    Light light{ colour_t{1, 1, 1} };
+    light.transform = matrix_t::translation(0, 0, 10);
     const colour_t r{ 0.1, 0.1, 0.1 };
     EXPECT_EQ(m.lighting(light, position, eye_vector, normal_vector), r);
 }

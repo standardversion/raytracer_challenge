@@ -2,13 +2,28 @@
 #include "tuple.h"
 #include "matrix.h"
 
+/**
+ * @brief Represents a ray in 3D space with an origin and direction.
+ *
+ * Rays are used to trace paths through the scene, test for intersections,
+ * and calculate lighting and shading in ray tracing.
+ */
 struct ray_t
 {
-	// MEMBER VARIABLES
+	/**
+	 * @brief The origin point of the ray.
+	 *
+	 * This is where the ray starts in world space.
+	 */
 	tuple_t origin{};
+
+	/**
+	 * @brief The direction vector of the ray.
+	 *
+	 * Should be a normalized vector indicating the direction the ray travels.
+	 */
 	tuple_t direction{};
 
-	// CONSTRUCTOR
 	/**
 	 * @brief Constructs a ray with a given origin and direction.
 	 *
@@ -20,7 +35,6 @@ struct ray_t
 	 */
 	ray_t(const tuple_t& o, const tuple_t& d);
 
-	// MEMBER FUNCTIONS
 	/**
 	 * @brief Computes a point along the ray at a given time.
 	 *
@@ -42,5 +56,4 @@ struct ray_t
 	 * This is useful for moving rays between coordinate spaces (e.g., world to object space).
 	 */
 	ray_t transform(const matrix_t& m) const;
-
 };

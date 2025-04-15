@@ -51,7 +51,7 @@
     <ClCompile Include="material_tests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="object_tests.cpp">
+    <ClCompile Include="scene_object_tests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

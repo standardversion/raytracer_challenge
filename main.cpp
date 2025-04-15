@@ -1,5 +1,6 @@
 #include <iostream>
 #include <algorithm>
+#include <memory>
 #include "projectile.h"
 #include "environment.h"
 #include "settings.h"
@@ -74,7 +75,7 @@ void sphere_shadow_exercise()
 	const double half_wall_size{ wall_size / 2 };
 	canvas_t canvas{ (int)canvas_pixels, (int)canvas_pixels };
 	const colour_t red{ 1, 0, 0 };
-	const Sphere sphere{};
+	const auto sphere{ Sphere::create() };
 	for (int y{ 0 }; y < canvas_pixels - 1; y++)
 	{
 		const double world_y{ half_wall_size - pixel_size * y };
@@ -86,7 +87,7 @@ void sphere_shadow_exercise()
 			direction.normalize();
 			const ray_t ray{ ray_origin, direction };
 			intersections_t intersections{};
-			sphere.intersect(ray, intersections);
+			sphere->intersect(ray, intersections);
 			const intersection_t intersection{ intersections.hit() };
 			if (intersection.object != nullptr)
 			{
@@ -107,9 +108,10 @@ void sphere_phong_exercise()
 	const double pixel_size{ wall_size / canvas_pixels };
 	const double half_wall_size{ wall_size / 2 };
 	canvas_t canvas{ (int)canvas_pixels, (int)canvas_pixels };
-	Sphere sphere{};
-	sphere.material.colour = { 1, 0.2, 1 };
-	const light_t light{ tuple_t::point(-10, 10, -10), colour_t{1, 1, 1} };
+	auto sphere{ Sphere::create() };
+	sphere->material->colour = { 1, 0.2, 1 };
+	Light light{ colour_t{1, 1, 1} };
+	light.transform = matrix_t::translation(-10, 10, -10);
 	for (int y{ 0 }; y < canvas_pixels - 1; y++)
 	{
 		const double world_y{ half_wall_size - pixel_size * y };
@@ -121,14 +123,14 @@ void sphere_phong_exercise()
 			direction.normalize();
 			ray_t ray{ ray_origin, direction };
 			intersections_t intersections{};
-			sphere.intersect(ray, intersections);
+			sphere->intersect(ray, intersections);
 			const intersection_t intersection{ intersections.hit() };
 			if (intersection.object != nullptr)
 			{
 				const tuple_t point_on_sphere{ ray.position(intersection.time) };
 				const tuple_t normal{ intersection.object->normal_at(point_on_sphere) };
 				const tuple_t eye{ -ray.direction };
-				const colour_t pixel_colour{ intersection.object->material.lighting(light, point_on_sphere, eye, normal) };
+				const colour_t pixel_colour{ intersection.object->material->lighting(light, point_on_sphere, eye, normal) };
 				canvas.write_pixel(x, y, pixel_colour);
 			}
 		}

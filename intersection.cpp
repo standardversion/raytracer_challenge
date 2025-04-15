@@ -1,17 +1,11 @@
 #include "intersection.h"
 #include <algorithm>
 
-// intersection_t
-// OPERATORS
 
 bool intersection_t::operator==(const intersection_t& i) const
 {
 	return this->time == i.time && this->object == i.object;
 }
-
-
-// intersections_t
-// OPERATORS
 
 intersection_t intersections_t::operator[](const std::size_t i) const
 {
@@ -21,10 +15,10 @@ intersection_t intersections_t::operator[](const std::size_t i) const
 	}
 }
 
-// MEMBER FUNCTIONS
-void intersections_t::add(const double time, const Object* sph)
+
+void intersections_t::add(const double time, std::shared_ptr<const Geometry> geo)
 {
-	intersection_t intersection{ time, sph };
+	intersection_t intersection{ time, geo };
 	entries.push_back(intersection);
 }
 

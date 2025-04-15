@@ -1,17 +1,32 @@
 #pragma once
+#include <memory>
 #include <vector>
 
-//forward declaratio to avoid circular dep
-class Object;
+class Geometry;
 
+/**
+ * @brief Represents a single intersection between a ray and a geometric object.
+ *
+ * Used in ray tracing to record where and when a ray intersects with a shape in the scene.
+ */
 struct intersection_t
 {
-	// MEMBER VARIABLES
 
+	/**
+	 * @brief The time parameter (t-value) along the ray where the intersection occurs.
+	 *
+	 * A lower value indicates a closer intersection. Negative values may represent
+	 * intersections behind the ray origin.
+	 */
 	double time{};
-	const Object* object{ nullptr };
 
-	// OPERATORS
+	/**
+	 * @brief A pointer to the geometry object that was intersected.
+	 *
+	 * This is a shared pointer to a constant `Geometry` instance.
+	 * It should never be null in a valid intersection.
+	 */
+	std::shared_ptr<const Geometry> object{ nullptr };
 
 	/**
 	 * @brief Compares this intersection object with another for equality.
@@ -27,11 +42,9 @@ struct intersection_t
 
 struct intersections_t
 {
-	// MEMBER VARIABLES
 
 	std::vector<intersection_t> entries{};
 
-	// MEMBER FUNCTIONS
 	/**
 	 * @brief Adds a single intersection to the collection.
 	 *
@@ -41,7 +54,7 @@ struct intersections_t
 	 * Stores the intersection data (typically time and object pointer)
 	 * for later processing, such as determining the closest visible hit.
 	 */
-	void add(const double time, const Object* sph);
+	void add(const double time, std::shared_ptr<const Geometry> sph);
 
 	/**
 	 * @brief Adds one or more intersections to the collection.
@@ -64,8 +77,6 @@ struct intersections_t
 	 * or null intersection if no valid hit exists.
 	 */
 	intersection_t hit();
-
-	// OPERATORS
 
 	/**
 	 * @brief Accesses an intersection at a specific index.

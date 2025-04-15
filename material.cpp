@@ -2,8 +2,6 @@
 #include "material.h"
 #include "settings.h"
 
-// CONSTRUCTOR
-
 material_t::material_t(const colour_t c, const double a, const double d, const double spec, const double shine)
 	: colour{ c }, ambient{ a }, diffuse{ d }, specular{ spec }, shininess{ shine }
 {
@@ -25,14 +23,12 @@ material_t::material_t(const colour_t c, const double a, const double d, const d
 	}
 }
 
-// MEMBER FUNCTIONS
-
-colour_t material_t::lighting(const light_t& light, const tuple_t& position, const tuple_t& eye_vector, const tuple_t& normal_vector) const
+colour_t material_t::lighting(const Light& light, const tuple_t& position, const tuple_t& eye_vector, const tuple_t& normal_vector) const
 {
 	// combine the surface color with the light's color/intensity
 	colour_t effective_colour{ colour * light.intensity };
 	// find the direction to the light source
-	tuple_t light_vector{ light.position - position };
+	tuple_t light_vector{ light.position() - position};
 	light_vector.normalize();
 	// compute the ambient contribution
 	const colour_t ambient_colour{ effective_colour * ambient };
@@ -69,8 +65,6 @@ colour_t material_t::lighting(const light_t& light, const tuple_t& position, con
 	// Add the three contributions together to get the final shading
 	return ambient_colour + diffuse_colour + specular_colour;
 }
-
-// OPERATORS
 
 bool material_t::operator==(const material_t& m) const
 {

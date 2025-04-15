@@ -2,15 +2,17 @@
 #include "intersection.h"
 #include <cmath>
 
-// CONSTRUCTOR
-
 Sphere::Sphere(const double r)
-	: Object{}, radius{ r }
+	: Geometry{}, radius{ r }
 {
 
 }
 
-// MEMBER FUNCTIONS
+std::shared_ptr<Sphere> Sphere::create(double radius)
+{
+	return std::shared_ptr<Sphere>(new Sphere(radius));
+}
+
 
 void Sphere::intersect(const ray_t& ray, intersections_t& intersections) const
 {
@@ -32,8 +34,8 @@ void Sphere::intersect(const ray_t& ray, intersections_t& intersections) const
 		{
 			std::swap(t0, t1);
 		}
-		intersections.add(t0, this);
-		intersections.add(t1, this);
+		intersections.add(t0, shared_from_this());
+		intersections.add(t1, shared_from_this());
 	}
 }
 

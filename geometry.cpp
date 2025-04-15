@@ -1,12 +1,12 @@
-#include "object.h"
+#include "geometry.h"
 
-Object::Object()
-	: id{ obj_id_counter++ }
+Geometry::Geometry()
+    : SceneObject{}
 {
-	transform = matrix_t::identity();
+	renderable = true;
 }
 
-tuple_t Object::normal_at(const tuple_t& world_point) const {
+tuple_t Geometry::normal_at(const tuple_t& world_point) const {
     tuple_t local_point = transform.inverse() * world_point;
     tuple_t local_normal = local_normal_at(local_point);
     tuple_t world_normal = transform.inverse().transpose() * local_normal;

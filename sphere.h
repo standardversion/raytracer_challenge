@@ -3,32 +3,38 @@
 #include "matrix.h"
 #include "tuple.h"
 #include "material.h"
-#include "object.h"
+#include "geometry.h"
 
-//forward declaratio to avoid circular dep
-struct intersection_t;
 struct intersections_t;
 
-static int sph_id_counter{ 1 };
-class Sphere : public Object
+/**
+ * @brief Represents a 3D sphere shape that can be intersected by rays.
+ *
+ * Inherits from Geometry and implements sphere-specific logic such as
+ * normal calculation and intersection detection. Also supports shared ownership
+ * through std::enable_shared_from_this to safely return shared pointers to itself.
+ */
+class Sphere : public Geometry, public std::enable_shared_from_this<Sphere>
 {
-	// MEMBER VARIABLES
 public:
+	/**
+	 * @brief The radius of the sphere.
+	 *
+	 * Defaults to 1.0, representing a unit sphere centered at the origin.
+	 */
 	double radius{ 1.0 };
 
-	// CONSTRUCTOR
 	/**
-	 * @brief Constructs a sphere with a specified radius.
+	 * @brief Creates a new shared pointer to a Sphere instance.
 	 *
-	 * @param r The radius of the sphere. Defaults to 1.0 if not specified.
+	 * Ensures proper usage of `shared_from_this()` within the class. All spheres
+	 * should be created through this method to avoid ownership issues.
 	 *
-	 * Initializes a sphere centered at the origin with radius `r`. The sphere may
-	 * later be transformed or associated with material properties, depending on
-	 * your implementation.
+	 * @param radius The radius of the sphere (default is 1.0).
+	 * @return std::shared_ptr<Sphere> A shared pointer to the created Sphere.
 	 */
-	Sphere(const double r = 1.0);
+	static std::shared_ptr<Sphere> create(double radius = 1.0);
 
-	// MEMBER FUNCTIONS
 	/**
 	 * @brief Computes intersections between the sphere and a given ray.
 	 *
@@ -42,7 +48,27 @@ public:
 	 */
 	void intersect(const ray_t& ray, intersections_t& intersections) const override;
 
-
+	/**
+	* @brief Calculates the normal vector at a given point on the sphere in local space.
+	*
+	* For a perfect sphere centered at the origin, the normal at a point is simply the vector
+	* from the origin to that point, normalized.
+	*
+	* @param local_point A point on the sphere in object-local coordinates.
+	* @return tuple_t The normal vector at the point.
+	*/
 	tuple_t local_normal_at(const tuple_t& local_point) const override;
+private:
+
+	/**
+	 * @brief Constructs a sphere with a specified radius.
+	 *
+	 * @param r The radius of the sphere. Defaults to 1.0 if not specified.
+	 *
+	 * Initializes a sphere centered at the origin with radius `r`. The sphere may
+	 * later be transformed or associated with material properties, depending on
+	 * your implementation.
+	 */
+	Sphere(const double r = 1.0);
 
 };

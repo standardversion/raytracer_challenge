@@ -1,24 +1,14 @@
 ﻿#include "gtest/gtest.h"
-#include "../object.h"
+#include "../scene_object.h"
 #include "../tuple.h"
 
 // Test helper class since Object consturctor is protected
-class TestObject : public Object
+class TestObject : public SceneObject
 {
 public:
 	TestObject()
-		: Object{}
+		: SceneObject{}
 	{}
-	tuple_t local_normal_at(const tuple_t& local_point) const override
-	{
-		// dummy implementation just for testing
-		return tuple_t::vector(0, 0, 1);
-	}
-
-	void intersect(const ray_t& ray, intersections_t& intersections) const override
-	{
-
-	}
 
 };
 
