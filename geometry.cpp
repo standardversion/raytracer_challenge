@@ -1,9 +1,11 @@
 #include "geometry.h"
+#include "phong.h"
 
 Geometry::Geometry()
     : SceneObject{}
 {
 	renderable = true;
+    material = std::make_shared<Phong>();
 }
 
 tuple_t Geometry::normal_at(const tuple_t& world_point) const {

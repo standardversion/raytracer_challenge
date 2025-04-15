@@ -34,4 +34,6 @@ public:
      * @return A tuple_t representing the world-space location of the light.
      */
     tuple_t position() const;
+
+    bool operator==(const Light& l) const;
 };

@@ -35,6 +35,8 @@ public:
      */
     bool renderable{ false };
 
+    virtual ~SceneObject() = default; // make polymorphic so can use dynamic_cast
+
 protected:
     /**
      * @brief Protected constructor to enforce inheritance.

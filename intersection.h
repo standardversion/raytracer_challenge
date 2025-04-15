@@ -1,6 +1,8 @@
 #pragma once
 #include <memory>
 #include <vector>
+#include <algorithm>
+#include "intersection_state.h"
 
 class Geometry;
 
@@ -23,10 +25,10 @@ struct intersection_t
 	/**
 	 * @brief A pointer to the geometry object that was intersected.
 	 *
-	 * This is a shared pointer to a constant `Geometry` instance.
+	 * This is a unique pointer to a constant `Geometry` instance.
 	 * It should never be null in a valid intersection.
 	 */
-	std::shared_ptr<const Geometry> object{ nullptr };
+	const Geometry* object{ nullptr };
 
 	/**
 	 * @brief Compares this intersection object with another for equality.
@@ -38,6 +40,8 @@ struct intersection_t
 	 * object have the same state (e.g., identical properties like position, normal, t-value, etc.).
 	 */
 	bool operator==(const intersection_t& i) const;
+
+	intersection_state prepare(const ray_t& r) const;
 };
 
 struct intersections_t
@@ -54,7 +58,7 @@ struct intersections_t
 	 * Stores the intersection data (typically time and object pointer)
 	 * for later processing, such as determining the closest visible hit.
 	 */
-	void add(const double time, std::shared_ptr<const Geometry> sph);
+	void add(const double time, const Geometry* sph);
 
 	/**
 	 * @brief Adds one or more intersections to the collection.
@@ -68,6 +72,8 @@ struct intersections_t
 	 */
 	template<typename... Args>
 	void add(const intersection_t& i1, Args... args);
+
+	void sort();
 
 	/**
 	 * @brief Finds the closest valid intersection (i.e., the "hit").
@@ -103,4 +109,5 @@ void intersections_t::add(const intersection_t& i1, Args... args)
 	if constexpr (sizeof...(args) > 0) {  // Check if there are more arguments
 		add(args...);  // Recursively call add for the rest of the arguments
 	}
+	sort();
 }

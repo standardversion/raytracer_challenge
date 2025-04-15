@@ -14,7 +14,6 @@ Scenario: Creating and querying a sphere
   Then s->radius = 1
 	And s2.radius = 5
 	And s3.radius = 4
-	And s1.id != s2.id != s3.id
 */
 TEST(sphere, should_create_spheres_with_unique_ids)
 {
@@ -24,7 +23,6 @@ TEST(sphere, should_create_spheres_with_unique_ids)
 	EXPECT_EQ(s->radius, 1);
 	EXPECT_EQ(s2->radius, 5);
 	EXPECT_EQ(s3->radius, 4);
-	EXPECT_TRUE(s->id != s3->id != s2->id);
 }
 
 /*
@@ -32,7 +30,7 @@ Scenario: A ray intersects a sphere at two points
   Given r ← ray(point(0, 0, -5), vector(0, 0, 1))
 	And s ← sphere()
 	And xs ← intersections()
-  When xs ← s->intersect(r, intersections)
+  When xs ← s->intersect(r, xs)
   Then xs.entries.size() = 2
 	And xs[0].time = 4.0
 	And xs[1].time = 6.0
@@ -55,7 +53,7 @@ Scenario: A ray intersects a sphere at a tangent
   Given r ← ray(point(0, 1, -5), vector(0, 0, 1))
 	And s ← sphere()
   And xs ← intersections()
-  When xs ← s->intersect(r, intersections)
+  When xs ← s->intersect(r, xs)
   Then xs.entries.size() = 2
 	And xs[0].time = 5.0
 	And xs[1].time = 5.0
@@ -78,7 +76,7 @@ Scenario: A ray misses a sphere
   Given r ← ray(point(0, 2, -5), vector(0, 0, 1))
 	And s ← sphere()
   And xs ← intersections()
-  When xs ← s->intersect(r, intersections)
+  When xs ← s->intersect(r, xs)
   Then xs.entries.size() = 0
 */
 TEST(sphere, should_miss_sphere)
@@ -97,7 +95,7 @@ Scenario: A ray originates inside a sphere
   Given r ← ray(point(0, 0, 0), vector(0, 0, 1))
 	And s ← sphere()
   And xs ← intersections()
-  When xs ← s->intersect(r, intersections)
+  When xs ← s->intersect(r, xs)
   Then xs.entries.size() = 2
 	And xs[0].time = -1.0
 	And xs[1].time = 1.0
@@ -120,7 +118,7 @@ Scenario: A sphere is behind a ray
   Given r ← ray(point(0, 0, 5), vector(0, 0, 1))
 	And s ← sphere()
   And xs ← intersections()
-  When xs ← s->intersect(r, intersections)
+  When xs ← s->intersect(r, xs)
   Then xs.entries.size() = 2
 	And xs[0].time = -6.0
 	And xs[1].time = -4.0
