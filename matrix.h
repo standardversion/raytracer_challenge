@@ -143,7 +143,20 @@ struct matrix_t
 	 */
 	static matrix_t shearing(const double Xy, const double Xz, const double Yx, const double Yz, const double Zx, const double Zy);
 
+	/**
+	 * @brief Computes a view transformation matrix from world space to camera space.
+	 *
+	 * @param from The point in world space where the camera is located (the eye or observer position).
+	 * @param to The point in world space the camera is looking at (the target).
+	 * @param up The up direction vector, indicating which way is "up" for the camera.
+	 * @return A transformation matrix that converts world coordinates into the camera's view space.
+	 *
+	 * This function builds a view transformation (also known as a "look-at" matrix)
+	 * by computing the orientation of the camera based on the `from`, `to`, and `up` vectors.
+	 * It is typically used to position and orient a camera within a 3D scene.
+	 */
 	static matrix_t view_transform(const tuple_t& from, const tuple_t& to, const tuple_t& up);
+
 
 	/**
 	 * @brief Returns the transpose of the matrix.

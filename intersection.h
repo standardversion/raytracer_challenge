@@ -7,13 +7,14 @@
 class Geometry;
 
 /**
- * @brief Represents a single intersection between a ray and a geometric object.
+ * @struct intersection_t
+ * @brief Represents the result of a ray intersecting a geometric object.
  *
- * Used in ray tracing to record where and when a ray intersects with a shape in the scene.
+ * Stores information about where along the ray the intersection occurs,
+ * and which object was intersected. Used for hit testing and shading calculations.
  */
 struct intersection_t
 {
-
 	/**
 	 * @brief The time parameter (t-value) along the ray where the intersection occurs.
 	 *
@@ -41,19 +42,41 @@ struct intersection_t
 	 */
 	bool operator==(const intersection_t& i) const;
 
+	/**
+	 * @brief Prepares detailed information about the intersection for shading.
+	 *
+	 * Calculates and returns an `intersection_state` object, which includes
+	 * useful data such as the hit point, surface normal, eye vector, reflection vector,
+	 * and whether the hit occurs inside or outside the object.
+	 *
+	 * @param r The ray that caused the intersection.
+	 * @return An `intersection_state` structure with precomputed shading information.
+	 */
 	intersection_state prepare(const ray_t& r) const;
 };
 
+/**
+ * @struct intersections_t
+ * @brief Represents a collection of intersections between a ray and one or more objects.
+ *
+ * Used to store, manage, and process multiple intersection events (e.g., from a ray
+ * intersecting several objects in a scene). Provides utilities to sort, query, and
+ * determine the closest visible hit.
+ */
 struct intersections_t
 {
-
+	/**
+	 * @brief A list of all intersection records.
+	 *
+	 * Each entry contains a `time` (t-value) and a pointer to the intersected object.
+	 */
 	std::vector<intersection_t> entries{};
 
 	/**
 	 * @brief Adds a single intersection to the collection.
 	 *
 	 * @param time The time or distance at which the intersection occurs.
-	 * @param sph A pointer to the sphere involved in the intersection.
+	 * @param sph A pointer to the geometry involved in the intersection.
 	 *
 	 * Stores the intersection data (typically time and object pointer)
 	 * for later processing, such as determining the closest visible hit.
@@ -73,6 +96,12 @@ struct intersections_t
 	template<typename... Args>
 	void add(const intersection_t& i1, Args... args);
 
+	/**
+	 * @brief Sorts all stored intersections in ascending order by time (t-value).
+	 *
+	 * Typically used before determining the closest visible hit.
+	 * After sorting, earlier intersections (i.e., closer to the ray origin) come first.
+	 */
 	void sort();
 
 	/**
@@ -94,8 +123,8 @@ struct intersections_t
 	 * Throws or asserts if index is out of bounds (depending on implementation).
 	 */
 	intersection_t operator[](const std::size_t i) const;
-
 };
+
 
 /*
 The add function is defined entirely in the header file.

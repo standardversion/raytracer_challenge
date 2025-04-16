@@ -35,5 +35,15 @@ public:
      */
     tuple_t position() const;
 
+    /**
+     * @brief Compares this light source with another for equality.
+     *
+     * @param l The other Light instance to compare against.
+     * @return true if both lights have the same position, intensity, and other relevant properties; false otherwise.
+     *
+     * This operator checks whether two Light objects are equivalent in terms of their
+     * physical and visual characteristics (e.g., same color, position, brightness).
+     * Useful for testing, deduplication, or scene comparison.
+     */
     bool operator==(const Light& l) const;
 };
