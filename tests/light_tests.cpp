@@ -15,7 +15,7 @@ TEST(light, sholud_create_light_with_intensity_and_position)
 {
     const colour_t intensity{ 1, 1, 1 };
     const tuple_t position{ tuple_t::point(0, 0, 0) };
-    const light_t point_light{ position, intensity };
-    EXPECT_EQ(point_light.position, position);
+    Light point_light{ intensity };
+    EXPECT_EQ(point_light.position(), position);
     EXPECT_EQ(point_light.intensity, intensity);
 }

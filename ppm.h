@@ -2,12 +2,23 @@
 #include <string>
 #include "canvas.h"
 
+/**
+ * @brief Represents an image encoded in the PPM (Portable Pixmap) format.
+ *
+ * The PPM format is a simple, human-readable image file format often used
+ * in ray tracing projects for debugging or output. This struct stores the
+ * PPM-formatted string data ready to be written to a file.
+ */
 struct ppm_t
 {
-	// MEMBER VARIABLES
+	/**
+	 * @brief The PPM image data as a string.
+	 *
+	 * Contains the full contents of the image in PPM format, including the header
+	 * and pixel values. Can be written directly to a `.ppm` file.
+	 */
 	std::string data{};
 
-	// CONSTRUCTORS
 	/**
 	 * @brief Constructs a `ppm_t` object from a given canvas and optional maximum
 	 *        line length for the PPM file output.

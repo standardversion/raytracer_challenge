@@ -1,17 +1,31 @@
 #include "intersection.h"
 #include <algorithm>
 
-// intersection_t
-// OPERATORS
 
 bool intersection_t::operator==(const intersection_t& i) const
 {
 	return this->time == i.time && this->object == i.object;
 }
 
-
-// intersections_t
-// OPERATORS
+intersection_state intersection_t::prepare(const ray_t& r) const
+{
+	intersection_state state{};
+	state.time = time;
+	state.object = object;
+	state.point = r.position(time);
+	state.eye_vector = -r.direction;
+	state.normal = object->normal_at(state.point);
+	if (tuple_t::dot(state.eye_vector, state.normal) < 0)
+	{
+		state.inside = true;
+		state.normal = -state.normal;
+	}
+	else
+	{
+		state.inside = false;
+	}
+	return state;
+}
 
 intersection_t intersections_t::operator[](const std::size_t i) const
 {
@@ -21,18 +35,23 @@ intersection_t intersections_t::operator[](const std::size_t i) const
 	}
 }
 
-// MEMBER FUNCTIONS
-void intersections_t::add(const double time, const sphere_t* sph)
+
+void intersections_t::add(const double time, const Geometry* geo)
 {
-	intersection_t intersection{ time, sph };
+	intersection_t intersection{ time, geo };
 	entries.push_back(intersection);
+	sort();
 }
 
-intersection_t intersections_t::hit()
+void intersections_t::sort()
 {
 	std::sort(entries.begin(), entries.end(), [](const intersection_t& a, const intersection_t& b) {
 		return a.time < b.time;
 	});
+}
+
+intersection_t intersections_t::hit()
+{
 	intersection_t intersection;
 	for (const auto& i : entries)
 	{

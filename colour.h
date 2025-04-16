@@ -1,15 +1,35 @@
 #pragma once
 #include <string>
 
+/**
+ * @brief Represents an RGBA colour with components in the range [0.0, 1.0].
+ *
+ * Used for defining surface colours, light intensities, and pixel values.
+ */
 struct colour_t
 {
-	// MEMBER VARIABLES
+	/**
+	 * @brief Red channel intensity (0.0 to 1.0).
+	 */
 	double red;
+
+	/**
+	 * @brief Green channel intensity (0.0 to 1.0).
+	 */
 	double green;
+
+	/**
+	 * @brief Blue channel intensity (0.0 to 1.0).
+	 */
 	double blue;
+
+	/**
+	 * @brief Alpha (transparency) channel (0.0 = fully transparent, 1.0 = fully opaque).
+	 *
+	 * Default is 1.0 (fully opaque).
+	 */
 	double alpha{ 1.0 };
 
-	// CONSTRUCTORS
 	/**
 	 * @brief Default constructor for the `colour_t` class.
 	 *
@@ -37,7 +57,14 @@ struct colour_t
 	 */
 	colour_t(double r, double g, double b, double a = 1.0);
 
-	// MEMBER FUNCTIONS
+	/**
+	 * @brief Converts the colour to a string with RGB components scaled to [0, 255].
+	 *
+	 * Useful for exporting colour values to image formats like PPM.
+	 * The alpha channel is ignored in this conversion.
+	 *
+	 * @return A string representation in the form "r g b", where r, g, b are integers [0, 255].
+	 */
 	std::string to_rgb_255() const;
 
 	// OPERATORS
@@ -63,6 +90,8 @@ struct colour_t
 	 * @return A new colour representing the result of the addition.
 	 */
 	colour_t operator+(const colour_t& c) const;
+
+	colour_t& operator+=(const colour_t& c);
 
 	/**
 	 * @brief Subtracts one colour from another component-wise.

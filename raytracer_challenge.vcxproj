@@ -118,7 +118,7 @@
       <AdditionalOptions>/w44365 %(AdditionalOptions)</AdditionalOptions>
       <TreatWarningAsError>false</TreatWarningAsError>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -158,33 +158,44 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="camera.h" />
     <ClInclude Include="canvas.h" />
     <ClInclude Include="colour.h" />
     <ClInclude Include="environment.h" />
     <ClInclude Include="intersection.h" />
+    <ClInclude Include="intersection_state.h" />
     <ClInclude Include="light.h" />
     <ClInclude Include="material.h" />
     <ClInclude Include="matrix.h" />
+    <ClInclude Include="geometry.h" />
+    <ClInclude Include="phong.h" />
     <ClInclude Include="ppm.h" />
     <ClInclude Include="projectile.h" />
     <ClInclude Include="ray.h" />
+    <ClInclude Include="scene_object.h" />
     <ClInclude Include="settings.h" />
     <ClInclude Include="sphere.h" />
     <ClInclude Include="tuple.h" />
     <ClInclude Include="utils.h" />
+    <ClInclude Include="world.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="camera.cpp" />
     <ClCompile Include="canvas.cpp" />
     <ClCompile Include="colour.cpp" />
     <ClCompile Include="intersection.cpp" />
+    <ClCompile Include="light.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="material.cpp" />
     <ClCompile Include="matrix.cpp" />
+    <ClCompile Include="geometry.cpp" />
+    <ClCompile Include="phong.cpp" />
     <ClCompile Include="ppm.cpp" />
     <ClCompile Include="ray.cpp" />
+    <ClCompile Include="scene_object.cpp" />
     <ClCompile Include="sphere.cpp" />
     <ClCompile Include="tuple.cpp" />
     <ClCompile Include="utils.cpp" />
+    <ClCompile Include="world.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

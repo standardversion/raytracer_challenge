@@ -3,7 +3,6 @@
 #include "tuple.h"
 #include "settings.h"
 
-// STATIC FUNCTIONS
 tuple_t tuple_t::point(const double x, const double y, const double z)
 {
 	return { x, y, z, 1.0 };
@@ -56,8 +55,6 @@ tuple_t tuple_t::cross(const tuple_t& a, const tuple_t& b)
 	);
 }
 
-
-// MEMBER FUNCTIONS
 bool tuple_t::is_point() const
 {
 	return w == 1.0 ? true : false;

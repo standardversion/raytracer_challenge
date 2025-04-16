@@ -1,38 +1,13 @@
 #include <cmath>
-#include "material.h"
+#include "phong.h"
 #include "settings.h"
 
-// CONSTRUCTOR
-
-material_t::material_t(const colour_t c, const double a, const double d, const double spec, const double shine)
-	: colour{ c }, ambient{ a }, diffuse{ d }, specular{ spec }, shininess{ shine }
-{
-	if (ambient < 0.0)
-	{
-		ambient = 0.0;
-	}
-	if (diffuse < 0.0)
-	{
-		diffuse = 0.0;
-	}
-	if (specular < 0.0)
-	{
-		specular = 0.0;
-	}
-	if (shininess < 0.0)
-	{
-		shininess = 0.0;
-	}
-}
-
-// MEMBER FUNCTIONS
-
-colour_t material_t::lighting(const light_t& light, const tuple_t& position, const tuple_t& eye_vector, const tuple_t& normal_vector) const
+colour_t Phong::lighting(const Light& light, const tuple_t& position, const tuple_t& eye_vector, const tuple_t& normal_vector) const
 {
 	// combine the surface color with the light's color/intensity
 	colour_t effective_colour{ colour * light.intensity };
 	// find the direction to the light source
-	tuple_t light_vector{ light.position - position };
+	tuple_t light_vector{ light.position() - position };
 	light_vector.normalize();
 	// compute the ambient contribution
 	const colour_t ambient_colour{ effective_colour * ambient };
@@ -70,18 +45,19 @@ colour_t material_t::lighting(const light_t& light, const tuple_t& position, con
 	return ambient_colour + diffuse_colour + specular_colour;
 }
 
-// OPERATORS
-
-bool material_t::operator==(const material_t& m) const
+bool Phong::operator==(const Material& m) const
 {
-	const double a_comp{ std::fabs(this->ambient - m.ambient) };
-	const double d_comp{ std::fabs(this->diffuse - m.diffuse) };
-	const double spec_comp{ std::fabs(this->specular - m.specular) };
-	const double shine_comp{ std::fabs(this->shininess - m.shininess) };
-	if (this->colour == m.colour && a_comp < EPSILON && d_comp < EPSILON && spec_comp < EPSILON && shine_comp < EPSILON)
+	// Try to cast to Phong
+	const Phong* other = dynamic_cast<const Phong*>(&m);
+	if (!other) return false; // Not the same type
+
+	const double a_comp{ std::fabs(this->ambient - other->ambient) };
+	const double d_comp{ std::fabs(this->diffuse - other->diffuse) };
+	const double spec_comp{ std::fabs(this->specular - other->specular) };
+	const double shine_comp{ std::fabs(this->shininess - other->shininess) };
+	if (this->colour == other->colour && a_comp < EPSILON && d_comp < EPSILON && spec_comp < EPSILON && shine_comp < EPSILON)
 	{
 		return true;
 	}
 	return false;
 }
-

@@ -1,14 +1,32 @@
 #pragma once
 #include "colour.h"
 
+/**
+ * @brief Represents a 2D drawing canvas.
+ *
+ * A canvas is a rectangular grid of pixels, where each pixel holds a colour value.
+ * It is typically used for rendering final images in a raytracer.
+ */
 struct canvas_t
 {
-	// MEMBER VARIABLES
+	/**
+	 * @brief The width of the canvas in pixels.
+	 */
 	int width;
+
+	/**
+	 * @brief The height of the canvas in pixels.
+	 */
 	int height;
+
+	/**
+	 * @brief Pointer to the colour buffer storing pixel data.
+	 *
+	 * This is a flat array of `colour_t` values with size `width * height`,
+	 * typically laid out in row-major order.
+	 */
 	colour_t* colour_buffer{ nullptr };
 
-	// CONSTRUCTOR
 	/**
 	 * @brief Constructs a canvas of the given width and height, and initializes
 	 *        all pixels to black.
@@ -22,7 +40,6 @@ struct canvas_t
 	 */
 	canvas_t(const int w, const int h);
 
-	// MEMBER FUNCTIONS
 	/**
 	 * @brief Writes a color value to a specific pixel on the canvas.
 	 *

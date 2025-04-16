@@ -974,3 +974,85 @@ TEST(matrix, should_apply_chained_transforms_in_reverse_order)
     const tuple_t r{ tuple_t::point(15, 0, 7) };
     EXPECT_EQ(transform * p, r);
 }
+
+/*
+Scenario: The transformation matrix for the default orientation
+  Given from ← point(0, 0, 0)
+    And to ← point(0, 0, -1)
+    And up ← vector(0, 1, 0)
+  When t ← view_transform(from, to, up)
+  Then t = identity_matrix
+*/
+TEST(matrix, should_return_matrix_for_default_orientation)
+{
+    const tuple_t from{ tuple_t::point(0, 0, 0) };
+    const tuple_t to{ tuple_t::point(0, 0, -1) };
+    const tuple_t up{ tuple_t::vector(0, 1, 0) };
+    const matrix_t t{ matrix_t::view_transform(from, to, up) };
+    const matrix_t r{ matrix_t::identity() };
+    EXPECT_EQ(t, r);
+}
+
+/*
+Scenario: A view transformation matrix looking in positive z direction
+  Given from ← point(0, 0, 0)
+    And to ← point(0, 0, 1)
+    And up ← vector(0, 1, 0)
+  When t ← view_transform(from, to, up)
+  Then t = scaling(-1, 1, -1)
+*/
+TEST(matrix, should_return_matrix_for_looking_in_positive_z_direction)
+{
+    const tuple_t from{ tuple_t::point(0, 0, 0) };
+    const tuple_t to{ tuple_t::point(0, 0, 1) };
+    const tuple_t up{ tuple_t::vector(0, 1, 0) };
+    const matrix_t t{ matrix_t::view_transform(from, to, up) };
+    const matrix_t r{ matrix_t::scaling(-1, 1, -1) };
+    EXPECT_EQ(t, r);
+}
+
+/*
+Scenario: The view transformation moves the world
+  Given from ← point(0, 0, 8)
+    And to ← point(0, 0, 0)
+    And up ← vector(0, 1, 0)
+  When t ← view_transform(from, to, up)
+  Then t = translation(0, 0, -8)
+*/
+TEST(matrix, should_return_matrix_which_moves_the_world)
+{
+    const tuple_t from{ tuple_t::point(0, 0, 8) };
+    const tuple_t to{ tuple_t::point(0, 0, 0) };
+    const tuple_t up{ tuple_t::vector(0, 1, 0) };
+    const matrix_t t{ matrix_t::view_transform(from, to, up) };
+    const matrix_t r{ matrix_t::translation(0, 0, -8) };
+    EXPECT_EQ(t, r);
+}
+
+/*
+Scenario: An arbitrary view transformation
+  Given from ← point(1, 3, 2)
+    And to ← point(4, -2, 8)
+    And up ← vector(1, 1, 0)
+  When t ← view_transform(from, to, up)
+  Then t is the following 4x4 matrix:
+      | -0.50709 | 0.50709 |  0.67612 | -2.36643 |
+      |  0.76772 | 0.60609 |  0.12122 | -2.82843 |
+      | -0.35857 | 0.59761 | -0.71714 |  0.00000 |
+      |  0.00000 | 0.00000 |  0.00000 |  1.00000 |
+*/
+TEST(matrix, should_return_matrix_which_represents_arbitrary_view_transformation)
+{
+    const tuple_t from{ tuple_t::point(1, 3, 2) };
+    const tuple_t to{ tuple_t::point(4, -2, 8) };
+    const tuple_t up{ tuple_t::vector(1, 1, 0) };
+    const matrix_t t{ matrix_t::view_transform(from, to, up) };
+    const std::vector<std::vector<double>> vecs{
+        { -0.50709, 0.50709, 0.67612, -2.36643 },
+        { 0.76772, 0.60609, 0.12122, -2.82843 },
+        { -0.35857, 0.59761, -0.71714, 0.00000 },
+        { 0.00000, 0.00000, 0.00000, 1.00000 }
+    };
+    const matrix_t r{ vecs };
+    EXPECT_EQ(t, r);
+}

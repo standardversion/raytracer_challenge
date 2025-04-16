@@ -48,7 +48,16 @@
     <ClCompile Include="light_tests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="material_tests.cpp">
+    <ClCompile Include="phong_tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="scene_object_tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="world_tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="camera_tests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

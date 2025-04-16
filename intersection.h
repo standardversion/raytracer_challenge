@@ -1,17 +1,35 @@
 #pragma once
+#include <memory>
 #include <vector>
+#include <algorithm>
+#include "intersection_state.h"
 
-//forward declaratio to avoid circular dep
-struct sphere_t;
+class Geometry;
 
+/**
+ * @struct intersection_t
+ * @brief Represents the result of a ray intersecting a geometric object.
+ *
+ * Stores information about where along the ray the intersection occurs,
+ * and which object was intersected. Used for hit testing and shading calculations.
+ */
 struct intersection_t
 {
-	// MEMBER VARIABLES
-
+	/**
+	 * @brief The time parameter (t-value) along the ray where the intersection occurs.
+	 *
+	 * A lower value indicates a closer intersection. Negative values may represent
+	 * intersections behind the ray origin.
+	 */
 	double time{};
-	const sphere_t* object{ nullptr };
 
-	// OPERATORS
+	/**
+	 * @brief A pointer to the geometry object that was intersected.
+	 *
+	 * This is a unique pointer to a constant `Geometry` instance.
+	 * It should never be null in a valid intersection.
+	 */
+	const Geometry* object{ nullptr };
 
 	/**
 	 * @brief Compares this intersection object with another for equality.
@@ -23,25 +41,47 @@ struct intersection_t
 	 * object have the same state (e.g., identical properties like position, normal, t-value, etc.).
 	 */
 	bool operator==(const intersection_t& i) const;
+
+	/**
+	 * @brief Prepares detailed information about the intersection for shading.
+	 *
+	 * Calculates and returns an `intersection_state` object, which includes
+	 * useful data such as the hit point, surface normal, eye vector, reflection vector,
+	 * and whether the hit occurs inside or outside the object.
+	 *
+	 * @param r The ray that caused the intersection.
+	 * @return An `intersection_state` structure with precomputed shading information.
+	 */
+	intersection_state prepare(const ray_t& r) const;
 };
 
+/**
+ * @struct intersections_t
+ * @brief Represents a collection of intersections between a ray and one or more objects.
+ *
+ * Used to store, manage, and process multiple intersection events (e.g., from a ray
+ * intersecting several objects in a scene). Provides utilities to sort, query, and
+ * determine the closest visible hit.
+ */
 struct intersections_t
 {
-	// MEMBER VARIABLES
-
+	/**
+	 * @brief A list of all intersection records.
+	 *
+	 * Each entry contains a `time` (t-value) and a pointer to the intersected object.
+	 */
 	std::vector<intersection_t> entries{};
 
-	// MEMBER FUNCTIONS
 	/**
 	 * @brief Adds a single intersection to the collection.
 	 *
 	 * @param time The time or distance at which the intersection occurs.
-	 * @param sph A pointer to the sphere involved in the intersection.
+	 * @param sph A pointer to the geometry involved in the intersection.
 	 *
 	 * Stores the intersection data (typically time and object pointer)
 	 * for later processing, such as determining the closest visible hit.
 	 */
-	void add(const double time, const sphere_t* sph);
+	void add(const double time, const Geometry* sph);
 
 	/**
 	 * @brief Adds one or more intersections to the collection.
@@ -57,6 +97,14 @@ struct intersections_t
 	void add(const intersection_t& i1, Args... args);
 
 	/**
+	 * @brief Sorts all stored intersections in ascending order by time (t-value).
+	 *
+	 * Typically used before determining the closest visible hit.
+	 * After sorting, earlier intersections (i.e., closer to the ray origin) come first.
+	 */
+	void sort();
+
+	/**
 	 * @brief Finds the closest valid intersection (i.e., the "hit").
 	 *
 	 * @return The intersection_t representing the closest visible intersection
@@ -64,8 +112,6 @@ struct intersections_t
 	 * or null intersection if no valid hit exists.
 	 */
 	intersection_t hit();
-
-	// OPERATORS
 
 	/**
 	 * @brief Accesses an intersection at a specific index.
@@ -77,8 +123,8 @@ struct intersections_t
 	 * Throws or asserts if index is out of bounds (depending on implementation).
 	 */
 	intersection_t operator[](const std::size_t i) const;
-
 };
+
 
 /*
 The add function is defined entirely in the header file.
@@ -92,4 +138,5 @@ void intersections_t::add(const intersection_t& i1, Args... args)
 	if constexpr (sizeof...(args) > 0) {  // Check if there are more arguments
 		add(args...);  // Recursively call add for the rest of the arguments
 	}
+	sort();
 }

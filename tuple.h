@@ -1,17 +1,36 @@
 #pragma once
 
-
+/**
+ * @brief Represents a 4-component tuple used for points and vectors in 3D space.
+ *
+ * This structure uses homogeneous coordinates:
+ * - If `w == 1.0`, the tuple represents a **point**.
+ * - If `w == 0.0`, it represents a **vector**.
+ *
+ * Commonly used for geometry, ray tracing, and transformation math.
+ */
 struct tuple_t
 {
-	// MEMBER VARIABLES
+	/**
+	 * @brief The x-coordinate.
+	 */
 	double x;
+
+	/**
+	 * @brief The y-coordinate.
+	 */
 	double y;
+
+	/**
+	 * @brief The z-coordinate.
+	 */
 	double z;
+
+	/**
+	 * @brief The w-component (1.0 = point, 0.0 = vector).
+	 */
 	double w;
 
-	
-
-	// STATIC FUNCTIONS
 	/**
 	 * @brief Creates a point tuple with the given coordinates.
 	 *
@@ -81,9 +100,6 @@ struct tuple_t
 	 */
 	static tuple_t cross(const tuple_t& a, const tuple_t& b);
 
-
-
-	// MEMBER FUNCTIONS
 	/**
 	 * @brief Checks if the tuple represents a point.
 	 *
@@ -130,8 +146,6 @@ struct tuple_t
 	 */
 	tuple_t reflect(const tuple_t& normal) const;
 
-
-	// OPERATORS
 	/**
 	 * @brief Compares two tuples for equality.
 	 *

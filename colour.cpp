@@ -3,7 +3,6 @@
 #include "colour.h"
 #include "settings.h"
 
-// CONSTRUCTOR
 colour_t::colour_t(double r, double g, double b, double a)
 	: red{ r }, green{ g }, blue{ b }
 {
@@ -17,7 +16,6 @@ colour_t::colour_t(double r, double g, double b, double a)
 	}
 }
 
-// MEMBER FUNCTIONS
 std::string colour_t::to_rgb_255() const
 {
 	int r_255{ (int)std::round(red * 255) };
@@ -29,7 +27,6 @@ std::string colour_t::to_rgb_255() const
 	return std::to_string(r_255) + " " + std::to_string(g_255) + " " + std::to_string(b_255);
 }
 
-// OPERATORS
 bool colour_t::operator==(const colour_t& c) const
 {
 	const double red_comp{ std::fabs(this->red - c.red) };
@@ -51,6 +48,15 @@ colour_t colour_t::operator+(const colour_t& c) const
 		this->blue + c.blue,
 		this->alpha + c.alpha > 1.0 ? 1.0 : this->alpha + c.alpha
 	};
+}
+
+colour_t& colour_t::operator+=(const colour_t& c)
+{
+	this->red += c.red;
+	this->green += c.green;
+	this->blue += c.blue;
+	this->alpha = std::min(this->alpha + c.alpha, 1.0);
+	return *this;
 }
 
 colour_t colour_t::operator-(const colour_t& c) const

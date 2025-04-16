@@ -2,14 +2,31 @@
 #include <vector>
 #include "tuple.h"
 
+/**
+ * @brief Represents a 2D matrix of double-precision values.
+ *
+ * Used for performing linear algebra operations such as transformations,
+ * matrix multiplication, and inversion — commonly in graphics and ray tracing.
+ */
 struct matrix_t
 {
-	// MEMBER VARIABLES
+	/**
+	 * @brief The number of rows in the matrix.
+	 */
 	std::size_t rows;
+
+	/**
+	 * @brief The number of columns in the matrix.
+	 */
 	std::size_t columns;
+
+	/**
+	 * @brief The matrix data stored as a 2D vector of doubles.
+	 *
+	 * Indexed as data[row][column]. Each inner vector represents a row.
+	 */
 	std::vector<std::vector<double>> data;
 
-	// CONSTRUCTORS
 	/**
 	 * @brief Constructs a matrix with the given number of rows and columns, initialized to zero.
 	 *
@@ -39,7 +56,6 @@ struct matrix_t
 	 */
 	matrix_t(const tuple_t& t);
 
-	// STATIC FUNCTIONS
 	/**
 	 * @brief Creates an identity matrix.
 	 * | 1  0  0  0 |
@@ -127,9 +143,21 @@ struct matrix_t
 	 */
 	static matrix_t shearing(const double Xy, const double Xz, const double Yx, const double Yz, const double Zx, const double Zy);
 
+	/**
+	 * @brief Computes a view transformation matrix from world space to camera space.
+	 *
+	 * @param from The point in world space where the camera is located (the eye or observer position).
+	 * @param to The point in world space the camera is looking at (the target).
+	 * @param up The up direction vector, indicating which way is "up" for the camera.
+	 * @return A transformation matrix that converts world coordinates into the camera's view space.
+	 *
+	 * This function builds a view transformation (also known as a "look-at" matrix)
+	 * by computing the orientation of the camera based on the `from`, `to`, and `up` vectors.
+	 * It is typically used to position and orient a camera within a 3D scene.
+	 */
+	static matrix_t view_transform(const tuple_t& from, const tuple_t& to, const tuple_t& up);
 
 
-	// MEMBER FUNCTIONS
 	/**
 	 * @brief Returns the transpose of the matrix.
 	 *
@@ -170,8 +198,6 @@ struct matrix_t
 	 */
 	matrix_t inverse() const;
 
-
-	// OPERATORS
 	/**
 	 * @brief Accesses a matrix element by row and column.
 	 *
