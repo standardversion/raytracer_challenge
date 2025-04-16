@@ -168,6 +168,24 @@ matrix_t matrix_t::shearing(const double Xy, const double Xz, const double Yx, c
 	return s;
 }
 
+matrix_t matrix_t::view_transform(const tuple_t& from, const tuple_t& to, const tuple_t& up)
+{
+	tuple_t forward{ to - from };
+	forward.normalize();
+	tuple_t normalized_up{ up };
+	normalized_up.normalize();
+	const tuple_t left{ tuple_t::cross(forward, normalized_up) };
+	const tuple_t true_up{ tuple_t::cross(left, forward) };
+	const std::vector<std::vector<double>> vecs{
+		{ left.x, left.y, left.z, 0 },
+		{ true_up.x, true_up.y, true_up.z, 0 },
+		{ -forward.x, -forward.y, -forward.z, 0.00000 },
+		{ 0.00000, 0.00000, 0.00000, 1.00000 }
+	};
+	const matrix_t orientation{ vecs };
+	return orientation * translation(-from.x, -from.y, -from.z);
+}
+
 matrix_t matrix_t::transpose() const
 {
 	matrix_t r{ rows, columns };

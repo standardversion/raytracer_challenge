@@ -143,6 +143,8 @@ struct matrix_t
 	 */
 	static matrix_t shearing(const double Xy, const double Xz, const double Yx, const double Yz, const double Zx, const double Zy);
 
+	static matrix_t view_transform(const tuple_t& from, const tuple_t& to, const tuple_t& up);
+
 	/**
 	 * @brief Returns the transpose of the matrix.
 	 *
