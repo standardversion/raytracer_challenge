@@ -50,6 +50,15 @@ colour_t colour_t::operator+(const colour_t& c) const
 	};
 }
 
+colour_t& colour_t::operator+=(const colour_t& c)
+{
+	this->red += c.red;
+	this->green += c.green;
+	this->blue += c.blue;
+	this->alpha = std::min(this->alpha + c.alpha, 1.0);
+	return *this;
+}
+
 colour_t colour_t::operator-(const colour_t& c) const
 {
 	return {

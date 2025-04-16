@@ -18,12 +18,6 @@ World World::default_world()
 	}
 	w.add_object(std::move(sphere));
 	auto sphere2{ Sphere::create() };
-	auto phong2 = std::dynamic_pointer_cast<Phong>(sphere2->material);
-	if (phong2) {
-		phong2->colour = { 0.8, 1.0, 0.6 };
-		phong2->diffuse = 0.7;
-		phong2->specular = 0.2;
-	}
 	sphere2->transform = matrix_t::scaling(0.5, 0.5, 0.5);
 	w.add_object(std::move(sphere2));
 	Light light{ colour_t{1, 1, 1} };
@@ -46,10 +40,34 @@ void World::add_object(std::unique_ptr<SceneObject> obj)
 	scene_objects.push_back(std::move(obj));
 }
 
-void World::intersect(const ray_t ray, intersections_t& intersections) const
+void World::intersect(const ray_t& ray, intersections_t& intersections) const
 {
 	for (const auto object : renderables)
 	{
 		object->intersect(ray, intersections);
 	}
+}
+
+colour_t World::shade_hit(const intersection_state& state) const
+{
+	colour_t colour{ 0, 0, 0 };
+	for (const auto light : lights)
+	{
+		colour += state.object->material->lighting(*light, state.point, state.eye_vector, state.normal);
+	}
+	return colour;
+}
+
+colour_t World::colour_at(const ray_t& ray) const
+{
+	colour_t colour{ 0, 0, 0 };
+	intersections_t intersections{};
+	intersect(ray, intersections);
+	const intersection_t intersection{ intersections.hit() };
+	if (intersection.object)
+	{
+		const intersection_state state{ intersection.prepare(ray) };
+		colour += shade_hit(state);
+	}
+	return colour;
 }

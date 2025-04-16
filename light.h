@@ -25,7 +25,7 @@ public:
      *
      * @param intensity The color and brightness of the light. Default is white light (1,1,1).
      */
-    Light(const colour_t& intensity = colour_t{ 1,1,1 });
+    Light(const colour_t& intensity = colour_t{ 1, 1, 1 });
 
     /**
      * @brief Gets the position of the light in world space.

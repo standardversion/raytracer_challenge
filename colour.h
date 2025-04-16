@@ -91,6 +91,8 @@ struct colour_t
 	 */
 	colour_t operator+(const colour_t& c) const;
 
+	colour_t& operator+=(const colour_t& c);
+
 	/**
 	 * @brief Subtracts one colour from another component-wise.
 	 *
