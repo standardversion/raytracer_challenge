@@ -1,4 +1,4 @@
-#include <cmath>
+﻿#include <cmath>
 #include <stdexcept>
 #include "matrix.h"
 #include "settings.h"
@@ -176,13 +176,23 @@ matrix_t matrix_t::view_transform(const tuple_t& from, const tuple_t& to, const 
 	normalized_up.normalize();
 	const tuple_t left{ tuple_t::cross(forward, normalized_up) };
 	const tuple_t true_up{ tuple_t::cross(left, forward) };
-	const std::vector<std::vector<double>> vecs{
-		{ left.x, left.y, left.z, 0 },
-		{ true_up.x, true_up.y, true_up.z, 0 },
-		{ -forward.x, -forward.y, -forward.z, 0.00000 },
-		{ 0.00000, 0.00000, 0.00000, 1.00000 }
-	};
-	const matrix_t orientation{ vecs };
+	/*orientation =
+		|  leftx    lefty     leftz     0 |
+		|  trueupx  trueupy   trueupz   0 |
+		| −forwardx −forwardy −forwardz 0 |
+		| 0         0         0         1 |
+	*/
+	matrix_t orientation{ 4, 4 };
+	orientation.data[0][0] = left.x;
+	orientation.data[0][1] = left.y;
+	orientation.data[0][2] = left.z;
+	orientation.data[1][0] = true_up.x;
+	orientation.data[1][1] = true_up.y;
+	orientation.data[1][2] = true_up.z;
+	orientation.data[2][0] = -forward.x;
+	orientation.data[2][1] = -forward.y;
+	orientation.data[2][2] = -forward.z;
+	orientation.data[3][3] = 1;
 	return orientation * translation(-from.x, -from.y, -from.z);
 }
 
