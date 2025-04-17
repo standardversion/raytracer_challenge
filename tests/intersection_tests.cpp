@@ -4,6 +4,7 @@
 #include "../sphere.h"
 #include "../intersection.h"
 #include "../intersection_state.h"
+#include "../settings.h"
 
 /*
 Scenario: An intersection encapsulates t and object
@@ -220,4 +221,27 @@ TEST(intersect, should_set_state_inside_attr_to_true)
     EXPECT_EQ(state.point, tuple_t::point(0, 0, 1));
     EXPECT_EQ(state.eye_vector, tuple_t::vector(0, 0, -1));
     EXPECT_EQ(state.normal, tuple_t::vector(0, 0, -1));
+}
+
+/*
+Scenario: The hit should offset the point
+  Given r ← ray(point(0, 0, -5), vector(0, 0, 1))
+    And shape ← sphere() with:
+      | transform | translation(0, 0, 1) |
+    And i ← intersection(5, shape)
+  When state ← prepare_computations(i, r)
+  Then state.over_point.z < -EPSILON/2
+    And state.point.z > state.over_point.z
+*/
+TEST(intersect, should_offset_the_point_on_hit)
+{
+    const tuple_t origin{ tuple_t::point(0, 0, -5) };
+    const tuple_t direction{ tuple_t::vector(0, 0, 1) };
+    const ray_t r{ origin, direction };
+    auto s{ Sphere::create() };
+    s->transform = matrix_t::translation(0, 0, 1);
+    const intersection_t i{ 5, s.get() };
+    const intersection_state state{ i.prepare(r) };
+    EXPECT_TRUE(state.over_point.z < -EPSILON / 2);
+    EXPECT_TRUE(state.point.z > state.over_point.z);
 }

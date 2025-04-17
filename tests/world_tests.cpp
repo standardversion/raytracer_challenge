@@ -6,6 +6,8 @@
 #include "../colour.h"
 #include "../ray.h"
 #include "../intersection.h"
+#include "../light.h"
+#include "../sphere.h"
 
 /*
 Scenario: Creating a world
@@ -189,4 +191,90 @@ TEST(world, should_return_colour_when_intersection_is_behind_the_ray)
     const tuple_t direction{ tuple_t::vector(0, 0, -1) };
     const ray_t r{ origin, direction };
     EXPECT_EQ(w.colour_at(r), c);
+}
+
+/*
+Scenario: There is no shadow when nothing is collinear with point and light
+  Given w ← default_world()
+    And p ← point(0, 10, 0)
+   Then w.is_shadowed(p) is false
+*/
+TEST(world, should_return_false_when_nothing_is_collinear_with_point_and_light)
+{
+    World w{ World::default_world() };
+    const tuple_t p{ tuple_t::point(0, 10, 0) };
+    EXPECT_FALSE(w.is_shadowed(p, w.lights[0]));
+}
+
+/*
+Scenario: The shadow when an object is between the point and the light
+  Given w ← default_world()
+    And p ← point(10, -10, 10)
+   Then w.is_shadowed(p) is true
+*/
+TEST(world, should_return_true_when_object_between_point_and_light)
+{
+    World w{ World::default_world() };
+    const tuple_t p{ tuple_t::point(10, -10, 10) };
+    EXPECT_TRUE(w.is_shadowed(p, w.lights[0]));
+}
+
+/*
+Scenario: There is no shadow when an object is behind the light
+  Given w ← default_world()
+    And p ← point(-20, 20, -20)
+   Then w.is_shadowed(p) is false
+*/
+TEST(world, should_return_false_when_object_is_behind_the_light)
+{
+    World w{ World::default_world() };
+    const tuple_t p{ tuple_t::point(-20, 20, -20) };
+    EXPECT_FALSE(w.is_shadowed(p, w.lights[0]));
+}
+
+/*
+Scenario: There is no shadow when an object is behind the point
+  Given w ← default_world()
+    And p ← point(-2, 2, -2)
+   Then w.is_shadowed(p) is false
+*/
+TEST(world, should_return_false_when_object_is_behind_the_point)
+{
+    World w{ World::default_world() };
+    const tuple_t p{ tuple_t::point(-2, 2, -2) };
+    EXPECT_FALSE(w.is_shadowed(p, w.lights[0]));
+}
+
+/*
+Scenario: shade_hit() is given an intersection in shadow
+  Given w ← world()
+    And light ← point_light(point(0, 0, -10), color(1, 1, 1))
+    And light is added to w
+    And s1 ← sphere()
+    And s1 is added to w
+    And s2 ← sphere() with:
+      | transform | translation(0, 0, 10) |
+    And s2 is added to w
+    And r ← ray(point(0, 0, 5), vector(0, 0, 1))
+    And i ← intersection(4, s2)
+  When state ← i.prepare(r)
+    And c ← w.shade_hit(state)
+  Then c = color(0.1, 0.1, 0.1)
+*/
+TEST(world, should_handle_in_shadow_in_shade_hit_func)
+{
+    World w{};
+    Light light{ colour_t{1, 1, 1} };
+    light.transform = matrix_t::translation(0, 0, -10);
+    auto s1{ Sphere::create() };
+    auto s2{ Sphere::create() };
+    s2->transform = matrix_t::translation(0, 0, 10);
+    w.add_object(std::make_unique<Light>(light));
+    w.add_object(std::move(s1));
+    w.add_object(std::move(s2));
+    const ray_t r{ tuple_t::point(0, 0, 5), tuple_t::vector(0, 0, 1) };
+    const intersection_t i{ 4, w.renderables[1]};
+    const intersection_state state{ i.prepare(r) };
+    const colour_t c{ 0.1, 0.1, 0.1 };
+    EXPECT_EQ(w.shade_hit(state), c);
 }

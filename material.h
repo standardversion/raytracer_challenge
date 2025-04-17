@@ -39,7 +39,14 @@ public:
      * @param normal_vector The surface normal at the point.
      * @return colour_t The resulting color after lighting is applied.
      */
-    virtual colour_t lighting(const Light& light, const tuple_t& position, const tuple_t& eye_vector, const tuple_t& normal_vector) const = 0;
+    virtual colour_t lighting
+    (
+        const Light& light,
+        const tuple_t& position,
+        const tuple_t& eye_vector,
+        const tuple_t& normal_vector,
+        const bool in_shadow
+    ) const = 0;
 
     /**
      * @brief Compares this material with another for equality.

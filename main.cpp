@@ -119,6 +119,7 @@ void sphere_phong_exercise()
 	}
 	Light light{ colour_t{1, 1, 1} };
 	light.transform = matrix_t::translation(-10, 10, -10);
+	const bool in_shadow{ false };
 	for (int y{ 0 }; y < canvas_pixels - 1; y++)
 	{
 		const double world_y{ half_wall_size - pixel_size * y };
@@ -137,7 +138,13 @@ void sphere_phong_exercise()
 				const tuple_t point_on_sphere{ ray.position(intersection.time) };
 				const tuple_t normal{ intersection.object->normal_at(point_on_sphere) };
 				const tuple_t eye{ -ray.direction };
-				const colour_t pixel_colour{ intersection.object->material->lighting(light, point_on_sphere, eye, normal) };
+				const colour_t pixel_colour{ intersection.object->material->lighting(
+					light,
+					point_on_sphere,
+					eye,
+					normal,
+					in_shadow
+				) };
 				canvas.write_pixel(x, y, pixel_colour);
 			}
 		}
@@ -228,5 +235,6 @@ int main()
 	clock_exercise();
 	sphere_shadow_exercise();
 	sphere_phong_exercise();
+	build_scene_exercise();
 	return 0;
 }

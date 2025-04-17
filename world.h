@@ -87,6 +87,19 @@ public:
 	 * @return The resulting color at the first visible intersection, or background color if no hit occurs.
 	 */
 	colour_t colour_at(const ray_t& ray) const;
+
+	/**
+	 * @brief Determines whether a point in the world is in shadow relative to a light source.
+	 *
+	 * @param point The point in world space to test for shadowing.
+	 * @param light The specific light source to test visibility against.
+	 * @return true if the point is in shadow (i.e., occluded from the light source), false otherwise.
+	 *
+	 * This function casts a ray from the point toward each light in the scene
+	 * and checks for any objects obstructing the path. Used during shading to apply shadow effects.
+	 */
+	bool is_shadowed(const tuple_t point, Light* light) const;
+
 };
 
 

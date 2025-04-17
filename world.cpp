@@ -53,7 +53,8 @@ colour_t World::shade_hit(const intersection_state& state) const
 	colour_t colour{ 0, 0, 0 };
 	for (const auto light : lights)
 	{
-		colour += state.object->material->lighting(*light, state.point, state.eye_vector, state.normal);
+		const bool in_shadow{ is_shadowed(state.over_point, light) };
+		colour += state.object->material->lighting(*light, state.point, state.eye_vector, state.normal, in_shadow);
 	}
 	return colour;
 }
@@ -66,8 +67,20 @@ colour_t World::colour_at(const ray_t& ray) const
 	const intersection_t intersection{ intersections.hit() };
 	if (intersection.object)
 	{
-		const intersection_state state{ intersection.prepare(ray) };
+		intersection_state state{ intersection.prepare(ray) };
 		colour += shade_hit(state);
 	}
 	return colour;
+}
+
+bool World::is_shadowed(const tuple_t point, Light* light) const
+{
+	tuple_t light_to_point{ light->position() - point };
+	const double distance{ light_to_point.magnitude() };
+	light_to_point.normalize();
+	const ray_t ray{ point, light_to_point };
+	intersections_t intersections{};
+	intersect(ray, intersections);
+	const intersection_t intersection{ intersections.hit() };
+	return intersection.object && intersection.time < distance;
 }

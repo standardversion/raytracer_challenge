@@ -1,5 +1,6 @@
-#include "intersection.h"
 #include <algorithm>
+#include "intersection.h"
+#include "settings.h"
 
 
 bool intersection_t::operator==(const intersection_t& i) const
@@ -24,6 +25,7 @@ intersection_state intersection_t::prepare(const ray_t& r) const
 	{
 		state.inside = false;
 	}
+	state.over_point = state.point + (state.normal * EPSILON);
 	return state;
 }
 
