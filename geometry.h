@@ -34,6 +34,18 @@ public:
     virtual tuple_t local_normal_at(const tuple_t& local_point) const = 0;
 
     /**
+     * @brief Calculates intersections between a ray and the object in local space.
+     *
+     * This is a pure virtual method that must be implemented by derived geometry classes
+     * to handle shape-specific intersection logic. The ray is assumed to be in the object’s
+     * local coordinate space.
+     *
+     * @param local_ray The ray transformed into the object’s local space.
+     * @param intersections The container to store any resulting intersection records.
+     */
+    virtual void local_intersect(const ray_t& local_ray, intersections_t& intersections) const = 0;
+
+    /**
      * @brief Computes intersections between a ray and this geometry.
      *
      * Derived classes must implement this to calculate intersections in object-local space.
@@ -41,7 +53,7 @@ public:
      * @param ray The ray to test for intersection.
      * @param intersections The container to add any resulting intersections to.
      */
-    virtual void intersect(const ray_t& ray, intersections_t& intersections) const = 0;
+    void intersect(const ray_t& ray, intersections_t& intersections) const;
 
     /**
      * @brief Calculates the world-space normal at a given point on the surface.

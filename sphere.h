@@ -36,12 +36,12 @@ public:
     static std::unique_ptr<Sphere> create(double radius = 1.0);
 
     /**
-     * @brief Computes intersections between the sphere and a given ray.
+     * @brief Computes intersections between the sphere and a given ray in object space.
      *
      * @param ray The ray to test for intersection with this sphere.
      * @param intersections A reference to an intersections_t collection where results will be stored.
      */
-    void intersect(const ray_t& ray, intersections_t& intersections) const override;
+    void local_intersect(const ray_t& local_ray, intersections_t& intersections) const override;
 
     /**
      * @brief Calculates the normal vector at a given point on the sphere in local space.
