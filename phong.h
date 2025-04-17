@@ -71,7 +71,14 @@ public:
      * @param normal_vector The normal vector at the surface point.
      * @return colour_t The resulting color after applying lighting effects.
      */
-    virtual colour_t lighting(const Light& light, const tuple_t& position, const tuple_t& eye_vector, const tuple_t& normal_vector) const override;
+    virtual colour_t lighting
+    (
+        const Light& light,
+        const tuple_t& position,
+        const tuple_t& eye_vector,
+        const tuple_t& normal_vector,
+        const bool in_shadow
+    ) const override;
 
     /**
      * @brief Checks equality between this Phong material and another Material.

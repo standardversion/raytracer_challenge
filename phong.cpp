@@ -2,7 +2,14 @@
 #include "phong.h"
 #include "settings.h"
 
-colour_t Phong::lighting(const Light& light, const tuple_t& position, const tuple_t& eye_vector, const tuple_t& normal_vector) const
+colour_t Phong::lighting
+(
+	const Light& light,
+	const tuple_t& position,
+	const tuple_t& eye_vector,
+	const tuple_t& normal_vector,
+	const bool in_shadow
+) const
 {
 	// combine the surface color with the light's color/intensity
 	colour_t effective_colour{ colour * light.intensity };
@@ -17,7 +24,7 @@ colour_t Phong::lighting(const Light& light, const tuple_t& position, const tupl
 	// A negative number means the light is on the other side of the surface.
 	const double light_dot_normal{ tuple_t::dot(light_vector, normal_vector) };
 	colour_t black{ 0, 0, 0 };
-	if (light_dot_normal < 0)
+	if (light_dot_normal < 0 || in_shadow)
 	{
 		diffuse_colour = black;
 		specular_colour = black;

@@ -40,6 +40,15 @@ struct intersection_state
 	tuple_t point;
 
 	/**
+	 * @brief A point slightly above the intersection point, used to prevent shadow acne.
+	 *
+	 * This is calculated by offsetting the original `point` slightly along the surface normal.
+	 * It ensures that shadow rays originate just above the surface, avoiding self-intersections
+	 * due to floating-point precision errors.
+	 */
+	tuple_t over_point;
+
+	/**
 	 * @brief A vector pointing from the intersection point back toward the ray origin.
 	 *
 	 * Often used as the "eye" or "view" vector in lighting calculations.
