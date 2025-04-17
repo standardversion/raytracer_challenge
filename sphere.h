@@ -36,7 +36,7 @@ public:
     static std::unique_ptr<Sphere> create(double radius = 1.0);
 
     /**
-     * @brief Computes intersections between the sphere and a given ray.
+     * @brief Computes intersections between the sphere and a given ray in object space.
      *
      * @param ray The ray to test for intersection with this sphere.
      * @param intersections A reference to an intersections_t collection where results will be stored.
