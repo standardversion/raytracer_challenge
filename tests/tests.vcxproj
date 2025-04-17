@@ -146,6 +146,7 @@
     <ClCompile Include="camera_tests.cpp" />
     <ClCompile Include="canvas_tests.cpp" />
     <ClCompile Include="colour_tests.cpp" />
+    <ClCompile Include="geometry_tests.cpp" />
     <ClCompile Include="intersection_tests.cpp" />
     <ClCompile Include="light_tests.cpp" />
     <ClCompile Include="main.cpp" />

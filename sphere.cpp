@@ -16,14 +16,13 @@ std::unique_ptr<Sphere> Sphere::create(double radius)
 }
 
 
-void Sphere::intersect(const ray_t& ray, intersections_t& intersections) const
+void Sphere::local_intersect(const ray_t& local_ray, intersections_t& intersections) const
 {
-	ray_t transformed_ray{ ray.transform(transform.inverse()) };
 	const tuple_t origin{ tuple_t::point(0, 0, 0) };
 	// sphere is at origin
-	tuple_t Sphereo_ray{ transformed_ray.origin - origin };
-	const double a{ tuple_t::dot(transformed_ray.direction, transformed_ray.direction) };
-	const double b{ 2 * tuple_t::dot(transformed_ray.direction, Sphereo_ray) };
+	tuple_t Sphereo_ray{ local_ray.origin - origin };
+	const double a{ tuple_t::dot(local_ray.direction, local_ray.direction) };
+	const double b{ 2 * tuple_t::dot(local_ray.direction, Sphereo_ray) };
 	const double c{ tuple_t::dot(Sphereo_ray, Sphereo_ray) - std::pow(radius, 2) };
 
 	const double discriminant{ std::pow(b, 2) - (4 * a * c) };

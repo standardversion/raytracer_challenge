@@ -8,6 +8,12 @@ Geometry::Geometry()
     material = std::make_shared<Phong>();
 }
 
+void Geometry::intersect(const ray_t& ray, intersections_t& intersections) const
+{
+    const ray_t local_ray{ ray.transform(transform.inverse()) };
+    local_intersect(local_ray, intersections);
+}
+
 tuple_t Geometry::normal_at(const tuple_t& world_point) const {
     tuple_t local_point = transform.inverse() * world_point;
     tuple_t local_normal = local_normal_at(local_point);
