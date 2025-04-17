@@ -119,7 +119,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>gtest_main.lib;gtest.lib;gmock.lib;gmock_main.lib;tuple.obj;colour.obj;canvas.obj;ppm.obj;utils.obj;matrix.obj;ray.obj;sphere.obj;intersection.obj;phong.obj;geometry.obj;scene_object.obj;light.obj;world.obj;camera.obj;plane.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gtest_main.lib;gtest.lib;gmock.lib;gmock_main.lib;tuple.obj;colour.obj;canvas.obj;ppm.obj;utils.obj;matrix.obj;ray.obj;sphere.obj;intersection.obj;phong.obj;geometry.obj;scene_object.obj;light.obj;world.obj;camera.obj;plane.obj;pattern.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -139,7 +139,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;gtest_main.lib;gtest.lib;gmock.lib;gmock_main.lib;tuple.obj;colour.obj;canvas.obj;ppm.obj;utils.obj;matrix.obj;ray.obj;sphere.obj;intersection.obj;phong.obj;geometry.obj;scene_object.obj;light.obj;world.obj;camera.obj;plane.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;gtest_main.lib;gtest.lib;gmock.lib;gmock_main.lib;tuple.obj;colour.obj;canvas.obj;ppm.obj;utils.obj;matrix.obj;ray.obj;sphere.obj;intersection.obj;phong.obj;geometry.obj;scene_object.obj;light.obj;world.obj;camera.obj;plane.obj;pattern.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -150,6 +150,7 @@
     <ClCompile Include="intersection_tests.cpp" />
     <ClCompile Include="light_tests.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="pattern_tests.cpp" />
     <ClCompile Include="phong_tests.cpp" />
     <ClCompile Include="matrix_tests.cpp" />
     <ClCompile Include="plane_tests.cpp" />

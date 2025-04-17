@@ -54,7 +54,7 @@ colour_t World::shade_hit(const intersection_state& state) const
 	for (const auto light : lights)
 	{
 		const bool in_shadow{ is_shadowed(state.over_point, light) };
-		colour += state.object->material->lighting(*light, state.point, state.eye_vector, state.normal, in_shadow);
+		colour += state.object->material->lighting(*light, state.object, state.point, state.eye_vector, state.normal, in_shadow);
 	}
 	return colour;
 }

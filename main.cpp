@@ -141,6 +141,7 @@ void sphere_phong_exercise()
 				const tuple_t eye{ -ray.direction };
 				const colour_t pixel_colour{ intersection.object->material->lighting(
 					light,
+					intersection.object,
 					point_on_sphere,
 					eye,
 					normal,
