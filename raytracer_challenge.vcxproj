@@ -160,8 +160,10 @@
   <ItemGroup>
     <ClInclude Include="camera.h" />
     <ClInclude Include="canvas.h" />
+    <ClInclude Include="checker.h" />
     <ClInclude Include="colour.h" />
     <ClInclude Include="environment.h" />
+    <ClInclude Include="gradient.h" />
     <ClInclude Include="intersection.h" />
     <ClInclude Include="intersection_state.h" />
     <ClInclude Include="light.h" />
@@ -174,9 +176,11 @@
     <ClInclude Include="ppm.h" />
     <ClInclude Include="projectile.h" />
     <ClInclude Include="ray.h" />
+    <ClInclude Include="ring.h" />
     <ClInclude Include="scene_object.h" />
     <ClInclude Include="settings.h" />
     <ClInclude Include="sphere.h" />
+    <ClInclude Include="stripe.h" />
     <ClInclude Include="tuple.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="world.h" />
@@ -184,13 +188,17 @@
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="canvas.cpp" />
+    <ClCompile Include="checker.cpp" />
     <ClCompile Include="colour.cpp" />
+    <ClCompile Include="gradient.cpp" />
     <ClCompile Include="intersection.cpp" />
     <ClCompile Include="light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="matrix.cpp" />
     <ClCompile Include="geometry.cpp" />
     <ClCompile Include="pattern.cpp" />
+    <ClCompile Include="ring.cpp" />
+    <ClCompile Include="stripe.cpp" />
     <ClCompile Include="phong.cpp" />
     <ClCompile Include="plane.cpp" />
     <ClCompile Include="ppm.cpp" />

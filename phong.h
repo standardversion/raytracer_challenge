@@ -28,7 +28,7 @@ public:
      * surface detail such as stripes, checkers, gradients, or procedural textures.
      * Patterns are evaluated based on the surface position and geometry.
      */
-    std::shared_ptr<pattern_t> pattern;
+    std::shared_ptr<Pattern> pattern;
 
     /**
      * @brief Ambient reflectivity coefficient.

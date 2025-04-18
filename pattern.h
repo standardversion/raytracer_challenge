@@ -5,7 +5,7 @@
 #include "geometry.h"
 
 /**
- * @struct pattern_t
+ * @class Pattern
  * @brief Represents a color pattern applied to a material's surface.
  *
  * A pattern defines how color varies across the surface of a geometry.
@@ -13,8 +13,9 @@
  * gradients, checkers, or procedural textures. Patterns support their own
  * transformation matrix to allow independent scaling, rotation, or translation.
  */
-struct pattern_t
+class Pattern
 {
+public:
     /**
      * @brief First color used in the pattern.
      *
@@ -47,7 +48,7 @@ struct pattern_t
      * @param point A point in pattern space.
      * @return colour_t The color at the given point.
      */
-    colour_t at(const tuple_t& point) const;
+    virtual colour_t at(const tuple_t& point) const = 0;
 
     /**
      * @brief Evaluates the pattern color at a point on a geometry object.
@@ -60,5 +61,8 @@ struct pattern_t
      * @param point A point in world space.
      * @return colour_t The color at the given point on the object.
      */
-    colour_t at_object(const Geometry* geo, const tuple_t& point) const;
+    virtual colour_t at_object(const Geometry* geo, const tuple_t& point) const;
+protected:
+    Pattern(const colour_t& a, const colour_t& b);
+    Pattern();
 };

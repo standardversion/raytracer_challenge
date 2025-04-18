@@ -4,7 +4,7 @@
 #include "../colour.h"
 #include "../tuple.h"
 #include "../light.h"
-#include "../pattern.h"
+#include "../stripe.h"
 #include "../sphere.h"
 
 /*
@@ -179,7 +179,7 @@ TEST(phong, should_take_applied_pattern_into_account)
 {
     const auto s{ Sphere::create() };
     Phong m{};
-    m.pattern = std::make_shared<pattern_t>(colour_t(1, 1, 1), colour_t(0, 0, 0));
+    m.pattern = std::make_shared<Stripe>(colour_t(1, 1, 1), colour_t(0, 0, 0));
     m.ambient = 1;
     m.diffuse = 0;
     m.specular = 0;
