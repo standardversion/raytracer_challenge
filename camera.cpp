@@ -1,5 +1,6 @@
 #include <cmath>
 #include "camera.h"
+#include "settings.h"
 
 Camera::Camera(const int hsize, const int vsize, const double fov)
 	: SceneObject{}, hsize{ hsize }, vsize{ vsize }, field_of_view{ fov }
@@ -46,7 +47,7 @@ canvas_t Camera::render(const World& world) const
 		for (int x{ 0 }; x < hsize - 1; x++)
 		{
 			const ray_t ray{ ray_for_pixel(x, y) };
-			const colour_t colour{ world.colour_at(ray) };
+			const colour_t colour{ world.colour_at(ray, MAX_REFLECTION_DEPTH) };
 			image.write_pixel(x, y, colour);
 		}
 	}

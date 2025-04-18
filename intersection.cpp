@@ -25,6 +25,7 @@ intersection_state intersection_t::prepare(const ray_t& r) const
 	{
 		state.inside = false;
 	}
+	state.reflect_vector = r.direction.reflect(state.normal);
 	state.over_point = state.point + (state.normal * EPSILON);
 	return state;
 }

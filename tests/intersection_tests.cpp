@@ -1,7 +1,9 @@
 ﻿#include <string>
 #include <vector>
+#include <cmath>
 #include "gtest/gtest.h"
 #include "../sphere.h"
+#include "../plane.h"
 #include "../intersection.h"
 #include "../intersection_state.h"
 #include "../settings.h"
@@ -244,4 +246,23 @@ TEST(intersect, should_offset_the_point_on_hit)
     const intersection_state state{ i.prepare(r) };
     EXPECT_TRUE(state.over_point.z < -EPSILON / 2);
     EXPECT_TRUE(state.point.z > state.over_point.z);
+}
+
+/*
+Scenario: Precomputing the reflection vector
+  Given shape ← plane()
+    And r ← ray(point(0, 1, -1), vector(0, -√2/2, √2/2))
+    And i ← intersection(√2, shape)
+  When state ← i.prepare(r)
+  Then state.reflect_vector = vector(0, √2/2, √2/2)
+*/
+TEST(intersect, should_precompute_reflection_vector)
+{
+    const tuple_t origin{ tuple_t::point(0, 1, -5) };
+    const tuple_t direction{ tuple_t::vector(0, -std::sqrt(2) / 2, std::sqrt(2) / 2)};
+    const ray_t r{ origin, direction };
+    const auto p{ Plane::create() };
+    const intersection_t i{ std::sqrt(2), p.get() };
+    const intersection_state state{ i.prepare(r) };
+    EXPECT_EQ(state.reflect_vector, tuple_t::vector(0, std::sqrt(2) / 2, std::sqrt(2) / 2));
 }

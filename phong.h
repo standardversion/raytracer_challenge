@@ -63,6 +63,8 @@ public:
      */
     double shininess{ 200.0 };
 
+    double reflective{ 0.0 };
+
     /**
      * @brief Default constructor.
      *

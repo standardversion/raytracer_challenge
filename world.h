@@ -78,7 +78,9 @@ public:
 	 * This method performs lighting calculations (e.g., diffuse, specular)
 	 * using the intersection data and the world's lights.
 	 */
-	colour_t shade_hit(const intersection_state& state) const;
+	colour_t shade_hit(const intersection_state& state, int remaining) const;
+
+	colour_t reflected_colour(const intersection_state& state, int remaining) const;
 
 	/**
 	 * @brief Computes the color seen along a given ray.
@@ -86,7 +88,7 @@ public:
 	 * @param ray The ray being cast into the scene.
 	 * @return The resulting color at the first visible intersection, or background color if no hit occurs.
 	 */
-	colour_t colour_at(const ray_t& ray) const;
+	colour_t colour_at(const ray_t& ray, int remaining) const;
 
 	/**
 	 * @brief Determines whether a point in the world is in shadow relative to a light source.

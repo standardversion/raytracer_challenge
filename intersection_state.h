@@ -55,6 +55,8 @@ struct intersection_state
 	 */
 	tuple_t eye_vector;
 
+	tuple_t reflect_vector;
+
 	/**
 	 * @brief The surface normal at the point of intersection.
 	 *

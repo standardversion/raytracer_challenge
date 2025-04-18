@@ -48,18 +48,36 @@ void World::intersect(const ray_t& ray, intersections_t& intersections) const
 	}
 }
 
-colour_t World::shade_hit(const intersection_state& state) const
+colour_t World::shade_hit(const intersection_state& state, int remaining) const
 {
 	colour_t colour{ 0, 0, 0 };
 	for (const auto light : lights)
 	{
 		const bool in_shadow{ is_shadowed(state.over_point, light) };
 		colour += state.object->material->lighting(*light, state.object, state.point, state.eye_vector, state.normal, in_shadow);
+		colour += reflected_colour(state, remaining);
 	}
 	return colour;
 }
 
-colour_t World::colour_at(const ray_t& ray) const
+colour_t World::reflected_colour(const intersection_state& state, int remaining) const
+{
+	colour_t colour{ 0, 0, 0 };
+	if (remaining <= 0)
+	{
+		return colour;
+	}
+	auto phong{ std::dynamic_pointer_cast<Phong>(state.object->material) };
+	if (phong && phong->reflective > 0)
+	{
+		const ray_t reflected_ray{ state.over_point, state.reflect_vector };
+		colour = colour_at(reflected_ray, remaining--);
+		return colour * phong->reflective;
+	}
+	return colour;
+}
+
+colour_t World::colour_at(const ray_t& ray, int remaining) const
 {
 	colour_t colour{ 0, 0, 0 };
 	intersections_t intersections{};
@@ -68,7 +86,7 @@ colour_t World::colour_at(const ray_t& ray) const
 	if (intersection.object)
 	{
 		intersection_state state{ intersection.prepare(ray) };
-		colour += shade_hit(state);
+		colour += shade_hit(state, remaining);
 	}
 	return colour;
 }

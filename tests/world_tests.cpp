@@ -8,6 +8,7 @@
 #include "../intersection.h"
 #include "../light.h"
 #include "../sphere.h"
+#include "../plane.h"
 
 /*
 Scenario: Creating a world
@@ -102,7 +103,7 @@ TEST(world, should_shade_an_intersection)
     const intersection_t i{ 4, w.renderables[0]};
     const intersection_state state{ i.prepare(r) };
     const colour_t c{ 0.38066, 0.47583, 0.2855 };
-    EXPECT_EQ(w.shade_hit(state), c);
+    EXPECT_EQ(w.shade_hit(state, 0), c);
 }
 
 /*
@@ -126,7 +127,7 @@ TEST(world, should_shade_an_intersection_from_the_inside)
     const intersection_t i{ 0.5, w.renderables[1] };
     const intersection_state state{ i.prepare(r) };
     const colour_t c{ 0.90498, 0.90498, 0.90498 };
-    EXPECT_EQ(w.shade_hit(state), c);
+    EXPECT_EQ(w.shade_hit(state, 0), c);
 }
 
 /*
@@ -143,7 +144,7 @@ TEST(world, should_be_black_if_ray_misses)
     const tuple_t direction{ tuple_t::vector(0, 1, 0) };
     const ray_t r{ origin, direction };
     const colour_t c{ 0, 0, 0 };
-    EXPECT_EQ(w.colour_at(r), c);
+    EXPECT_EQ(w.colour_at(r, 0), c);
 }
 
 /*
@@ -160,7 +161,7 @@ TEST(world, should_return_colour_when_a_ray_hits)
     const tuple_t direction{ tuple_t::vector(0, 0, 1) };
     const ray_t r{ origin, direction };
     const colour_t c{ 0.38066, 0.47583, 0.2855 };
-    EXPECT_EQ(w.colour_at(r), c);
+    EXPECT_EQ(w.colour_at(r, 0), c);
 }
 
 /*
@@ -190,7 +191,7 @@ TEST(world, should_return_colour_when_intersection_is_behind_the_ray)
     const tuple_t origin{ tuple_t::point(0, 0, 0.75) };
     const tuple_t direction{ tuple_t::vector(0, 0, -1) };
     const ray_t r{ origin, direction };
-    EXPECT_EQ(w.colour_at(r), c);
+    EXPECT_EQ(w.colour_at(r, 0), c);
 }
 
 /*
@@ -276,5 +277,146 @@ TEST(world, should_handle_in_shadow_in_shade_hit_func)
     const intersection_t i{ 4, w.renderables[1]};
     const intersection_state state{ i.prepare(r) };
     const colour_t c{ 0.1, 0.1, 0.1 };
-    EXPECT_EQ(w.shade_hit(state), c);
+    EXPECT_EQ(w.shade_hit(state, 0), c);
+}
+
+/*
+Scenario: The reflected color for a nonreflective material
+  Given w ← default_world()
+    And r ← ray(point(0, 0, 0), vector(0, 0, 1))
+    And shape ← the second object in w
+    And shape.material.ambient ← 1
+    And i ← intersection(1, shape)
+  When state ← i.prepare(r)
+    And color ← w.reflected_colour(state)
+  Then color = color(0, 0, 0)
+*/
+TEST(world, should_return_reflected_colour_as_black_for_nonreflective_material)
+{
+    World w{ World::default_world() };
+    auto phong{ std::dynamic_pointer_cast<Phong>(w.renderables[1]->material) };
+    phong->ambient = 1;
+    const ray_t r{ tuple_t::point(0, 0, 5), tuple_t::vector(0, 0, 1) };
+    const intersection_t i{ 1, w.renderables[1] };
+    const intersection_state state{ i.prepare(r) };
+    const colour_t c{ 0, 0, 0 };
+    EXPECT_EQ(w.reflected_colour(state, 0), c);
+}
+
+/*
+Scenario: The reflected color for a reflective material
+  Given w ← default_world()
+    And shape ← plane() with:
+      | material.reflective | 0.5                   |
+      | transform           | translation(0, -1, 0) |
+    And shape is added to w
+    And r ← ray(point(0, 0, -3), vector(0, -√2/2, √2/2))
+    And i ← intersection(√2, shape)
+  When state ← i.prepare(r)
+    And color ← w.reflected_color(state)
+  Then color = color(0.19032, 0.2379, 0.14274)
+*/
+TEST(world, should_return_reflected_colour_for_reflective_material)
+{
+    World w{ World::default_world() };
+    auto plane{ Plane::create() };
+    plane->transform = matrix_t::translation(0, -1, 0);
+    w.add_object(std::move(plane));
+    auto phong{ std::dynamic_pointer_cast<Phong>(w.renderables[2]->material) };
+    phong->reflective = 0.5;
+    const ray_t r{ tuple_t::point(0, 0, -3), tuple_t::vector(0, -std::sqrt(2) / 2, std::sqrt(2) / 2) };
+    const intersection_t i{ std::sqrt(2), w.renderables[2] };
+    const intersection_state state{ i.prepare(r) };
+    const colour_t c{ 0.19032, 0.2379, 0.14274 };
+    EXPECT_EQ(w.reflected_colour(state, 1), c);
+}
+
+/*
+Scenario: shade_hit() with a reflective material
+  Given w ← default_world()
+    And shape ← plane() with:
+      | material.reflective | 0.5                   |
+      | transform           | translation(0, -1, 0) |
+    And shape is added to w
+    And r ← ray(point(0, 0, -3), vector(0, -√2/2, √2/2))
+    And i ← intersection(√2, shape)
+  When state ← i.prepare(r)
+    And color ← w.shade_hit(state)
+  Then color = color(0.87677, 0.92436, 0.82918)
+*/
+TEST(world, should_shade_hit_with_reflected_colour)
+{
+    World w{ World::default_world() };
+    auto plane{ Plane::create() };
+    plane->transform = matrix_t::translation(0, -1, 0);
+    w.add_object(std::move(plane));
+    auto phong{ std::dynamic_pointer_cast<Phong>(w.renderables[2]->material) };
+    phong->reflective = 0.5;
+    const ray_t r{ tuple_t::point(0, 0, -3), tuple_t::vector(0, -std::sqrt(2) / 2, std::sqrt(2) / 2) };
+    const intersection_t i{ std::sqrt(2), w.renderables[2] };
+    const intersection_state state{ i.prepare(r) };
+    const colour_t c{ 0.87677, 0.92436, 0.82918 };
+    EXPECT_EQ(w.shade_hit(state, 1), c);
+}
+
+/*
+Scenario: color_at() with mutually reflective surfaces
+  Given w ← world()
+    And w.light ← point_light(point(0, 0, 0), color(1, 1, 1))
+    And lower ← plane() with:
+      | material.reflective | 1                     |
+      | transform           | translation(0, -1, 0) |
+    And lower is added to w
+    And upper ← plane() with:
+      | material.reflective | 1                    |
+      | transform           | translation(0, 1, 0) |
+    And upper is added to w
+    And r ← ray(point(0, 0, 0), vector(0, 1, 0))
+  Then w.color_at(r) should terminate successfully
+*/
+TEST(world, should_terminate_successfully_for_mutually_reflective_surfaces)
+{
+    World w{};
+    Light light{ colour_t{ 1, 1, 1 } };
+    w.add_object(std::make_unique<Light>(light));
+    auto plane{ Plane::create() };
+    plane->transform = matrix_t::translation(0, -1, 0);
+    w.add_object(std::move(plane));
+    auto phong{ std::dynamic_pointer_cast<Phong>(w.renderables[0]->material) };
+    phong->reflective = 1;
+    auto plane2{ Plane::create() };
+    plane2->transform = matrix_t::translation(0, 1, 0);
+    w.add_object(std::move(plane2));
+    phong = std::dynamic_pointer_cast<Phong>(w.renderables[1]->material);
+    phong->reflective = 1;
+    const ray_t r{ tuple_t::point(0, 0, 0), tuple_t::vector(0, 1, 0) };
+    EXPECT_NO_THROW(w.colour_at(r, 0));
+}
+
+/*
+Scenario: The reflected color at the maximum recursive depth
+  Given w ← default_world()
+    And shape ← plane() with:
+      | material.reflective | 0.5                   |
+      | transform           | translation(0, -1, 0) |
+    And shape is added to w
+    And r ← ray(point(0, 0, -3), vector(0, -√2/2, √2/2))
+    And i ← intersection(√2, shape)
+  When comps ← i.prepare(r)
+    And color ← w.reflected_color(comps, 0)
+  Then color = color(0, 0, 0)
+*/
+TEST(world, should_return_reflected_colour_at_the_maximum_recursive_depth)
+{
+    World w{ World::default_world() };
+    auto plane{ Plane::create() };
+    plane->transform = matrix_t::translation(0, -1, 0);
+    w.add_object(std::move(plane));
+    auto phong{ std::dynamic_pointer_cast<Phong>(w.renderables[2]->material) };
+    phong->reflective = 0.5;
+    const ray_t r{ tuple_t::point(0, 0, -3), tuple_t::vector(0, -std::sqrt(2) / 2, std::sqrt(2) / 2) };
+    const intersection_t i{ std::sqrt(2), w.renderables[2] };
+    const intersection_state state{ i.prepare(r) };
+    const colour_t c{ 0, 0, 0 };
+    EXPECT_EQ(w.reflected_colour(state, 0), c);
 }
