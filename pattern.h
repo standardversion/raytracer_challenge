@@ -6,63 +6,76 @@
 
 /**
  * @class Pattern
- * @brief Represents a color pattern applied to a material's surface.
+ * @brief Abstract base class representing a color pattern applied to a geometry's surface.
  *
- * A pattern defines how color varies across the surface of a geometry.
- * It can be based on spatial position, enabling effects such as stripes,
- * gradients, checkers, or procedural textures. Patterns support their own
- * transformation matrix to allow independent scaling, rotation, or translation.
+ * A pattern defines how colors vary across the surface of a geometry using spatial logic.
+ * Derived classes implement specific pattern behaviors such as stripes, gradients, or checkers.
+ * Each pattern maintains its own transformation matrix, enabling independent scaling, rotation,
+ * or translation relative to the geometry it is applied to.
  */
 class Pattern
 {
 public:
     /**
-     * @brief First color used in the pattern.
+     * @brief Primary color of the pattern.
      *
-     * This color typically alternates with `b` depending on the pattern logic.
+     * Often alternates with `b` depending on the specific pattern implementation.
      */
     colour_t a;
 
     /**
-     * @brief Second color used in the pattern.
+     * @brief Secondary color of the pattern.
      *
-     * This color typically alternates with `a` depending on the pattern logic.
+     * Used alongside `a` in alternating or interpolated logic to produce the final effect.
      */
     colour_t b;
 
     /**
-     * @brief Transformation matrix applied to the pattern.
+     * @brief Transformation matrix for the pattern.
      *
-     * Allows the pattern to be independently scaled, rotated, or translated
-     * relative to the object it is applied to. Default is the identity matrix.
+     * Transforms pattern space independently of the object to which it is applied.
+     * Defaults to the identity matrix, meaning no transformation.
      */
     matrix_t transform{ matrix_t::identity() };
 
     /**
-     * @brief Evaluates the pattern color at a specific point in pattern space.
+     * @brief Computes the pattern color at a point in pattern space.
      *
-     * This function implements the core logic of the pattern (e.g., stripes,
-     * checkers) and returns either `a`, `b`, or an interpolated color based
-     * on the point's coordinates.
+     * This is a pure virtual method to be implemented by derived classes.
+     * It defines the core pattern logic using the input point's coordinates
+     * to return either `a`, `b`, or a color derived from them.
      *
-     * @param point A point in pattern space.
-     * @return colour_t The color at the given point.
+     * @param point A point expressed in pattern space coordinates.
+     * @return colour_t The resulting color at the specified point.
      */
     virtual colour_t at(const tuple_t& point) const = 0;
 
     /**
-     * @brief Evaluates the pattern color at a point on a geometry object.
+     * @brief Computes the pattern color at a point on a geometry object.
      *
-     * This function transforms the point from world space into object space
-     * (via the geometry), then into pattern space (via the pattern's transform),
-     * before calling `at()`.
+     * This method transforms a point from world space to object space using
+     * the geometry's transform, and then from object space to pattern space
+     * using the pattern's own transform. The final color is computed by calling `at()`.
      *
-     * @param geo The geometry object the pattern is applied to.
+     * @param geo Pointer to the geometry object to which the pattern is applied.
      * @param point A point in world space.
-     * @return colour_t The color at the given point on the object.
+     * @return colour_t The resulting color at the point on the geometry.
      */
     virtual colour_t at_object(const Geometry* geo, const tuple_t& point) const;
+
 protected:
+    /**
+     * @brief Constructs a Pattern with specified primary and secondary colors.
+     *
+     * @param a The primary color.
+     * @param b The secondary color.
+     */
     Pattern(const colour_t& a, const colour_t& b);
+
+    /**
+     * @brief Constructs a Pattern with default colors.
+     *
+     * Defaults may vary based on derived class behavior or internal logic.
+     */
     Pattern();
 };
