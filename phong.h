@@ -65,6 +65,10 @@ public:
 
     double reflective{ 0.0 };
 
+    double transparency{ 0.0 };
+
+    double refractive_index{ 1.0 };
+
     /**
      * @brief Default constructor.
      *

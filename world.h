@@ -82,6 +82,8 @@ public:
 
 	colour_t reflected_colour(const intersection_state& state, int remaining) const;
 
+	colour_t refracted_colour(const intersection_state& state, int remaining) const;
+
 	/**
 	 * @brief Computes the color seen along a given ray.
 	 *

@@ -35,6 +35,8 @@ public:
      */
     static std::unique_ptr<Sphere> create(double radius = 1.0);
 
+    static std::unique_ptr<Sphere> glass_sphere(double radius = 1.0);
+
     /**
      * @brief Computes intersections between the sphere and a given ray in object space.
      *

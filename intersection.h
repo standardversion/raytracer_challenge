@@ -52,7 +52,7 @@ struct intersection_t
 	 * @param r The ray that caused the intersection.
 	 * @return An `intersection_state` structure with precomputed shading information.
 	 */
-	intersection_state prepare(const ray_t& r) const;
+	intersection_state prepare(const ray_t& r, const intersections_t& intersections) const;
 };
 
 /**
@@ -111,7 +111,7 @@ struct intersections_t
 	 * (typically the one with the smallest positive `t` value). Returns a sentinel
 	 * or null intersection if no valid hit exists.
 	 */
-	intersection_t hit();
+	intersection_t hit() const;
 
 	/**
 	 * @brief Accesses an intersection at a specific index.

@@ -48,6 +48,8 @@ struct intersection_state
 	 */
 	tuple_t over_point;
 
+	tuple_t under_point;
+
 	/**
 	 * @brief A vector pointing from the intersection point back toward the ray origin.
 	 *
@@ -64,5 +66,8 @@ struct intersection_state
 	 * this vector is inverted to maintain consistency.
 	 */
 	tuple_t normal;
+
+	double n1;
+	double n2;
 };
 

@@ -1,5 +1,6 @@
 #include <cmath>
 #include "sphere.h"
+#include "phong.h"
 #include "intersection.h"
 
 
@@ -13,6 +14,16 @@ std::unique_ptr<Sphere> Sphere::create(double radius)
 {
 	//return std::make_unique<Sphere>(radius); // causes C2248
 	return std::unique_ptr<Sphere>(new Sphere(radius));
+}
+
+std::unique_ptr<Sphere> Sphere::glass_sphere(double radius)
+{
+	//return std::make_unique<Sphere>(radius); // causes C2248
+	auto s{ std::unique_ptr<Sphere>(new Sphere(radius)) };
+	auto phong{ std::dynamic_pointer_cast<Phong>(s->material) };
+	phong->transparency = 1.0;
+	phong->refractive_index = 1.5;
+	return s;
 }
 
 

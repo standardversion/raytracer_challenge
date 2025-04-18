@@ -1,6 +1,7 @@
 #include <algorithm>
 #include "intersection.h"
 #include "settings.h"
+#include "phong.h"
 
 
 bool intersection_t::operator==(const intersection_t& i) const
@@ -8,7 +9,7 @@ bool intersection_t::operator==(const intersection_t& i) const
 	return this->time == i.time && this->object == i.object;
 }
 
-intersection_state intersection_t::prepare(const ray_t& r) const
+intersection_state intersection_t::prepare(const ray_t& r, const intersections_t& intersections) const
 {
 	intersection_state state{};
 	state.time = time;
@@ -27,6 +28,61 @@ intersection_state intersection_t::prepare(const ray_t& r) const
 	}
 	state.reflect_vector = r.direction.reflect(state.normal);
 	state.over_point = state.point + (state.normal * EPSILON);
+	state.under_point = state.point - (state.normal * EPSILON);
+
+	std::vector<const Geometry*> containers{};
+	for (const auto& intersection : intersections.entries)
+	{
+		if (intersection == *this)
+		{
+			if (containers.empty())
+			{
+				state.n1 = 1.0;
+			}
+			else
+			{
+				const auto phong{ std::dynamic_pointer_cast<Phong>(containers.back()->material)};
+				if (phong)
+				{
+					state.n1 = phong->refractive_index;
+				}
+				else
+				{
+					state.n1 = 1.0;
+				}
+			}
+		}
+		auto found{ std::find(containers.begin(), containers.end(), intersection.object) };
+		if (found == containers.end())
+		{
+			containers.push_back(intersection.object);
+		}
+		else
+		{
+			containers.erase(found);
+		}
+		if (intersection == *this)
+		{
+			if (containers.empty())
+			{
+				state.n2 = 1.0;
+			}
+			else
+			{
+				const auto phong{ std::dynamic_pointer_cast<Phong>(containers.back()->material)};
+				if (phong)
+				{
+					state.n2 = phong->refractive_index;
+				}
+				else
+				{
+					state.n2 = 1.0;
+				}
+			}
+			break;
+		}
+	}
+
 	return state;
 }
 
@@ -53,7 +109,7 @@ void intersections_t::sort()
 	});
 }
 
-intersection_t intersections_t::hit()
+intersection_t intersections_t::hit() const
 {
 	intersection_t intersection;
 	for (const auto& i : entries)
