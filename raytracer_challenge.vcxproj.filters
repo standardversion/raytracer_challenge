@@ -78,6 +78,21 @@
     <ClInclude Include="plane.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="pattern.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stripe.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gradient.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ring.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="checker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -129,6 +144,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="plane.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stripe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pattern.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gradient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ring.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="checker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

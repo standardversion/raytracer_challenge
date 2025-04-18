@@ -5,14 +5,20 @@
 colour_t Phong::lighting
 (
 	const Light& light,
+	const Geometry* geo,
 	const tuple_t& position,
 	const tuple_t& eye_vector,
 	const tuple_t& normal_vector,
 	const bool in_shadow
 ) const
 {
+	colour_t material_coluur{ colour };
+	if (pattern)
+	{
+		material_coluur = pattern->at_object(geo, position);
+	}
 	// combine the surface color with the light's color/intensity
-	colour_t effective_colour{ colour * light.intensity };
+	colour_t effective_colour{ material_coluur * light.intensity };
 	// find the direction to the light source
 	tuple_t light_vector{ light.position() - position };
 	light_vector.normalize();

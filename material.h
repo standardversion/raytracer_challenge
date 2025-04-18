@@ -3,6 +3,7 @@
 #include "light.h"
 #include "tuple.h"
 
+class Geometry;
 
 /**
  * @class Material
@@ -27,26 +28,31 @@ protected:
 
 public:
     /**
-     * @brief Calculates the color of the material when illuminated by a light source.
+     * @brief Calculates the color of the material under a specific lighting condition.
      *
-     * This pure virtual function must be implemented by any subclass. It defines how
-     * the material responds to a given light source at a certain position with specific
-     * viewing and surface normal directions.
+     * This pure virtual function must be implemented by any subclass to define how the
+     * material reacts to illumination. It determines the final color at a surface point
+     * given the lighting conditions, viewer perspective, surface geometry, and shadowing.
      *
      * @param light The light source affecting the material.
-     * @param position The point on the surface being illuminated.
-     * @param eye_vector The direction from the point to the eye (viewer).
-     * @param normal_vector The surface normal at the point.
-     * @return colour_t The resulting color after lighting is applied.
+     * @param geo Pointer to the geometry object the material is applied to. This can be
+     *        used to access material-specific properties or additional context.
+     * @param position The point on the surface where the lighting calculation is performed.
+     * @param eye_vector The direction from the surface point toward the eye (camera/viewer).
+     * @param normal_vector The surface normal at the point of intersection.
+     * @param in_shadow A boolean indicating whether the point is in shadow (true) or fully lit (false).
+     * @return colour_t The final color resulting from the lighting model applied at the given point.
      */
     virtual colour_t lighting
     (
         const Light& light,
+        const Geometry* geo,
         const tuple_t& position,
         const tuple_t& eye_vector,
         const tuple_t& normal_vector,
         const bool in_shadow
     ) const = 0;
+
 
     /**
      * @brief Compares this material with another for equality.

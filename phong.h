@@ -1,5 +1,7 @@
 #pragma once
+#include <memory>
 #include "material.h"
+#include "pattern.h"
 
 /**
  * @class Phong
@@ -18,6 +20,15 @@ public:
      * Default is white (1, 1, 1).
      */
     colour_t colour{ 1, 1, 1 };
+
+    /**
+     * @brief Optional pattern applied to the material surface.
+     *
+     * If set, this pattern overrides the base color and allows for more complex
+     * surface detail such as stripes, checkers, gradients, or procedural textures.
+     * Patterns are evaluated based on the surface position and geometry.
+     */
+    std::shared_ptr<Pattern> pattern;
 
     /**
      * @brief Ambient reflectivity coefficient.
@@ -63,17 +74,21 @@ public:
      * @brief Computes the color at a given point using the Phong lighting model.
      *
      * This method combines the ambient, diffuse, and specular components
-     * to simulate realistic lighting on the material.
+     * to simulate realistic lighting on the material. If a pattern is present,
+     * it is used instead of the base color during shading.
      *
      * @param light The light source affecting the material.
+     * @param geo Pointer to the geometry this material is applied to.
      * @param position The point on the surface being illuminated.
      * @param eye_vector The direction from the point to the viewer.
      * @param normal_vector The normal vector at the surface point.
+     * @param in_shadow Whether the point is in shadow (true) or not (false).
      * @return colour_t The resulting color after applying lighting effects.
      */
     virtual colour_t lighting
     (
         const Light& light,
+        const Geometry* geo,
         const tuple_t& position,
         const tuple_t& eye_vector,
         const tuple_t& normal_vector,
