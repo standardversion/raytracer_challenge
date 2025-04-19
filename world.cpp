@@ -83,7 +83,7 @@ colour_t World::reflected_colour(const intersection_state& state, int remaining)
 	if (phong && phong->reflective > 0)
 	{
 		const ray_t reflected_ray{ state.over_point, state.reflect_vector };
-		colour = colour_at(reflected_ray, remaining--);
+		colour = colour_at(reflected_ray, remaining - 1);
 		return colour * phong->reflective;
 	}
 	return colour;
@@ -109,7 +109,7 @@ colour_t World::refracted_colour(const intersection_state& state, int remaining)
 		const double cos_t{ std::sqrt(1.0 - sin2_t) };
 		const tuple_t direction{ state.normal * (n_ratio * cos_i - cos_t) - state.eye_vector * n_ratio };
 		const ray_t refract_ray{ state.under_point, direction };
-		colour = colour_at(refract_ray, remaining--) * phong->transparency;
+		colour = colour_at(refract_ray, remaining - 1) * phong->transparency;
 	}
 	else
 	{
