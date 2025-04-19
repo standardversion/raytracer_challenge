@@ -1,6 +1,4 @@
-﻿#include <string>
-#include <vector>
-#include "gtest/gtest.h"
+﻿#include "gtest/gtest.h"
 #include "../plane.h"
 #include "../intersection.h"
 

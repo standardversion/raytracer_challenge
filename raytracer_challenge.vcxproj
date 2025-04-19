@@ -162,7 +162,9 @@
     <ClInclude Include="canvas.h" />
     <ClInclude Include="checker.h" />
     <ClInclude Include="colour.h" />
+    <ClInclude Include="cube.h" />
     <ClInclude Include="exercises\build_scene.h" />
+    <ClInclude Include="exercises\cubes.h" />
     <ClInclude Include="exercises\patterns.h" />
     <ClInclude Include="exercises\planes.h" />
     <ClInclude Include="exercises\projectile.h" />
@@ -195,6 +197,7 @@
     <ClCompile Include="canvas.cpp" />
     <ClCompile Include="checker.cpp" />
     <ClCompile Include="colour.cpp" />
+    <ClCompile Include="cube.cpp" />
     <ClCompile Include="gradient.cpp" />
     <ClCompile Include="intersection.cpp" />
     <ClCompile Include="intersection_state.cpp" />

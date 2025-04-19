@@ -119,7 +119,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>gtest_main.lib;gtest.lib;gmock.lib;gmock_main.lib;tuple.obj;colour.obj;canvas.obj;ppm.obj;utils.obj;matrix.obj;ray.obj;sphere.obj;intersection.obj;phong.obj;geometry.obj;scene_object.obj;light.obj;world.obj;camera.obj;plane.obj;pattern.obj;stripe.obj;gradient.obj;ring.obj;checker.obj;intersection_state.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gtest_main.lib;gtest.lib;gmock.lib;gmock_main.lib;tuple.obj;colour.obj;canvas.obj;ppm.obj;utils.obj;matrix.obj;ray.obj;sphere.obj;intersection.obj;phong.obj;geometry.obj;scene_object.obj;light.obj;world.obj;camera.obj;plane.obj;pattern.obj;stripe.obj;gradient.obj;ring.obj;checker.obj;intersection_state.obj;cube.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -139,7 +139,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;gtest_main.lib;gtest.lib;gmock.lib;gmock_main.lib;tuple.obj;colour.obj;canvas.obj;ppm.obj;utils.obj;matrix.obj;ray.obj;sphere.obj;intersection.obj;phong.obj;geometry.obj;scene_object.obj;light.obj;world.obj;camera.obj;plane.obj;pattern.obj;stripe.obj;gradient.obj;ring.obj;checker.obj;intersection_state.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;gtest_main.lib;gtest.lib;gmock.lib;gmock_main.lib;tuple.obj;colour.obj;canvas.obj;ppm.obj;utils.obj;matrix.obj;ray.obj;sphere.obj;intersection.obj;phong.obj;geometry.obj;scene_object.obj;light.obj;world.obj;camera.obj;plane.obj;pattern.obj;stripe.obj;gradient.obj;ring.obj;checker.obj;intersection_state.obj;cube.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -147,6 +147,7 @@
     <ClCompile Include="canvas_tests.cpp" />
     <ClCompile Include="checker_tests.cpp" />
     <ClCompile Include="colour_tests.cpp" />
+    <ClCompile Include="cube_tests.cpp" />
     <ClCompile Include="geometry_tests.cpp" />
     <ClCompile Include="gradient_tests.cpp" />
     <ClCompile Include="intersection_tests.cpp" />

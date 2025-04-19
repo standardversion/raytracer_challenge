@@ -1,7 +1,7 @@
-#include "./exercises/reflect_refract.h"
+#include "./exercises/cubes.h"
 
 int main()
 {
-	reflect_refract_exercise();
+	cubes_exercise();
 	return 0;
 }
