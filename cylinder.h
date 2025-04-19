@@ -67,7 +67,7 @@ public:
      */
     tuple_t local_normal_at(const tuple_t& local_point) const override;
 
-private:
+protected:
     /**
      * @brief Helper function to compute ray intersections with the cylinder's end caps.
      *
@@ -89,6 +89,7 @@ private:
      */
     bool check_cap(const ray_t& local_ray, const double time) const;
 
+protected:
     /**
      * @brief Constructs a Cylinder.
      *
