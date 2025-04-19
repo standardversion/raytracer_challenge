@@ -35,6 +35,16 @@ public:
      */
     static std::unique_ptr<Sphere> create(double radius = 1.0);
 
+    /**
+     * @brief Creates a new unique pointer to a transparent glass Sphere instance.
+     *
+     * Constructs a sphere with default properties for glass: fully transparent,
+     * with a refractive index of 1.5. Use this factory method when simulating
+     * realistic glass or other transparent materials.
+     *
+     * @param radius The radius of the sphere (default is 1.0).
+     * @return std::unique_ptr<Sphere> A unique pointer to the created glass Sphere.
+     */
     static std::unique_ptr<Sphere> glass_sphere(double radius = 1.0);
 
     /**

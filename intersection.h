@@ -43,14 +43,19 @@ struct intersection_t
 	bool operator==(const intersection_t& i) const;
 
 	/**
-	 * @brief Prepares detailed information about the intersection for shading.
+	 * @brief Prepares detailed shading information at the point of intersection.
 	 *
-	 * Calculates and returns an `intersection_state` object, which includes
-	 * useful data such as the hit point, surface normal, eye vector, reflection vector,
-	 * and whether the hit occurs inside or outside the object.
+	 * Constructs and returns an `intersection_state` object containing all necessary
+	 * data for shading computations. This includes the point of intersection, the surface
+	 * normal at that point, the eye (view) vector, the reflection vector, and a flag
+	 * indicating whether the intersection occurs inside the object. It also calculates
+	 * values related to refraction such as the over and under points and optionally
+	 * the refractive indices before and after the intersection.
 	 *
-	 * @param r The ray that caused the intersection.
-	 * @return An `intersection_state` structure with precomputed shading information.
+	 * @param r The ray that intersects the object.
+	 * @param intersections A list of all intersections between the ray and scene geometry,
+	 *                      used to determine context like refractive indices.
+	 * @return An `intersection_state` structure populated with precomputed data for shading.
 	 */
 	intersection_state prepare(const ray_t& r, const intersections_t& intersections) const;
 };

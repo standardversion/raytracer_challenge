@@ -63,10 +63,37 @@ public:
      */
     double shininess{ 200.0 };
 
+    /**
+     * @brief Reflectivity of the surface.
+     *
+     * A value between 0 and 1 indicating how much light is reflected by the surface.
+     * A value of 0 means no reflection, while 1 represents a perfect mirror.
+     * Default is 0.0.
+    */
     double reflective{ 0.0 };
 
+    /**
+     * @brief Transparency of the surface.
+     *
+     * A value between 0 and 1 indicating how much light passes through the surface.
+     * A value of 0 means the surface is opaque; 1 means fully transparent.
+     * Default is 0.0.
+     */
     double transparency{ 0.0 };
 
+    /**
+     * @brief Refractive index of the material.
+     *
+     * Determines how much the material bends light during refraction.
+     * Typical values:
+     * - Vacuum: 1.0
+     * - Air: ~1.0003
+     * - Water: ~1.33
+     * - Glass: ~1.5
+     * - Diamond: ~2.42
+     *
+     * Default is 1.0 (vacuum).
+     */
     double refractive_index{ 1.0 };
 
     /**
