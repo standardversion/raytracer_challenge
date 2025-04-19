@@ -624,3 +624,55 @@ TEST(world, should_return_colour_for_shade_hit_with_transparent_material)
     const colour_t c{ 0.93642, 0.68642, 0.68642 };
     EXPECT_EQ(w.shade_hit(state, 5), c);
 }
+
+/*
+Scenario: shade_hit() with a reflective, transparent material
+  Given w ← default_world()
+    And r ← ray(point(0, 0, -3), vector(0, -√2/2, √2/2))
+    And floor ← plane() with:
+      | transform                 | translation(0, -1, 0) |
+      | material.reflective       | 0.5                   |
+      | material.transparency     | 0.5                   |
+      | material.refractive_index | 1.5                   |
+    And floor is added to w
+    And ball ← sphere() with:
+      | material.color     | (1, 0, 0)                  |
+      | material.ambient   | 0.5                        |
+      | transform          | translation(0, -3.5, -0.5) |
+    And ball is added to w
+    And xs ← intersections(√2:floor)
+  When comps ← xs[0].prepare(r, xs)
+    And color ← w.shade_hit(comps, 5)
+  Then color = color(0.93391, 0.69643, 0.69243)
+*/
+TEST(world, should_return_colour_for_shade_hit_with_reflective_transparent_material)
+{
+    World w{ World::default_world() };
+    auto p{ Plane::create() };
+    p->transform = matrix_t::translation(0, -1, 0);
+    auto phong{ std::dynamic_pointer_cast<Phong>(p->material) };
+    if (phong)
+    {
+        phong->transparency = 0.5;
+        phong->reflective = 0.5;
+        phong->refractive_index = 1.5;
+
+    }
+    w.add_object(std::move(p));
+    auto s{ Sphere::create() };
+    phong = std::dynamic_pointer_cast<Phong>(s->material);
+    if (phong)
+    {
+        phong->colour = colour_t{ 1, 0, 0 };
+        phong->ambient = 0.5;
+    }
+    s->transform = matrix_t::translation(0, -3.5, -0.5);
+    w.add_object(std::move(s));
+    const ray_t r{ tuple_t::point(0, 0, -3), tuple_t::vector(0, -std::sqrt(2) / 2, std::sqrt(2) / 2) };
+    intersections_t intersections{};
+    const intersection_t i{ std::sqrt(2), w.renderables[2] };
+    intersections.add(i);
+    const intersection_state state{ intersections[0].prepare(r, intersections) };
+    const colour_t c{ 0.93391, 0.69643, 0.69243 };
+    EXPECT_EQ(w.shade_hit(state, 5), c);
+}

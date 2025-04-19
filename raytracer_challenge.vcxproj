@@ -192,6 +192,7 @@
     <ClCompile Include="colour.cpp" />
     <ClCompile Include="gradient.cpp" />
     <ClCompile Include="intersection.cpp" />
+    <ClCompile Include="intersection_state.cpp" />
     <ClCompile Include="light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="matrix.cpp" />

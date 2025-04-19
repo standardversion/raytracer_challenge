@@ -378,3 +378,71 @@ TEST(intersect, should_set_under_point_as_offset_below_the_surface)
     EXPECT_TRUE(state.under_point.z > EPSILON / 2);
     EXPECT_TRUE(state.point.z < state.under_point.z);
 }
+
+/*
+Scenario: The Schlick approximation under total internal reflection
+  Given shape ← glass_sphere()
+    And r ← ray(point(0, 0, √2/2), vector(0, 1, 0))
+    And xs ← intersections(-√2/2:shape, √2/2:shape)
+  When comps ← xs[1].prepare(r, xs)
+    And reflectance ← comps.schlick()
+  Then reflectance = 1.0
+*/
+TEST(intersect, should_calculate_schlick_approximation_under_total_internal_reflection)
+{
+    const tuple_t origin{ tuple_t::point(0, 0, std::sqrt(2) / 2) };
+    const tuple_t direction{ tuple_t::vector(0, 1, 0) };
+    const ray_t r{ origin, direction };
+    auto s{ Sphere::glass_sphere() };
+    const intersection_t i{ -std::sqrt(2) / 2, s.get() };
+    const intersection_t i2{ std::sqrt(2) / 2, s.get() };
+    intersections_t intersections{};
+    intersections.add(i, i2);
+    const intersection_state state{ intersections[1].prepare(r, intersections) };
+    EXPECT_EQ(state.schlick(), 1.0);
+}
+
+/*
+Scenario: The Schlick approximation with a perpendicular viewing angle
+  Given shape ← glass_sphere()
+    And r ← ray(point(0, 0, 0), vector(0, 1, 0))
+    And xs ← intersections(-1:shape, 1:shape)
+  When comps ← xs[1].prepare(r, xs)
+    And reflectance ← comps.schlick()
+  Then reflectance = 0.04
+*/
+TEST(intersect, should_calculate_schlick_approximation_with_a_perpendicular_viewing_angle)
+{
+    const tuple_t origin{ tuple_t::point(0, 0, 0) };
+    const tuple_t direction{ tuple_t::vector(0, 1, 0) };
+    const ray_t r{ origin, direction };
+    auto s{ Sphere::glass_sphere() };
+    const intersection_t i{ -1, s.get() };
+    const intersection_t i2{ 1, s.get() };
+    intersections_t intersections{};
+    intersections.add(i, i2);
+    const intersection_state state{ intersections[1].prepare(r, intersections) };
+    EXPECT_NEAR(state.schlick(), 0.04, 0.0001);
+}
+
+/*
+Scenario: The Schlick approximation with small angle and n2 > n1
+  Given shape ← glass_sphere()
+    And r ← ray(point(0, 0.99, -2), vector(0, 0, 1))
+    And xs ← intersections(1.8589:shape)
+  When comps ← xs[0].prepare(r, xs)
+    And reflectance ← comps.schlick()
+  Then reflectance = 0.48873
+*/
+TEST(intersect, should_calculate_schlick_approximation_with_small_angle_and_n2_greater_than_n1)
+{
+    const tuple_t origin{ tuple_t::point(0, 0.99, -2) };
+    const tuple_t direction{ tuple_t::vector(0, 0, 1) };
+    const ray_t r{ origin, direction };
+    auto s{ Sphere::glass_sphere() };
+    const intersection_t i{ 1.8589, s.get() };
+    intersections_t intersections{};
+    intersections.add(i);
+    const intersection_state state{ intersections[0].prepare(r, intersections) };
+    EXPECT_NEAR(state.schlick(), 0.48873, 0.0001);
+}

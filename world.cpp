@@ -56,8 +56,18 @@ colour_t World::shade_hit(const intersection_state& state, int remaining) const
 	{
 		const bool in_shadow{ is_shadowed(state.over_point, light) };
 		colour += state.object->material->lighting(*light, state.object, state.point, state.eye_vector, state.normal, in_shadow);
-		colour += reflected_colour(state, remaining);
-		colour += refracted_colour(state, remaining);
+		colour_t reflected_c{ reflected_colour(state, remaining) };
+		colour_t refracted_c{ refracted_colour(state, remaining) };
+		auto phong{ std::dynamic_pointer_cast<Phong>(state.object->material) };
+		if (phong && phong->reflective > 0 && phong->transparency > 0)
+		{
+			const double reflectance{ state.schlick() };
+			colour += reflected_c * reflectance + refracted_c * (1 - reflectance);
+		}
+		else
+		{
+			colour += reflected_c + refracted_c;
+		}
 	}
 	return colour;
 }

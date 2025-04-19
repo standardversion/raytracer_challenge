@@ -69,5 +69,7 @@ struct intersection_state
 
 	double n1;
 	double n2;
+
+	double schlick() const;
 };
 
