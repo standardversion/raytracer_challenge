@@ -162,7 +162,13 @@
     <ClInclude Include="canvas.h" />
     <ClInclude Include="checker.h" />
     <ClInclude Include="colour.h" />
-    <ClInclude Include="environment.h" />
+    <ClInclude Include="exercises\build_scene.h" />
+    <ClInclude Include="exercises\patterns.h" />
+    <ClInclude Include="exercises\planes.h" />
+    <ClInclude Include="exercises\projectile.h" />
+    <ClInclude Include="exercises\reflect_refract.h" />
+    <ClInclude Include="exercises\sphere_intersection.h" />
+    <ClInclude Include="exercises\sphere_phong.h" />
     <ClInclude Include="gradient.h" />
     <ClInclude Include="intersection.h" />
     <ClInclude Include="intersection_state.h" />
@@ -174,7 +180,6 @@
     <ClInclude Include="phong.h" />
     <ClInclude Include="plane.h" />
     <ClInclude Include="ppm.h" />
-    <ClInclude Include="projectile.h" />
     <ClInclude Include="ray.h" />
     <ClInclude Include="ring.h" />
     <ClInclude Include="scene_object.h" />
