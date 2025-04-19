@@ -48,6 +48,8 @@ struct intersection_state
 	 */
 	tuple_t over_point;
 
+	tuple_t under_point;
+
 	/**
 	 * @brief A vector pointing from the intersection point back toward the ray origin.
 	 *
@@ -56,11 +58,42 @@ struct intersection_state
 	tuple_t eye_vector;
 
 	/**
+	 * @brief The reflection vector at the point of intersection.
+	 *
+	 * Used in reflective shading models to trace reflected rays.
+	 */
+	tuple_t reflect_vector;
+
+	/**
 	 * @brief The surface normal at the point of intersection.
 	 *
 	 * Always points outward from the surface. If the ray entered the object,
 	 * this vector is inverted to maintain consistency.
 	 */
 	tuple_t normal;
+
+	/**
+	 * @brief The refractive index of the medium the ray is exiting.
+	 *
+	 * Used in Snell's Law when calculating refraction.
+	 */
+	double n1;
+
+	/**
+	 * @brief The refractive index of the medium the ray is entering.
+	 *
+	 * Used in Snell's Law when calculating refraction.
+	 */
+	double n2;
+
+	/**
+	 * @brief Computes the reflectance at the intersection using the Schlick approximation.
+	 *
+	 * This method provides an efficient way to approximate the Fresnel effect,
+	 * which determines how much light is reflected versus refracted at a surface.
+	 *
+	 * @return The reflectance coefficient (between 0 and 1).
+	 */
+	double schlick() const;
 };
 

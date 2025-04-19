@@ -1,10 +1,13 @@
 ﻿#include <string>
 #include <vector>
+#include <cmath>
 #include "gtest/gtest.h"
 #include "../sphere.h"
+#include "../plane.h"
 #include "../intersection.h"
 #include "../intersection_state.h"
 #include "../settings.h"
+#include "../phong.h"
 
 /*
 Scenario: An intersection encapsulates t and object
@@ -169,8 +172,9 @@ TEST(intersect, should_precompute_state_of_an_intersection)
     const tuple_t direction{ tuple_t::vector(0, 0, 1) };
     const ray_t r{ origin, direction };
     const auto s{ Sphere::create() };
+    const intersections_t intersections{};
     const intersection_t i{ 4, s.get() };
-    const intersection_state state{ i.prepare(r) };
+    const intersection_state state{ i.prepare(r, intersections) };
     EXPECT_EQ(state.time, 4);
     EXPECT_EQ(state.object, i.object);
     EXPECT_EQ(state.point, tuple_t::point(0, 0, -1));
@@ -192,8 +196,9 @@ TEST(intersect, should_set_state_inside_attr_to_false)
     const tuple_t direction{ tuple_t::vector(0, 0, 1) };
     const ray_t r{ origin, direction };
     const auto s{ Sphere::create() };
+    const intersections_t intersections{};
     const intersection_t i{ 4, s.get() };
-    const intersection_state state{ i.prepare(r) };
+    const intersection_state state{ i.prepare(r, intersections) };
     EXPECT_FALSE(state.inside);
 }
 
@@ -215,8 +220,9 @@ TEST(intersect, should_set_state_inside_attr_to_true)
     const tuple_t direction{ tuple_t::vector(0, 0, 1) };
     const ray_t r{ origin, direction };
     const auto s{ Sphere::create() };
+    const intersections_t intersections{};
     const intersection_t i{ 1, s.get() };
-    const intersection_state state{ i.prepare(r) };
+    const intersection_state state{ i.prepare(r, intersections) };
     EXPECT_TRUE(state.inside);
     EXPECT_EQ(state.point, tuple_t::point(0, 0, 1));
     EXPECT_EQ(state.eye_vector, tuple_t::vector(0, 0, -1));
@@ -240,8 +246,203 @@ TEST(intersect, should_offset_the_point_on_hit)
     const ray_t r{ origin, direction };
     auto s{ Sphere::create() };
     s->transform = matrix_t::translation(0, 0, 1);
+    const intersections_t intersections{};
     const intersection_t i{ 5, s.get() };
-    const intersection_state state{ i.prepare(r) };
+    const intersection_state state{ i.prepare(r, intersections) };
     EXPECT_TRUE(state.over_point.z < -EPSILON / 2);
     EXPECT_TRUE(state.point.z > state.over_point.z);
+}
+
+/*
+Scenario: Precomputing the reflection vector
+  Given shape ← plane()
+    And r ← ray(point(0, 1, -1), vector(0, -√2/2, √2/2))
+    And i ← intersection(√2, shape)
+  When state ← i.prepare(r)
+  Then state.reflect_vector = vector(0, √2/2, √2/2)
+*/
+TEST(intersect, should_precompute_reflection_vector)
+{
+    const tuple_t origin{ tuple_t::point(0, 1, -5) };
+    const tuple_t direction{ tuple_t::vector(0, -std::sqrt(2) / 2, std::sqrt(2) / 2)};
+    const ray_t r{ origin, direction };
+    const auto p{ Plane::create() };
+    const intersections_t intersections{};
+    const intersection_t i{ std::sqrt(2), p.get() };
+    const intersection_state state{ i.prepare(r, intersections) };
+    EXPECT_EQ(state.reflect_vector, tuple_t::vector(0, std::sqrt(2) / 2, std::sqrt(2) / 2));
+}
+
+/*
+Scenario Outline: Finding n1 and n2 at various intersections
+  Given A ← glass_sphere() with:
+      | transform                 | scaling(2, 2, 2) |
+      | material.refractive_index | 1.5              |
+    And B ← glass_sphere() with:
+      | transform                 | translation(0, 0, -0.25) |
+      | material.refractive_index | 2.0                      |
+    And C ← glass_sphere() with:
+      | transform                 | translation(0, 0, 0.25) |
+      | material.refractive_index | 2.5                     |
+    And r ← ray(point(0, 0, -4), vector(0, 0, 1))
+    And xs ← intersections(2:A, 2.75:B, 3.25:C, 4.75:B, 5.25:C, 6:A)
+  When state ← xs[<index>].prepare(r, xs)
+  Then state.n1 = <n1>
+    And state.n2 = <n2>
+
+  Examples:
+    | index | n1  | n2  |
+    | 0     | 1.0 | 1.5 |
+    | 1     | 1.5 | 2.0 |
+    | 2     | 2.0 | 2.5 |
+    | 3     | 2.5 | 2.5 |
+    | 4     | 2.5 | 1.5 |
+    | 5     | 1.5 | 1.0 |
+*/
+TEST(intersect, should_find_n1_and_n2_at_various_intersections)
+{
+    const tuple_t origin{ tuple_t::point(0, 0, -4) };
+    const tuple_t direction{ tuple_t::vector(0, 0, 1) };
+    const ray_t r{ origin, direction };
+    auto a{ Sphere::glass_sphere() };
+    a->transform = matrix_t::scaling(2, 2, 2);
+    auto phong{ std::dynamic_pointer_cast<Phong>(a->material) };
+    if (phong)
+    {
+        phong->refractive_index = 1.5;
+    }
+    auto b{ Sphere::glass_sphere() };
+    b->transform = matrix_t::translation(0, 0, -0.25);
+    phong = std::dynamic_pointer_cast<Phong>(b->material);
+    if (phong)
+    {
+        phong->refractive_index = 2.0;
+    }
+    auto c{ Sphere::glass_sphere() };
+    c->transform = matrix_t::translation(0, 0, 0.25);
+    phong = std::dynamic_pointer_cast<Phong>(c->material);
+    if (phong)
+    {
+        phong->refractive_index = 2.5;
+    }
+    const intersection_t i{ 2, a.get() };
+    const intersection_t i2{ 2.75, b.get() };
+    const intersection_t i3{ 3.25, c.get() };
+    const intersection_t i4{ 4.75, b.get() };
+    const intersection_t i5{ 5.25, c.get() };
+    const intersection_t i6{ 6, a.get() };
+    intersections_t intersections{};
+    intersections.add(i, i2, i3, i4, i5, i6);
+    intersection_state state{ intersections[0].prepare(r, intersections)};
+    EXPECT_EQ(state.n1, 1.0);
+    EXPECT_EQ(state.n2, 1.5);
+    state = intersections[1].prepare(r, intersections);
+    EXPECT_EQ(state.n1, 1.5);
+    EXPECT_EQ(state.n2, 2.0);
+    state = intersections[2].prepare(r, intersections);
+    EXPECT_EQ(state.n1, 2.0);
+    EXPECT_EQ(state.n2, 2.5);
+    state = intersections[3].prepare(r, intersections);
+    EXPECT_EQ(state.n1, 2.5);
+    EXPECT_EQ(state.n2, 2.5);
+    state = intersections[4].prepare(r, intersections);
+    EXPECT_EQ(state.n1, 2.5);
+    EXPECT_EQ(state.n2, 1.5);
+    state = intersections[5].prepare(r, intersections);
+    EXPECT_EQ(state.n1, 1.5);
+    EXPECT_EQ(state.n2, 1.0);
+}
+
+/*
+Scenario: The under point is offset below the surface
+  Given r ← ray(point(0, 0, -5), vector(0, 0, 1))
+    And shape ← glass_sphere() with:
+      | transform | translation(0, 0, 1) |
+    And i ← intersection(5, shape)
+    And xs ← intersections(i)
+  When state ← i.prepare(r, xs)
+  Then state.under_point.z > EPSILON/2
+    And state.point.z < comps.under_point.z
+*/
+TEST(intersect, should_set_under_point_as_offset_below_the_surface)
+{
+    const tuple_t origin{ tuple_t::point(0, 0, -5) };
+    const tuple_t direction{ tuple_t::vector(0, 0, 1) };
+    const ray_t r{ origin, direction };
+    auto s{ Sphere::glass_sphere() };
+    s->transform = matrix_t::translation(0, 0, 1);
+    intersections_t intersections{};
+    const intersection_t i{ 5, s.get() };
+    intersections.add(i);
+    const intersection_state state{ i.prepare(r, intersections) };
+    EXPECT_TRUE(state.under_point.z > EPSILON / 2);
+    EXPECT_TRUE(state.point.z < state.under_point.z);
+}
+
+/*
+Scenario: The Schlick approximation under total internal reflection
+  Given shape ← glass_sphere()
+    And r ← ray(point(0, 0, √2/2), vector(0, 1, 0))
+    And xs ← intersections(-√2/2:shape, √2/2:shape)
+  When comps ← xs[1].prepare(r, xs)
+    And reflectance ← comps.schlick()
+  Then reflectance = 1.0
+*/
+TEST(intersect, should_calculate_schlick_approximation_under_total_internal_reflection)
+{
+    const tuple_t origin{ tuple_t::point(0, 0, std::sqrt(2) / 2) };
+    const tuple_t direction{ tuple_t::vector(0, 1, 0) };
+    const ray_t r{ origin, direction };
+    auto s{ Sphere::glass_sphere() };
+    const intersection_t i{ -std::sqrt(2) / 2, s.get() };
+    const intersection_t i2{ std::sqrt(2) / 2, s.get() };
+    intersections_t intersections{};
+    intersections.add(i, i2);
+    const intersection_state state{ intersections[1].prepare(r, intersections) };
+    EXPECT_EQ(state.schlick(), 1.0);
+}
+
+/*
+Scenario: The Schlick approximation with a perpendicular viewing angle
+  Given shape ← glass_sphere()
+    And r ← ray(point(0, 0, 0), vector(0, 1, 0))
+    And xs ← intersections(-1:shape, 1:shape)
+  When comps ← xs[1].prepare(r, xs)
+    And reflectance ← comps.schlick()
+  Then reflectance = 0.04
+*/
+TEST(intersect, should_calculate_schlick_approximation_with_a_perpendicular_viewing_angle)
+{
+    const tuple_t origin{ tuple_t::point(0, 0, 0) };
+    const tuple_t direction{ tuple_t::vector(0, 1, 0) };
+    const ray_t r{ origin, direction };
+    auto s{ Sphere::glass_sphere() };
+    const intersection_t i{ -1, s.get() };
+    const intersection_t i2{ 1, s.get() };
+    intersections_t intersections{};
+    intersections.add(i, i2);
+    const intersection_state state{ intersections[1].prepare(r, intersections) };
+    EXPECT_NEAR(state.schlick(), 0.04, 0.0001);
+}
+
+/*
+Scenario: The Schlick approximation with small angle and n2 > n1
+  Given shape ← glass_sphere()
+    And r ← ray(point(0, 0.99, -2), vector(0, 0, 1))
+    And xs ← intersections(1.8589:shape)
+  When comps ← xs[0].prepare(r, xs)
+    And reflectance ← comps.schlick()
+  Then reflectance = 0.48873
+*/
+TEST(intersect, should_calculate_schlick_approximation_with_small_angle_and_n2_greater_than_n1)
+{
+    const tuple_t origin{ tuple_t::point(0, 0.99, -2) };
+    const tuple_t direction{ tuple_t::vector(0, 0, 1) };
+    const ray_t r{ origin, direction };
+    auto s{ Sphere::glass_sphere() };
+    const intersection_t i{ 1.8589, s.get() };
+    intersections_t intersections{};
+    intersections.add(i);
+    const intersection_state state{ intersections[0].prepare(r, intersections) };
+    EXPECT_NEAR(state.schlick(), 0.48873, 0.0001);
 }

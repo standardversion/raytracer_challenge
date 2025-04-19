@@ -1,4 +1,5 @@
-﻿#include "gtest/gtest.h"
+﻿#include <memory>
+#include "gtest/gtest.h"
 #include "../sphere.h"
 #include "../ray.h"
 #include "../intersection.h"
@@ -347,4 +348,19 @@ TEST(sphere, should_be_able_to_assign_material)
 	m->ambient = 1;
 	s->material = m;
 	EXPECT_EQ(s->material.get(), m.get());
+}
+
+/*
+Scenario: A helper for producing a sphere with a glassy material
+  Given s ← glass_sphere()
+  Then s.transform = identity_matrix
+	And s.material.transparency = 1.0
+	And s.material.refractive_index = 1.5
+*/
+TEST(sphere, should_create_a_glass_sphere)
+{
+	const auto s{ Sphere::glass_sphere() };
+	auto m { std::dynamic_pointer_cast<Phong>(s->material) };
+	EXPECT_EQ(m->transparency, 1.0);
+	EXPECT_EQ(m->refractive_index, 1.5);
 }

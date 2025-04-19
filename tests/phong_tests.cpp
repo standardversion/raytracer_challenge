@@ -193,3 +193,27 @@ TEST(phong, should_take_applied_pattern_into_account)
     EXPECT_EQ(m.lighting(light, dynamic_cast<Sphere*>(s.get()), tuple_t::point(0.9, 0, 0), eye_vector, normal_vector, in_shadow), r);
     EXPECT_EQ(m.lighting(light, dynamic_cast<Sphere*>(s.get()), tuple_t::point(1.1, 0, 0), eye_vector, normal_vector, in_shadow), r2);
 }
+
+/*
+Scenario: Reflectivity for the default material
+  Given m ← phong()
+  Then m.reflective = 0.0
+*/
+TEST(phong, should_have_default_reflective_value)
+{
+    const Phong m{};
+    EXPECT_EQ(m.reflective, 0.0);
+}
+
+/*
+Scenario: Transparency and Refractive Index for the default material
+  Given m ← phong()
+  Then m.transparency = 0.0
+    And m.refractive_index = 1.0
+*/
+TEST(phong, should_have_default_transparency_and_refractive_index_value)
+{
+    const Phong m{};
+    EXPECT_EQ(m.transparency, 0.0);
+    EXPECT_EQ(m.refractive_index, 1.0);
+}

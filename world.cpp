@@ -1,4 +1,5 @@
 #include <memory>
+#include <cmath>
 #include "world.h"
 #include "light.h"
 #include "geometry.h"
@@ -48,18 +49,76 @@ void World::intersect(const ray_t& ray, intersections_t& intersections) const
 	}
 }
 
-colour_t World::shade_hit(const intersection_state& state) const
+colour_t World::shade_hit(const intersection_state& state, int remaining) const
 {
 	colour_t colour{ 0, 0, 0 };
 	for (const auto light : lights)
 	{
 		const bool in_shadow{ is_shadowed(state.over_point, light) };
 		colour += state.object->material->lighting(*light, state.object, state.point, state.eye_vector, state.normal, in_shadow);
+		colour_t reflected_c{ reflected_colour(state, remaining) };
+		colour_t refracted_c{ refracted_colour(state, remaining) };
+		auto phong{ std::dynamic_pointer_cast<Phong>(state.object->material) };
+		if (phong && phong->reflective > 0 && phong->transparency > 0)
+		{
+			const double reflectance{ state.schlick() };
+			colour += reflected_c * reflectance + refracted_c * (1 - reflectance);
+		}
+		else
+		{
+			colour += reflected_c + refracted_c;
+		}
 	}
 	return colour;
 }
 
-colour_t World::colour_at(const ray_t& ray) const
+colour_t World::reflected_colour(const intersection_state& state, int remaining) const
+{
+	colour_t colour{ 0, 0, 0 };
+	if (remaining <= 0)
+	{
+		return colour;
+	}
+	auto phong{ std::dynamic_pointer_cast<Phong>(state.object->material) };
+	if (phong && phong->reflective > 0)
+	{
+		const ray_t reflected_ray{ state.over_point, state.reflect_vector };
+		colour = colour_at(reflected_ray, remaining - 1);
+		return colour * phong->reflective;
+	}
+	return colour;
+}
+
+colour_t World::refracted_colour(const intersection_state& state, int remaining) const
+{
+	colour_t colour{ 1, 1, 1 };
+	if (remaining <= 0)
+	{
+		return colour_t{ 0, 0, 0 };
+	}
+	auto phong{ std::dynamic_pointer_cast<Phong>(state.object->material) };
+	if (phong && phong->transparency > 0)
+	{
+		const double n_ratio{ state.n1 / state.n2 };
+		const double cos_i{ tuple_t::dot(state.eye_vector, state.normal) };
+		const double sin2_t{ pow(n_ratio, 2) * (1 - pow(cos_i, 2)) };
+		if (sin2_t > 1)
+		{
+			return colour_t{ 0, 0, 0 };
+		}
+		const double cos_t{ std::sqrt(1.0 - sin2_t) };
+		const tuple_t direction{ state.normal * (n_ratio * cos_i - cos_t) - state.eye_vector * n_ratio };
+		const ray_t refract_ray{ state.under_point, direction };
+		colour = colour_at(refract_ray, remaining - 1) * phong->transparency;
+	}
+	else
+	{
+		return colour_t{ 0, 0, 0 };
+	}
+	return colour;
+}
+
+colour_t World::colour_at(const ray_t& ray, int remaining) const
 {
 	colour_t colour{ 0, 0, 0 };
 	intersections_t intersections{};
@@ -67,8 +126,8 @@ colour_t World::colour_at(const ray_t& ray) const
 	const intersection_t intersection{ intersections.hit() };
 	if (intersection.object)
 	{
-		intersection_state state{ intersection.prepare(ray) };
-		colour += shade_hit(state);
+		intersection_state state{ intersection.prepare(ray, intersections) };
+		colour += shade_hit(state, remaining);
 	}
 	return colour;
 }

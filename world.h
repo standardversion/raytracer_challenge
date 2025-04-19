@@ -73,20 +73,49 @@ public:
 	 * @brief Computes the color at the point of intersection.
 	 *
 	 * @param state The precomputed intersection state, including point, normal, etc.
+	 * @param remaining The number of remaining recursive reflection/refraction calls allowed.
 	 * @return The final shaded color at the intersection point.
 	 *
 	 * This method performs lighting calculations (e.g., diffuse, specular)
 	 * using the intersection data and the world's lights.
 	 */
-	colour_t shade_hit(const intersection_state& state) const;
+	colour_t shade_hit(const intersection_state& state, int remaining) const;
+
+	/**
+	 * @brief Computes the color contribution from reflection at the intersection point.
+	 *
+	 * @param state The precomputed intersection state, including surface normal, reflection vector, etc.
+	 * @param remaining The number of remaining recursive reflection/refraction calls allowed.
+	 * @return The color resulting from reflected light, or black if the surface is not reflective.
+	 *
+	 * This method handles recursive tracing of reflected rays, contributing to the final shaded color.
+	 */
+	colour_t reflected_colour(const intersection_state& state, int remaining) const;
+
+	/**
+	 * @brief Computes the color contribution from refraction at the intersection point.
+	 *
+	 * @param state The precomputed intersection state, including refractive indices and under point.
+	 * @param remaining The number of remaining recursive reflection/refraction calls allowed.
+	 * @return The color resulting from refracted light, or black if the surface is opaque.
+	 *
+	 * This method traces refracted rays based on Snell's Law and accounts for total internal reflection
+	 * when applicable.
+	 */
+	colour_t refracted_colour(const intersection_state& state, int remaining) const;
 
 	/**
 	 * @brief Computes the color seen along a given ray.
 	 *
 	 * @param ray The ray being cast into the scene.
+	 * @param remaining The number of remaining recursive reflection/refraction calls allowed.
 	 * @return The resulting color at the first visible intersection, or background color if no hit occurs.
+	 *
+	 * This is the main entry point for ray tracing a single ray through the scene, combining direct lighting,
+	 * reflections, and refractions based on the material properties at the hit point.
 	 */
-	colour_t colour_at(const ray_t& ray) const;
+	colour_t colour_at(const ray_t& ray, int remaining) const;
+
 
 	/**
 	 * @brief Determines whether a point in the world is in shadow relative to a light source.
