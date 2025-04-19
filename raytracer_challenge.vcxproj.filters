@@ -13,15 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Exercises">
+      <UniqueIdentifier>{9e83e0a9-f13f-4aa3-bf94-4f7929c24b3e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="tuple.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="projectile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="environment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="colour.h">
@@ -93,6 +90,33 @@
     <ClInclude Include="checker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="exercises\build_scene.h">
+      <Filter>Exercises</Filter>
+    </ClInclude>
+    <ClInclude Include="exercises\patterns.h">
+      <Filter>Exercises</Filter>
+    </ClInclude>
+    <ClInclude Include="exercises\planes.h">
+      <Filter>Exercises</Filter>
+    </ClInclude>
+    <ClInclude Include="exercises\projectile.h">
+      <Filter>Exercises</Filter>
+    </ClInclude>
+    <ClInclude Include="exercises\reflect_refract.h">
+      <Filter>Exercises</Filter>
+    </ClInclude>
+    <ClInclude Include="exercises\sphere_intersection.h">
+      <Filter>Exercises</Filter>
+    </ClInclude>
+    <ClInclude Include="exercises\sphere_phong.h">
+      <Filter>Exercises</Filter>
+    </ClInclude>
+    <ClInclude Include="cube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="exercises\cubes.h">
+      <Filter>Exercises</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -162,6 +186,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="intersection_state.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
