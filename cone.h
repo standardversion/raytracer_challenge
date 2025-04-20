@@ -50,9 +50,9 @@ public:
 
 protected:
     /**
-     * @brief Helper function to compute ray intersections with the cylinder's end caps.
+     * @brief Helper function to compute ray intersections with the cones's end caps.
      *
-     * Called only if the cylinder is closed.
+     * Called only if the cone is closed.
      *
      * @param local_ray The ray in object (local) space.
      * @param intersections A reference to the collection to store intersections.
@@ -62,10 +62,11 @@ protected:
     /**
      * @brief Checks if a ray intersects a cap at a given time value.
      *
-     * Used to determine whether a ray hits one of the cylinder's end caps.
+     * Used to determine whether a ray hits one of the cone's end caps.
      *
      * @param local_ray The ray in object (local) space.
      * @param time The time (t-value) along the ray being checked.
+     * @param height The height of the cone.
      * @return True if the ray hits the cap, false otherwise.
      */
     bool check_cap(const ray_t& local_ray, const double time, const double height) const;
