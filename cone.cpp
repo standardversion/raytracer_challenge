@@ -18,6 +18,31 @@ std::unique_ptr<Cone> Cone::create()
 	return std::unique_ptr<Cone>(new Cone());
 }
 
+void Cone::intersect_caps(const ray_t& local_ray, intersections_t& intersections) const
+{
+	if (!closed || abs(local_ray.direction.y) < EPSILON)
+	{
+		return;
+	}
+	double t{ (minimum - local_ray.origin.y) / local_ray.direction.y };
+	if (check_cap(local_ray, t, minimum))
+	{
+		intersections.add(t, this);
+	}
+	t = (maximum - local_ray.origin.y) / local_ray.direction.y;
+	if (check_cap(local_ray, t,  maximum))
+	{
+		intersections.add(t, this);
+	}
+}
+
+bool Cone::check_cap(const ray_t& local_ray, const double time, const double height) const
+{
+	const double x{ local_ray.origin.x + time * local_ray.direction.x };
+	const double z{ local_ray.origin.z + time * local_ray.direction.z };
+	return (pow(x, 2) + pow(z, 2)) <= pow(height, 2);
+}
+
 
 void Cone::local_intersect(const ray_t& local_ray, intersections_t& intersections) const
 {
@@ -28,12 +53,16 @@ void Cone::local_intersect(const ray_t& local_ray, intersections_t& intersection
 		+ 2 * local_ray.origin.z * local_ray.direction.z
 	};
 	const double c{ pow(local_ray.origin.x, 2) - pow(local_ray.origin.y, 2) + pow(local_ray.origin.z, 2) };
+	if (a == 0 && b == 0)
+	{
+		return;
+	}
 
-	if (abs(a) < EPSILON && abs(b) >= EPSILON)
+	if (a == 0 && abs(b) > 0)
 	{
 		double t{ -c / (2 * b) };
 		intersections.add(t, this);
-		return;
+		//return;
 	}
 	if (abs(a) >= EPSILON)
 	{

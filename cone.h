@@ -48,7 +48,28 @@ public:
      */
     tuple_t local_normal_at(const tuple_t& local_point) const override;
 
-private:
+protected:
+    /**
+     * @brief Helper function to compute ray intersections with the cylinder's end caps.
+     *
+     * Called only if the cylinder is closed.
+     *
+     * @param local_ray The ray in object (local) space.
+     * @param intersections A reference to the collection to store intersections.
+     */
+    void intersect_caps(const ray_t& local_ray, intersections_t& intersections) const;
+
+    /**
+     * @brief Checks if a ray intersects a cap at a given time value.
+     *
+     * Used to determine whether a ray hits one of the cylinder's end caps.
+     *
+     * @param local_ray The ray in object (local) space.
+     * @param time The time (t-value) along the ray being checked.
+     * @return True if the ray hits the cap, false otherwise.
+     */
+    bool check_cap(const ray_t& local_ray, const double time, const double height) const;
+
     /**
      * @brief Constructs a Cone object.
      *

@@ -149,10 +149,10 @@ TEST(cone, should_intersect_cone_end_caps)
             {
                 EXPECT_EQ(i.entries.size(), 0);
             }
-            /*else if (index == 1)
+            else if (index == 1)
             {
-                EXPECT_EQ(i.entries.size(), 2); // getting 1 instead of 2
-            }*/
+                EXPECT_EQ(i.entries.size(), 2);
+            }
             else if (index == 2)
             {
                 EXPECT_EQ(i.entries.size(), 4);
