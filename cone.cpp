@@ -62,7 +62,6 @@ void Cone::local_intersect(const ray_t& local_ray, intersections_t& intersection
 	{
 		double t{ -c / (2 * b) };
 		intersections.add(t, this);
-		//return;
 	}
 	if (abs(a) >= EPSILON)
 	{
