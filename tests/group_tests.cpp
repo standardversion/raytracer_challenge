@@ -41,13 +41,14 @@ Scenario: Adding a child to a group
 */
 TEST(group, should_be_able_to_add_child_to_group)
 {
-	Group g{};
-	TestObject t{};
-	g.add(&t);
-	EXPECT_EQ(g.transform, matrix_t::identity());
-	EXPECT_EQ(g.find(&t), &t);
-	EXPECT_EQ(t.parent, &g);
-	EXPECT_FALSE(g.children.empty());
+	auto g{ std::make_shared<Group>() };
+	auto t{ std::make_shared<TestObject>() };
+	g->add(t);
+	auto found_t{ g->find(t.get()) };
+	EXPECT_EQ(g->transform, matrix_t::identity());
+	EXPECT_EQ(g->find(t.get()).get(), t.get());
+	EXPECT_EQ(found_t->parent.lock().get(), g.get());
+	EXPECT_FALSE(g->children.empty());
 }
 
 /*
@@ -87,16 +88,16 @@ Scenario: Intersecting a ray with a nonempty group
 */
 TEST(group, should_have_intersections_when_group_is_not_empty)
 {
-	Group g{};
+	auto g{ std::make_shared<Group>() };
 	auto s1{ Sphere::create() };
 	auto s2{ Sphere::create() };
 	auto s3{ Sphere::create() };
-	g.add(s1.get(), s2.get(), s3.get());
+	g->add(s1, s2, s3);
 	s2->transform = matrix_t::translation(0, 0, -3);
 	s3->transform = matrix_t::translation(5, 0, 0);
 	const ray_t r{ tuple_t::point(0, 0, -5), tuple_t::vector(0, 0, 1) };
 	intersections_t i{};
-	g.intersect(r, i);
+	g->intersect(r, i);
 	EXPECT_EQ(i.entries.size(), 4);
 	EXPECT_EQ(i[0].object, s2.get());
 	EXPECT_EQ(i[1].object, s2.get());
@@ -117,13 +118,13 @@ Scenario: Intersecting a transformed group
 */
 TEST(group, should_have_intersections_when_group_is_transformed)
 {
-	Group g{};
-	g.transform = matrix_t::scaling(2, 2, 2);
+	auto g{ std::make_shared<Group>() };
+	g->transform = matrix_t::scaling(2, 2, 2);
 	auto s{ Sphere::create() };
-	g.add(s.get());
+	g->add(s);
 	s->transform = matrix_t::translation(5, 0, 0);
 	const ray_t r{ tuple_t::point(10, 0, -10), tuple_t::vector(0, 0, 1) };
 	intersections_t i{};
-	g.intersect(r, i);
+	g->intersect(r, i);
 	EXPECT_EQ(i.entries.size(), 2);
 }

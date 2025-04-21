@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <memory>
 #include "scene_object.h"
 
 struct intersections_t;
@@ -13,13 +14,13 @@ struct intersections_t;
  */
 class Group : public SceneObject
 {
-public:
+public:    
     /**
      * @brief The child objects contained within this group.
      *
      * Each child may be a renderable shape or another group.
      */
-    std::vector<SceneObject*> children{};
+    std::vector<std::shared_ptr<SceneObject>> children{};
 
     /**
      * @brief Adds one or more SceneObjects to the group.
@@ -32,7 +33,7 @@ public:
      * @param args Additional objects to add (optional).
      */
     template<typename... Args>
-    void add(SceneObject* obj, Args... args);
+    void add(std::shared_ptr<SceneObject> obj, Args... args);
 
     /**
      * @brief Finds a specific object within the group.
@@ -42,7 +43,7 @@ public:
      * @param obj The object to find.
      * @return A pointer to the object if found, otherwise nullptr.
      */
-    SceneObject* find(SceneObject* obj);
+    std::shared_ptr<SceneObject> find(const SceneObject* obj) const;
 
     /**
      * @brief Computes intersections between a ray and all renderable children.
@@ -58,12 +59,12 @@ public:
 
 
 template<typename... Args>
-void Group::add(SceneObject* obj, Args... args)
+void Group::add(std::shared_ptr<SceneObject> obj, Args... args)
 {
-	if (obj->parent != this)
+	if (obj->parent.lock().get() != this)
 	{
 		children.push_back(obj);
-		obj->parent = this;
+		obj->parent = shared_from_this();
 	}
 	if constexpr (sizeof...(args) > 0) {  // Check if there are more arguments
 		add(args...);  // Recursively call add for the rest of the arguments

@@ -126,6 +126,9 @@
     <ClInclude Include="group.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="exercises\hexagon.h">
+      <Filter>Exercises</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

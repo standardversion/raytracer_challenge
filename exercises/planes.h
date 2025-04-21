@@ -50,7 +50,7 @@ void plane_exercise()
 	Light light{ colour_t{1, 1, 1} };
 	light.transform = matrix_t::translation(-10, 10, -10);
 	World world{};
-	world.add_object(std::make_unique<Light>(light));
+	world.add_object(std::make_shared<Light>(light));
 	world.add_object(std::move(floor));
 	world.add_object(std::move(middle));
 	world.add_object(std::move(right));

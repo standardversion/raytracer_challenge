@@ -25,9 +25,9 @@ public:
      * This factory method returns a unique pointer to a newly allocated Plane,
      * ensuring proper memory ownership and initialization.
      *
-     * @return A std::unique_ptr to a Plane instance.
+     * @return A std::shared_ptr to a Plane instance.
      */
-    static std::unique_ptr<Plane> create();
+    static std::shared_ptr<Plane> create();
 
     /**
      * @brief Computes intersections between a ray and this plane in local space.
@@ -51,15 +51,6 @@ public:
      * @return The up-facing unit vector (0, 1, 0).
      */
     tuple_t local_normal_at(const tuple_t& local_point) const override;
-
-private:
-    /**
-     * @brief Private constructor for controlled creation via the static create() method.
-     *
-     * Ensures that all Plane instances are created using the factory method to maintain
-     * ownership and polymorphic behavior via std::unique_ptr.
-     */
-    explicit Plane();
 };
 
 

@@ -4,16 +4,9 @@
 #include "settings.h"
 
 
-Plane::Plane()
-	: Geometry{}
+std::shared_ptr<Plane> Plane::create()
 {
-
-}
-
-std::unique_ptr<Plane> Plane::create()
-{
-	//return std::make_unique<Plane>(); // causes C2248
-	return std::unique_ptr<Plane>(new Plane());
+	return std::make_shared<Plane>();
 }
 
 

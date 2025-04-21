@@ -12,11 +12,13 @@ struct intersections_t;
  *
  * Inherits from Geometry and implements sphere-specific logic such as
  * normal calculation and intersection detection.
- * Designed for exclusive ownership via std::unique_ptr.
+ * Designed for exclusive ownership via std::shared_ptr.
  */
 class Sphere : public Geometry
 {
 public:
+
+    explicit Sphere(double radius = 1.0);
     /**
      * @brief The radius of the sphere.
      *
@@ -31,9 +33,9 @@ public:
      * and ownership. Unique ownership ensures efficient memory management.
      *
      * @param radius The radius of the sphere (default is 1.0).
-     * @return std::unique_ptr<Sphere> A unique pointer to the created Sphere.
+     * @return std::shared_ptr<Sphere> A unique pointer to the created Sphere.
      */
-    static std::unique_ptr<Sphere> create(double radius = 1.0);
+    static std::shared_ptr<Sphere> create(double radius = 1.0);
 
     /**
      * @brief Creates a new unique pointer to a transparent glass Sphere instance.
@@ -43,9 +45,9 @@ public:
      * realistic glass or other transparent materials.
      *
      * @param radius The radius of the sphere (default is 1.0).
-     * @return std::unique_ptr<Sphere> A unique pointer to the created glass Sphere.
+     * @return std::shared_ptr<Sphere> A unique pointer to the created glass Sphere.
      */
-    static std::unique_ptr<Sphere> glass_sphere(double radius = 1.0);
+    static std::shared_ptr<Sphere> glass_sphere(double radius = 1.0);
 
     /**
      * @brief Computes intersections between the sphere and a given ray in object space.
@@ -62,13 +64,5 @@ public:
      * @return tuple_t The normal vector at the point.
      */
     tuple_t local_normal_at(const tuple_t& local_point) const override;
-
-private:
-    /**
-     * @brief Constructs a sphere with a specified radius.
-     *
-     * @param r The radius of the sphere. Defaults to 1.0 if not specified.
-     */
-    explicit Sphere(double r = 1.0);
 };
 

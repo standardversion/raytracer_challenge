@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 #include "matrix.h"
 #include "ray.h"
 
@@ -9,7 +10,7 @@
  * and a renderable flag. Intended to be inherited by objects like geometry,
  * lights, and cameras.
  */
-class SceneObject
+class SceneObject : public std::enable_shared_from_this<SceneObject>
 {
 public:
     /**
@@ -38,10 +39,10 @@ public:
     /**
      * @brief The parent of this scene object in the scene graph.
      *
-     * Used to apply hierarchical transformations. If nullptr, this object
+     * Used to apply hierarchical transformations. If expired, this object
      * is at the root of the scene graph.
      */
-    SceneObject* parent{ nullptr };
+    std::weak_ptr<SceneObject> parent;
 
     /**
      * @brief Converts a point from world space into the object’s local space.

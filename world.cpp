@@ -6,6 +6,7 @@
 #include "sphere.h"
 #include "phong.h"
 #include "matrix.h"
+#include "group.h"
 
 World World::default_world()
 {
@@ -27,46 +28,61 @@ World World::default_world()
 	return w;
 }
 
-void World::add_object(std::unique_ptr<SceneObject> obj)
+void World::add_object(std::shared_ptr<SceneObject> obj)
 {
 	if (obj->renderable)
 	{
-		renderables.push_back(dynamic_cast<Geometry*>(obj.get()));
+		renderables.push_back(std::dynamic_pointer_cast<Geometry>(obj));
 	}
-	auto light = dynamic_cast<Light*>(obj.get());
+	auto light = std::dynamic_pointer_cast<Light>(obj);
 	if (light)
 	{
 		lights.push_back(light);
 	}
-	scene_objects.push_back(std::move(obj));
+	scene_objects.push_back(obj);
 }
 
 void World::intersect(const ray_t& ray, intersections_t& intersections) const
 {
-	for (const auto object : renderables)
+	for (auto& object : scene_objects)
 	{
-		object->intersect(ray, intersections);
+		auto group = dynamic_cast<Group*>(object.get());
+		if (group)
+		{
+			group->intersect(ray, intersections);
+		}
+		else
+		{
+			auto geo = dynamic_cast<Geometry*>(object.get());
+			if (geo)
+			{
+				geo->intersect(ray, intersections);
+			}
+		}
 	}
 }
 
 colour_t World::shade_hit(const intersection_state& state, int remaining) const
 {
 	colour_t colour{ 0, 0, 0 };
-	for (const auto light : lights)
+	for (const auto& weak_light : lights)
 	{
-		const bool in_shadow{ is_shadowed(state.over_point, light) };
-		colour += state.object->material->lighting(*light, state.object, state.point, state.eye_vector, state.normal, in_shadow);
-		colour_t reflected_c{ reflected_colour(state, remaining) };
-		colour_t refracted_c{ refracted_colour(state, remaining) };
-		auto phong{ std::dynamic_pointer_cast<Phong>(state.object->material) };
-		if (phong && phong->reflective > 0 && phong->transparency > 0)
+		if (auto light = weak_light.lock())
 		{
-			const double reflectance{ state.schlick() };
-			colour += reflected_c * reflectance + refracted_c * (1 - reflectance);
-		}
-		else
-		{
-			colour += reflected_c + refracted_c;
+			const bool in_shadow{ is_shadowed(state.over_point, light) };
+			colour += state.object->material->lighting(*light, state.object, state.point, state.eye_vector, state.normal, in_shadow);
+			colour_t reflected_c{ reflected_colour(state, remaining) };
+			colour_t refracted_c{ refracted_colour(state, remaining) };
+			auto phong{ std::dynamic_pointer_cast<Phong>(state.object->material) };
+			if (phong && phong->reflective > 0 && phong->transparency > 0)
+			{
+				const double reflectance{ state.schlick() };
+				colour += reflected_c * reflectance + refracted_c * (1 - reflectance);
+			}
+			else
+			{
+				colour += reflected_c + refracted_c;
+			}
 		}
 	}
 	return colour;
@@ -132,14 +148,21 @@ colour_t World::colour_at(const ray_t& ray, int remaining) const
 	return colour;
 }
 
-bool World::is_shadowed(const tuple_t point, Light* light) const
+bool World::is_shadowed(const tuple_t point, const std::weak_ptr<Light>& light) const
 {
-	tuple_t light_to_point{ light->position() - point };
-	const double distance{ light_to_point.magnitude() };
-	light_to_point.normalize();
-	const ray_t ray{ point, light_to_point };
-	intersections_t intersections{};
-	intersect(ray, intersections);
-	const intersection_t intersection{ intersections.hit() };
-	return intersection.object && intersection.time < distance;
+	if (auto light_shared_ptr = light.lock())
+	{
+		tuple_t light_to_point{ light_shared_ptr->position() - point };
+		const double distance{ light_to_point.magnitude() };
+		light_to_point.normalize();
+		const ray_t ray{ point, light_to_point };
+		intersections_t intersections{};
+		intersect(ray, intersections);
+		const intersection_t intersection{ intersections.hit() };
+		return intersection.object && intersection.time < distance;
+	}
+	else
+	{
+		return false;
+	}
 }

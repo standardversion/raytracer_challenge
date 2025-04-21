@@ -71,14 +71,14 @@ Scenario: Converting a point from world to object space
 */
 TEST(scene_object, should_be_able_to_covert_from_world_to_object_space)
 {
-	Group g1{};
-	g1.transform = matrix_t::rotation_y(PI / 2);
-	Group g2{};
-	g2.transform = matrix_t::scaling(2, 2, 2);
-	g1.add(&g2);
+	auto g1{ std::make_shared<Group>() };
+	g1->transform = matrix_t::rotation_y(PI / 2);
+	auto g2{ std::make_shared<Group>() };
+	g2->transform = matrix_t::scaling(2, 2, 2);
+	g1->add(g2);
 	auto s{ Sphere::create() };
 	s->transform = matrix_t::translation(5, 0, 0);
-	g2.add(s.get());
+	g2->add(s);
 	EXPECT_EQ(s->world_to_object(tuple_t::point(-2, 0, -10)), tuple_t::point(0, 0, -1));
 }
 
@@ -97,14 +97,14 @@ Scenario: Converting a normal from object to world space
 */
 TEST(scene_object, should_be_able_to_covert_normal_from_object__to_world_space)
 {
-	Group g1{};
-	g1.transform = matrix_t::rotation_y(PI / 2);
-	Group g2{};
-	g2.transform = matrix_t::scaling(1, 2, 3);
-	g1.add(&g2);
+	auto g1{ std::make_shared<Group>() };
+	g1->transform = matrix_t::rotation_y(PI / 2);
+	auto g2{ std::make_shared<Group>() };
+	g2->transform = matrix_t::scaling(1, 2, 3);
+	g1->add(g2);
 	auto s{ Sphere::create() };
 	s->transform = matrix_t::translation(5, 0, 0);
-	g2.add(s.get());
+	g2->add(s);
 	EXPECT_EQ(
 		s->normal_to_world(tuple_t::vector(std::sqrt(3) / 3, std::sqrt(3) / 3, std::sqrt(3) / 3)),
 		tuple_t::vector(0.2857, 0.4286, -0.8571)

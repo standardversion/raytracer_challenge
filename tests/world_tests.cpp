@@ -61,13 +61,16 @@ TEST(world, should_create_default_world)
     Phong p2{};
     Light l{};
     l.transform = matrix_t::translation(-10, 10, -10);
+    auto assigned_phong1{ std::dynamic_pointer_cast<Phong>(w.renderables[0].lock()->material) };
+    auto assigned_phong2{ std::dynamic_pointer_cast<Phong>(w.renderables[1].lock()->material) };
     EXPECT_EQ(w.scene_objects.size(), 3);
     EXPECT_EQ(w.lights.size(), 1);
-    EXPECT_EQ(w.renderables[0]->transform, matrix_t::identity());
-    EXPECT_EQ(*w.renderables[0]->material, p);
-    EXPECT_EQ(w.renderables[1]->transform, matrix_t::scaling(0.5, 0.5, 0.5));
-    EXPECT_EQ(*w.renderables[1]->material, p2);
-    EXPECT_EQ(*w.lights[0], l);
+    EXPECT_EQ(w.renderables[0].lock().get()->transform, matrix_t::identity());
+    EXPECT_EQ(*assigned_phong1, p);
+    EXPECT_EQ(w.renderables[1].lock().get()->transform, matrix_t::scaling(0.5, 0.5, 0.5));
+    EXPECT_EQ(*assigned_phong2, p2);
+    EXPECT_EQ(w.lights[0].lock().get()->intensity, l.intensity);
+    EXPECT_EQ(w.lights[0].lock().get()->transform, l.transform);
 }
 
 /*
@@ -114,7 +117,7 @@ TEST(world, should_shade_an_intersection)
     const tuple_t direction{ tuple_t::vector(0, 0, 1) };
     const ray_t r{ origin, direction };
     const intersections_t intersections{};
-    const intersection_t i{ 4, w.renderables[0]};
+    const intersection_t i{ 4, w.renderables[0].lock().get() };
     const intersection_state state{ i.prepare(r, intersections) };
     const colour_t c{ 0.38066, 0.47583, 0.2855 };
     EXPECT_EQ(w.shade_hit(state, 0), c);
@@ -134,12 +137,12 @@ Scenario: Shading an intersection from the inside
 TEST(world, should_shade_an_intersection_from_the_inside)
 {
     World w{ World::default_world() };
-    w.lights[0]->transform = matrix_t::translation(0, 0.25, 0);
+    w.lights[0].lock().get()->transform = matrix_t::translation(0, 0.25, 0);
     const tuple_t origin{ tuple_t::point(0, 0, 0) };
     const tuple_t direction{ tuple_t::vector(0, 0, 1) };
     const ray_t r{ origin, direction };
     const intersections_t intersections{};
-    const intersection_t i{ 0.5, w.renderables[1] };
+    const intersection_t i{ 0.5, w.renderables[1].lock().get() };
     const intersection_state state{ i.prepare(r, intersections) };
     const colour_t c{ 0.90498, 0.90498, 0.90498 };
     EXPECT_EQ(w.shade_hit(state, 0), c);
@@ -194,11 +197,11 @@ TEST(world, should_return_colour_when_intersection_is_behind_the_ray)
 {
     World w{ World::default_world() };
     colour_t c{ 0, 0, 0 };
-    auto phong = std::dynamic_pointer_cast<Phong>(w.renderables[0]->material);
+    auto phong = std::dynamic_pointer_cast<Phong>(w.renderables[0].lock().get()->material);
     if (phong) {
         phong->ambient = 1;
     }
-    phong = std::dynamic_pointer_cast<Phong>(w.renderables[1]->material);
+    phong = std::dynamic_pointer_cast<Phong>(w.renderables[1].lock().get()->material);
     if (phong) {
         phong->ambient = 1;
         c = phong->colour;
@@ -290,7 +293,7 @@ TEST(world, should_handle_in_shadow_in_shade_hit_func)
     w.add_object(std::move(s2));
     const ray_t r{ tuple_t::point(0, 0, 5), tuple_t::vector(0, 0, 1) };
     const intersections_t intersections{};
-    const intersection_t i{ 4, w.renderables[1]};
+    const intersection_t i{ 4, w.renderables[1].lock().get() };
     const intersection_state state{ i.prepare(r, intersections) };
     const colour_t c{ 0.1, 0.1, 0.1 };
     EXPECT_EQ(w.shade_hit(state, 0), c);
@@ -310,11 +313,11 @@ Scenario: The reflected color for a nonreflective material
 TEST(world, should_return_reflected_colour_as_black_for_nonreflective_material)
 {
     World w{ World::default_world() };
-    auto phong{ std::dynamic_pointer_cast<Phong>(w.renderables[1]->material) };
+    auto phong{ std::dynamic_pointer_cast<Phong>(w.renderables[1].lock().get()->material) };
     phong->ambient = 1;
     const ray_t r{ tuple_t::point(0, 0, 5), tuple_t::vector(0, 0, 1) };
     const intersections_t intersections{};
-    const intersection_t i{ 1, w.renderables[1] };
+    const intersection_t i{ 1, w.renderables[1].lock().get() };
     const intersection_state state{ i.prepare(r, intersections) };
     const colour_t c{ 0, 0, 0 };
     EXPECT_EQ(w.reflected_colour(state, 0), c);
@@ -339,11 +342,11 @@ TEST(world, should_return_reflected_colour_for_reflective_material)
     auto plane{ Plane::create() };
     plane->transform = matrix_t::translation(0, -1, 0);
     w.add_object(std::move(plane));
-    auto phong{ std::dynamic_pointer_cast<Phong>(w.renderables[2]->material) };
+    auto phong{ std::dynamic_pointer_cast<Phong>(w.renderables[2].lock().get()->material) };
     phong->reflective = 0.5;
     const ray_t r{ tuple_t::point(0, 0, -3), tuple_t::vector(0, -std::sqrt(2) / 2, std::sqrt(2) / 2) };
     const intersections_t intersections{};
-    const intersection_t i{ std::sqrt(2), w.renderables[2] };
+    const intersection_t i{ std::sqrt(2), w.renderables[2].lock().get() };
     const intersection_state state{ i.prepare(r, intersections) };
     const colour_t c{ 0.19032, 0.2379, 0.14274 };
     EXPECT_EQ(w.reflected_colour(state, 1), c);
@@ -368,11 +371,11 @@ TEST(world, should_shade_hit_with_reflected_colour)
     auto plane{ Plane::create() };
     plane->transform = matrix_t::translation(0, -1, 0);
     w.add_object(std::move(plane));
-    auto phong{ std::dynamic_pointer_cast<Phong>(w.renderables[2]->material) };
+    auto phong{ std::dynamic_pointer_cast<Phong>(w.renderables[2].lock().get()->material) };
     phong->reflective = 0.5;
     const ray_t r{ tuple_t::point(0, 0, -3), tuple_t::vector(0, -std::sqrt(2) / 2, std::sqrt(2) / 2) };
     const intersections_t intersections{};
-    const intersection_t i{ std::sqrt(2), w.renderables[2] };
+    const intersection_t i{ std::sqrt(2), w.renderables[2].lock().get() };
     const intersection_state state{ i.prepare(r, intersections) };
     const colour_t c{ 0.87677, 0.92436, 0.82918 };
     EXPECT_EQ(w.shade_hit(state, 1), c);
@@ -401,12 +404,12 @@ TEST(world, should_terminate_successfully_for_mutually_reflective_surfaces)
     auto plane{ Plane::create() };
     plane->transform = matrix_t::translation(0, -1, 0);
     w.add_object(std::move(plane));
-    auto phong{ std::dynamic_pointer_cast<Phong>(w.renderables[0]->material) };
+    auto phong{ std::dynamic_pointer_cast<Phong>(w.renderables[0].lock().get()->material) };
     phong->reflective = 1;
     auto plane2{ Plane::create() };
     plane2->transform = matrix_t::translation(0, 1, 0);
     w.add_object(std::move(plane2));
-    phong = std::dynamic_pointer_cast<Phong>(w.renderables[1]->material);
+    phong = std::dynamic_pointer_cast<Phong>(w.renderables[1].lock().get()->material);
     phong->reflective = 1;
     const ray_t r{ tuple_t::point(0, 0, 0), tuple_t::vector(0, 1, 0) };
     EXPECT_NO_THROW(w.colour_at(r, 0));
@@ -431,11 +434,11 @@ TEST(world, should_return_reflected_colour_at_the_maximum_recursive_depth)
     auto plane{ Plane::create() };
     plane->transform = matrix_t::translation(0, -1, 0);
     w.add_object(std::move(plane));
-    auto phong{ std::dynamic_pointer_cast<Phong>(w.renderables[2]->material) };
+    auto phong{ std::dynamic_pointer_cast<Phong>(w.renderables[2].lock().get()->material) };
     phong->reflective = 0.5;
     const ray_t r{ tuple_t::point(0, 0, -3), tuple_t::vector(0, -std::sqrt(2) / 2, std::sqrt(2) / 2) };
     const intersections_t intersections{};
-    const intersection_t i{ std::sqrt(2), w.renderables[2] };
+    const intersection_t i{ std::sqrt(2), w.renderables[2].lock().get() };
     const intersection_state state{ i.prepare(r, intersections) };
     const colour_t c{ 0, 0, 0 };
     EXPECT_EQ(w.reflected_colour(state, 0), c);
@@ -456,8 +459,8 @@ TEST(world, should_return_refracted_colour_as_black_for_opaque_material)
     World w{ World::default_world() };
     const ray_t r{ tuple_t::point(0, 0, -5), tuple_t::vector(0, 0, 1) };
     intersections_t intersections{};
-    const intersection_t i{ 4, w.renderables[0] };
-    const intersection_t i2{ 6, w.renderables[0] };
+    const intersection_t i{ 4, w.renderables[0].lock().get() };
+    const intersection_t i2{ 6, w.renderables[0].lock().get() };
     intersections.add(i, i2);
     const intersection_state state{ intersections[0].prepare(r, intersections) };
     const colour_t c{ 0, 0, 0 };
@@ -480,7 +483,7 @@ Scenario: The refracted color at the maximum recursive depth
 TEST(world, should_return_refracted_colour_as_black_at_the_maximum_recursive_depth)
 {
     World w{ World::default_world() };
-    auto phong{ std::dynamic_pointer_cast<Phong>(w.renderables[0]->material) };
+    auto phong{ std::dynamic_pointer_cast<Phong>(w.renderables[0].lock().get()->material) };
     if (phong)
     {
         phong->transparency = 1.0;
@@ -488,8 +491,8 @@ TEST(world, should_return_refracted_colour_as_black_at_the_maximum_recursive_dep
     }
     const ray_t r{ tuple_t::point(0, 0, -5), tuple_t::vector(0, 0, 1) };
     intersections_t intersections{};
-    const intersection_t i{ 4, w.renderables[0] };
-    const intersection_t i2{ 6, w.renderables[0] };
+    const intersection_t i{ 4, w.renderables[0].lock().get() };
+    const intersection_t i2{ 6, w.renderables[0].lock().get() };
     intersections.add(i, i2);
     const intersection_state state{ intersections[0].prepare(r, intersections) };
     const colour_t c{ 0, 0, 0 };
@@ -514,7 +517,7 @@ Scenario: The refracted color under total internal reflection
 TEST(world, should_return_refracted_colour_as_black_for_total_internal_reflection)
 {
     World w{ World::default_world() };
-    auto phong{ std::dynamic_pointer_cast<Phong>(w.renderables[0]->material) };
+    auto phong{ std::dynamic_pointer_cast<Phong>(w.renderables[0].lock().get()->material) };
     if (phong)
     {
         phong->transparency = 1.0;
@@ -522,8 +525,8 @@ TEST(world, should_return_refracted_colour_as_black_for_total_internal_reflectio
     }
     const ray_t r{ tuple_t::point(0, 0, std::sqrt(2) / 2), tuple_t::vector(0, 1, 0) };
     intersections_t intersections{};
-    const intersection_t i{ -std::sqrt(2) / 2, w.renderables[0] };
-    const intersection_t i2{ std::sqrt(2) / 2, w.renderables[0] };
+    const intersection_t i{ -std::sqrt(2) / 2, w.renderables[0].lock().get() };
+    const intersection_t i2{ std::sqrt(2) / 2, w.renderables[0].lock().get() };
     intersections.add(i, i2);
     const intersection_state state{ intersections[1].prepare(r, intersections) };
     const colour_t c{ 0, 0, 0 };
@@ -551,13 +554,13 @@ TEST(world, should_return_refracted_colour)
 {
     World w{ World::default_world() };
     TestPattern p{ {0, 0, 0}, {1, 1, 1} };
-    auto phong{ std::dynamic_pointer_cast<Phong>(w.renderables[0]->material) };
+    auto phong{ std::dynamic_pointer_cast<Phong>(w.renderables[0].lock().get()->material) };
     if (phong)
     {
         phong->ambient = 1;
         phong->pattern = std::make_shared<TestPattern>(p);
     }
-    phong = std::dynamic_pointer_cast<Phong>(w.renderables[1]->material);
+    phong = std::dynamic_pointer_cast<Phong>(w.renderables[1].lock().get()->material);
     if (phong)
     {
         phong->transparency = 1.0;
@@ -565,10 +568,10 @@ TEST(world, should_return_refracted_colour)
     }
     const ray_t r{ tuple_t::point(0, 0, 0.1), tuple_t::vector(0, 1, 0) };
     intersections_t intersections{};
-    const intersection_t i{ -0.9899, w.renderables[0] };
-    const intersection_t i2{ -0.4899, w.renderables[1] };
-    const intersection_t i3{ 0.4899, w.renderables[1] };
-    const intersection_t i4{ 0.9899, w.renderables[0] };
+    const intersection_t i{ -0.9899, w.renderables[0].lock().get() };
+    const intersection_t i2{ -0.4899, w.renderables[1].lock().get() };
+    const intersection_t i3{ 0.4899, w.renderables[1].lock().get() };
+    const intersection_t i4{ 0.9899, w.renderables[0].lock().get() };
     intersections.add(i, i2, i3, i4);
     const intersection_state state{ intersections[2].prepare(r, intersections) };
     const colour_t c{ 0, 0.99888, 0.04725 };
@@ -618,7 +621,7 @@ TEST(world, should_return_colour_for_shade_hit_with_transparent_material)
     w.add_object(std::move(s));
     const ray_t r{ tuple_t::point(0, 0, -3), tuple_t::vector(0, -std::sqrt(2) / 2, std::sqrt(2) / 2) };
     intersections_t intersections{};
-    const intersection_t i{ std::sqrt(2), w.renderables[2] };
+    const intersection_t i{ std::sqrt(2), w.renderables[2].lock().get() };
     intersections.add(i);
     const intersection_state state{ intersections[0].prepare(r, intersections) };
     const colour_t c{ 0.93642, 0.68642, 0.68642 };
@@ -670,7 +673,7 @@ TEST(world, should_return_colour_for_shade_hit_with_reflective_transparent_mater
     w.add_object(std::move(s));
     const ray_t r{ tuple_t::point(0, 0, -3), tuple_t::vector(0, -std::sqrt(2) / 2, std::sqrt(2) / 2) };
     intersections_t intersections{};
-    const intersection_t i{ std::sqrt(2), w.renderables[2] };
+    const intersection_t i{ std::sqrt(2), w.renderables[2].lock().get() };
     intersections.add(i);
     const intersection_state state{ intersections[0].prepare(r, intersections) };
     const colour_t c{ 0.93391, 0.69643, 0.69243 };

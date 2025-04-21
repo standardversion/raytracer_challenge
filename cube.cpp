@@ -5,12 +5,6 @@
 #include "settings.h"
 
 
-Cube::Cube()
-	: Geometry{}
-{
-
-}
-
 std::pair<double, double> Cube::check_axis(const double origin, const double direction) const
 {
 	const double tmin_numerator{ -1 - origin };
@@ -34,10 +28,9 @@ std::pair<double, double> Cube::check_axis(const double origin, const double dir
 	return { tmin, tmax };
 }
 
-std::unique_ptr<Cube> Cube::create()
+std::shared_ptr<Cube> Cube::create()
 {
-	//return std::make_unique<Cube>(); // causes C2248
-	return std::unique_ptr<Cube>(new Cube());
+	return std::make_shared<Cube>();
 }
 
 

@@ -43,9 +43,9 @@ public:
     /**
      * @brief Factory method to create a new Cylinder instance.
      *
-     * @return A std::unique_ptr to the newly created Cylinder.
+     * @return A std::shared_ptr to the newly created Cylinder.
      */
-    static std::unique_ptr<Cylinder> create();
+    static std::shared_ptr<Cylinder> create();
 
     /**
      * @brief Computes intersections of a ray with the cylinder in local space.
@@ -88,12 +88,4 @@ protected:
      * @return True if the ray hits the cap, false otherwise.
      */
     bool check_cap(const ray_t& local_ray, const double time) const;
-
-protected:
-    /**
-     * @brief Constructs a Cylinder.
-     *
-     * Private to enforce use of the static `create()` method.
-     */
-    explicit Cylinder();
 };

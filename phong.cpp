@@ -64,13 +64,14 @@ bool Phong::operator==(const Material& m) const
 	const Phong* other = dynamic_cast<const Phong*>(&m);
 	if (!other) return false; // Not the same type
 
-	const double a_comp{ std::fabs(this->ambient - other->ambient) };
-	const double d_comp{ std::fabs(this->diffuse - other->diffuse) };
-	const double spec_comp{ std::fabs(this->specular - other->specular) };
-	const double shine_comp{ std::fabs(this->shininess - other->shininess) };
-	if (this->colour == other->colour && a_comp < EPSILON && d_comp < EPSILON && spec_comp < EPSILON && shine_comp < EPSILON)
-	{
-		return true;
-	}
-	return false;
+	return *this == *other;
+}
+
+bool Phong::operator==(const Phong& m) const
+{
+	return colour == m.colour &&
+		std::fabs(ambient - m.ambient) < EPSILON &&
+		std::fabs(diffuse - m.diffuse) < EPSILON &&
+		std::fabs(specular - m.specular) < EPSILON &&
+		std::fabs(shininess - m.shininess) < EPSILON;
 }

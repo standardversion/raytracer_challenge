@@ -23,9 +23,9 @@ public:
     /**
      * @brief Factory method to create a new Cone instance.
      *
-     * @return A std::unique_ptr to the newly created Cone object.
+     * @return A std::shared_ptr to the newly created Cone object.
      */
-    static std::unique_ptr<Cone> create();
+    static std::shared_ptr<Cone> create();
 
     /**
      * @brief Computes the intersection points between a ray and the cone in local space.
@@ -70,12 +70,5 @@ protected:
      * @return True if the ray hits the cap, false otherwise.
      */
     bool check_cap(const ray_t& local_ray, const double time, const double height) const;
-
-    /**
-     * @brief Constructs a Cone object.
-     *
-     * This constructor is private to enforce controlled creation through the `create()` method.
-     */
-    explicit Cone();
 };
 

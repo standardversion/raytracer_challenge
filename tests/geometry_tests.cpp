@@ -142,16 +142,16 @@ Scenario: Finding the normal on a child object
 */
 TEST(geometry, should_be_able_to_compute_normal_on_a_child_object)
 {
-	Group g1{};
-	g1.transform = matrix_t::rotation_y(PI / 2);
-	Group g2{};
-	g2.transform = matrix_t::scaling(1, 2, 3);
-	g1.add(&g2);
-	TestGeometry s{};
-	s.transform = matrix_t::translation(5, 0, 0);
-	g2.add(&s);
+	auto g1{ std::make_shared<Group>() };
+	g1->transform = matrix_t::rotation_y(PI / 2);
+	auto g2{ std::make_shared<Group>() };
+	g2->transform = matrix_t::scaling(1, 2, 3);
+	g1->add(g2);
+	auto s{ std::make_shared<TestGeometry>() };
+	s->transform = matrix_t::translation(5, 0, 0);
+	g2->add(s);
 	EXPECT_EQ(
-		s.normal_at(tuple_t::point(1.7321, 1.1547, -5.5774)),
+		s->normal_at(tuple_t::point(1.7321, 1.1547, -5.5774)),
 		tuple_t::vector(0.2857, 0.4286, -0.8571)
 	);
 }
