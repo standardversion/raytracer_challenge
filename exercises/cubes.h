@@ -45,7 +45,7 @@ void cubes_exercise()
 	Light light{ colour_t{1, 1, 1} };
 	light.transform = matrix_t::translation(0, 1.5, -1);
 	World world{};
-	world.add_object(std::make_unique<Light>(light));
+	world.add_object(std::make_shared<Light>(light));
 	world.add_object(std::move(cube));
 	world.add_object(std::move(sphere));
 

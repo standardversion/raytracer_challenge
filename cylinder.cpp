@@ -5,12 +5,6 @@
 #include "settings.h"
 
 
-Cylinder::Cylinder()
-	: Geometry{}
-{
-
-}
-
 void Cylinder::intersect_caps(const ray_t& local_ray, intersections_t& intersections) const
 {
 	if (!closed || abs(local_ray.direction.y) < EPSILON)
@@ -36,10 +30,9 @@ bool Cylinder::check_cap(const ray_t& local_ray, const double time) const
 	return (pow(x, 2) + pow(z, 2)) <= 1;
 }
 
-std::unique_ptr<Cylinder> Cylinder::create()
+std::shared_ptr<Cylinder> Cylinder::create()
 {
-	//return std::make_unique<Cylinder>(); // causes C2248
-	return std::unique_ptr<Cylinder>(new Cylinder());
+	return std::make_shared<Cylinder>();
 }
 
 

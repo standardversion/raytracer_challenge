@@ -123,6 +123,12 @@
     <ClInclude Include="cone.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="group.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="exercises\hexagon.h">
+      <Filter>Exercises</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -201,6 +207,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cone.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="group.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -6,16 +6,9 @@
 #include "settings.h"
 
 
-Cone::Cone()
-	: Cylinder{}
+std::shared_ptr<Cone> Cone::create()
 {
-
-}
-
-std::unique_ptr<Cone> Cone::create()
-{
-	//return std::make_unique<Cone>(); // causes C2248
-	return std::unique_ptr<Cone>(new Cone());
+	return std::make_shared<Cone>();
 }
 
 void Cone::intersect_caps(const ray_t& local_ray, intersections_t& intersections) const

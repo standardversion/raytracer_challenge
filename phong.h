@@ -138,4 +138,15 @@ public:
      * @return false Otherwise.
      */
     virtual bool operator==(const Material& m) const override;
+
+    /**
+     * @brief Checks equality between this Phong material and another Phong Material.
+     *
+     * This method compares the material properties to determine if they are equivalent.
+     *
+     * @param m The other material to compare with.
+     * @return true If the materials are equal.
+     * @return false Otherwise.
+     */
+    virtual bool operator==(const Phong& m) const;
 };

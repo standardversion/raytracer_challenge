@@ -4,6 +4,8 @@
 #include "../phong.h"
 #include "../intersection.h"
 #include "../settings.h"
+#include "../group.h"
+
 
 static ray_t test_helper_ray{ tuple_t::point(0, 0, 0), tuple_t::vector(0, 0, 1)};
 // Test helper class since SceneObject consturctor is protected
@@ -123,4 +125,33 @@ TEST(geometry, should_be_able_to_compute_normal_on_a_transformed_object)
 	s.transform = matrix_t::scaling(1, 0.5, 1) * matrix_t::rotation_z(PI / 5);
 	const tuple_t n{ s.normal_at(tuple_t::point(0, std::sqrt(2) / 2, -std::sqrt(2) / 2))};
 	EXPECT_EQ(n, tuple_t::vector(0, 0.97014, -0.24254));
+}
+
+/*
+Scenario: Finding the normal on a child object
+  Given g1 ← group()
+	And set_transform(g1, rotation_y(π/2))
+	And g2 ← group()
+	And set_transform(g2, scaling(1, 2, 3))
+	And add_child(g1, g2)
+	And s ← sphere()
+	And set_transform(s, translation(5, 0, 0))
+	And add_child(g2, s)
+  When n ← normal_at(s, point(1.7321, 1.1547, -5.5774))
+  Then n = vector(0.2857, 0.4286, -0.8571)
+*/
+TEST(geometry, should_be_able_to_compute_normal_on_a_child_object)
+{
+	auto g1{ std::make_shared<Group>() };
+	g1->transform = matrix_t::rotation_y(PI / 2);
+	auto g2{ std::make_shared<Group>() };
+	g2->transform = matrix_t::scaling(1, 2, 3);
+	g1->add(g2);
+	auto s{ std::make_shared<TestGeometry>() };
+	s->transform = matrix_t::translation(5, 0, 0);
+	g2->add(s);
+	EXPECT_EQ(
+		s->normal_at(tuple_t::point(1.7321, 1.1547, -5.5774)),
+		tuple_t::vector(0.2857, 0.4286, -0.8571)
+	);
 }

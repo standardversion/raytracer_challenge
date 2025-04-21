@@ -22,9 +22,9 @@ public:
     /**
      * @brief Factory method to create a new Cube instance.
      *
-     * @return A std::unique_ptr pointing to a new Cube.
+     * @return A std::shared_ptr pointing to a new Cube.
      */
-    static std::unique_ptr<Cube> create();
+    static std::shared_ptr<Cube> create();
 
     /**
      * @brief Intersects a ray with the cube in local object space.
@@ -49,13 +49,6 @@ public:
     tuple_t local_normal_at(const tuple_t& local_point) const override;
 
 private:
-    /**
-     * @brief Constructs a Cube.
-     *
-     * Private to force use of the static `create()` method for construction.
-     */
-    explicit Cube();
-
     /**
      * @brief Helper method to compute intersection range along one axis.
      *

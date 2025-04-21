@@ -25,21 +25,21 @@ public:
 	 *
 	 * These are owned by the world and may include lights, geometry, and other components.
 	 */
-	std::vector<std::unique_ptr<SceneObject>> scene_objects;
+	std::vector<std::shared_ptr<SceneObject>> scene_objects;
 
 	/**
 	 * @brief A list of geometry objects that can be rendered.
 	 *
 	 * These are raw pointers to Geometry objects extracted from the scene_objects list.
 	 */
-	std::vector<Geometry*> renderables;
+	std::vector<std::weak_ptr<Geometry>> renderables;
 
 	/**
 	 * @brief A list of light sources in the world.
 	 *
 	 * These affect how objects in the scene are shaded.
 	 */
-	std::vector<Light*> lights;
+	std::vector<std::weak_ptr<Light>> lights;
 
 	/**
 	 * @brief Creates a default world with predefined objects and lighting.
@@ -56,7 +56,7 @@ public:
 	 *
 	 * The object is stored and, if renderable, added to the appropriate internal list.
 	 */
-	void add_object(std::unique_ptr<SceneObject> obj);
+	void add_object(std::shared_ptr<SceneObject> obj);
 
 	/**
 	 * @brief Intersects a ray with all renderable objects in the world.
@@ -127,7 +127,7 @@ public:
 	 * This function casts a ray from the point toward each light in the scene
 	 * and checks for any objects obstructing the path. Used during shading to apply shadow effects.
 	 */
-	bool is_shadowed(const tuple_t point, Light* light) const;
+	bool is_shadowed(const tuple_t point, const std::weak_ptr<Light>& light) const;
 
 };
 

@@ -4,25 +4,23 @@
 #include "intersection.h"
 
 
-Sphere::Sphere(const double r)
-	: Geometry{}, radius{ r }
+Sphere::Sphere(double r)
+	: radius{r}
+{ }
+
+std::shared_ptr<Sphere> Sphere::create(double radius)
 {
-	
+
+	return std::make_shared<Sphere>(radius);
 }
 
-std::unique_ptr<Sphere> Sphere::create(double radius)
+std::shared_ptr<Sphere> Sphere::glass_sphere(double radius)
 {
-	//return std::make_unique<Sphere>(radius); // causes C2248
-	return std::unique_ptr<Sphere>(new Sphere(radius));
-}
-
-std::unique_ptr<Sphere> Sphere::glass_sphere(double radius)
-{
-	//return std::make_unique<Sphere>(radius); // causes C2248
-	auto s{ std::unique_ptr<Sphere>(new Sphere(radius)) };
-	auto phong{ std::dynamic_pointer_cast<Phong>(s->material) };
+	auto s{ std::make_shared<Sphere>(radius) };
+	auto phong = std::make_shared<Phong>();
 	phong->transparency = 1.0;
 	phong->refractive_index = 1.5;
+	s->material = phong;
 	return s;
 }
 
