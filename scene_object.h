@@ -35,6 +35,44 @@ public:
      */
     bool renderable{ false };
 
+    /**
+ * @brief The parent of this scene object in the scene graph.
+ *
+ * Used to apply hierarchical transformations. If nullptr, this object
+ * is at the root of the scene graph.
+ */
+    SceneObject* parent{ nullptr };
+
+    /**
+     * @brief Converts a point from world space into the object’s local space.
+     *
+     * Recursively applies the inverse transformations of all parent objects
+     * to transform the point from world space into the local coordinate system
+     * of this object.
+     *
+     * @param point The point in world space.
+     * @return The equivalent point in this object’s local space.
+     */
+    tuple_t world_to_object(const tuple_t& point) const;
+
+    /**
+     * @brief Converts a normal vector from object space into world space.
+     *
+     * Applies the transpose of the inverse of the combined world transform,
+     * accounting for non-uniform scaling and other effects. Recursively includes
+     * parent transformations.
+     *
+     * @param normal The normal vector in object space.
+     * @return The equivalent normal vector in world space.
+     */
+    tuple_t normal_to_world(const tuple_t& normal) const;
+
+    /**
+     * @brief Virtual destructor for SceneObject.
+     *
+     * Required to safely delete derived objects via base class pointers,
+     * and to enable runtime type checking (e.g. via dynamic_cast).
+     */
     virtual ~SceneObject() = default; // make polymorphic so can use dynamic_cast
 
 protected:
@@ -50,4 +88,3 @@ protected:
      */
     static inline int sceneobj_id_counter{ 1 };
 };
-

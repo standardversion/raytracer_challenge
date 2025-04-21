@@ -174,6 +174,7 @@
     <ClInclude Include="exercises\sphere_intersection.h" />
     <ClInclude Include="exercises\sphere_phong.h" />
     <ClInclude Include="gradient.h" />
+    <ClInclude Include="group.h" />
     <ClInclude Include="intersection.h" />
     <ClInclude Include="intersection_state.h" />
     <ClInclude Include="light.h" />
@@ -203,6 +204,7 @@
     <ClCompile Include="cube.cpp" />
     <ClCompile Include="cylinder.cpp" />
     <ClCompile Include="gradient.cpp" />
+    <ClCompile Include="group.cpp" />
     <ClCompile Include="intersection.cpp" />
     <ClCompile Include="intersection_state.cpp" />
     <ClCompile Include="light.cpp" />
