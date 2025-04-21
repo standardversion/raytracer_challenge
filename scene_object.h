@@ -36,11 +36,11 @@ public:
     bool renderable{ false };
 
     /**
- * @brief The parent of this scene object in the scene graph.
- *
- * Used to apply hierarchical transformations. If nullptr, this object
- * is at the root of the scene graph.
- */
+     * @brief The parent of this scene object in the scene graph.
+     *
+     * Used to apply hierarchical transformations. If nullptr, this object
+     * is at the root of the scene graph.
+     */
     SceneObject* parent{ nullptr };
 
     /**
