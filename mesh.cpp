@@ -2,67 +2,67 @@
 #include "triangle.h"
 #include "smooth_triangle.h"
 
-Mesh::Mesh(const wavefront_t& obj)
-	:vertices{ obj.vertices },
-	vertex_normals{ obj.vertex_normals },
-	vertex_normals_avg{ obj.vertex_normals_avg },
-	uvs{ obj.uvs },
-	faces{ obj.faces }
+Mesh::Mesh(const wavefront_t& obj, bool smooth)
+	: smooth{ smooth }
 {
-
+	if (!obj.vertex_normals_avg.size())
+	{
+		smooth = false; // no normal data;
+	}
+	for (const auto& face : obj.faces)
+	{
+		if (smooth)
+		{
+			triangles.push_back(
+				std::make_shared<SmoothTriangle>(
+					obj.vertices[face.a - 1],
+					obj.vertices[face.b - 1],
+					obj.vertices[face.c - 1],
+					obj.uvs[face.a_uv - 1],
+					obj.uvs[face.b_uv - 1],
+					obj.uvs[face.c_uv - 1],
+					obj.vertex_normals_avg[face.a - 1],
+					obj.vertex_normals_avg[face.b - 1],
+					obj.vertex_normals_avg[face.c - 1]
+				)
+			);
+		}
+		else
+		{
+			triangles.push_back(
+				std::make_shared<Triangle>(
+					obj.vertices[face.a - 1],
+					obj.vertices[face.b - 1],
+					obj.vertices[face.c - 1],
+					obj.uvs[face.a_uv - 1],
+					obj.uvs[face.b_uv - 1],
+					obj.uvs[face.c_uv - 1]
+				)
+			);
+		}
+	}
 }
 
-Mesh::Mesh(const char* obj_filename)
+Mesh::Mesh(const char* obj_filename, bool smooth)
+	: Mesh{ wavefront_t{obj_filename}, smooth }
 {
-	const wavefront_t obj{ obj_filename };
-	vertices = obj.vertices;
-	vertex_normals = obj.vertex_normals;
-	vertex_normals_avg = obj.vertex_normals_avg;
-	uvs = obj.uvs;
-	faces = obj.faces;
 }
 
-std::shared_ptr<Mesh> Mesh::create(const wavefront_t& obj)
+std::shared_ptr<Mesh> Mesh::create(const wavefront_t& obj, bool smooth)
 {
-	return std::make_shared<Mesh>(obj);
+	return std::make_shared<Mesh>(obj, smooth);
 }
 
-std::shared_ptr<Mesh> Mesh::create(const char* obj_filename)
+std::shared_ptr<Mesh> Mesh::create(const char* obj_filename, bool smooth)
 {
-	return std::make_shared<Mesh>(obj_filename);
+	return std::make_shared<Mesh>(obj_filename, smooth);
 }
 
 void Mesh::local_intersect(const ray_t& local_ray, intersections_t& intersections) const
 {
-	for (const auto& face : faces)
+	for (const auto& triangle : triangles)
 	{
-		if (smooth)
-		{
-			const SmoothTriangle tri{
-				vertices[face.a - 1],
-				vertices[face.b - 1],
-				vertices[face.c - 1],
-				uvs[face.a_uv - 1],
-				uvs[face.b_uv - 1],
-				uvs[face.c_uv - 1],
-				vertex_normals_avg[face.a_normal - 1],
-				vertex_normals_avg[face.b_normal - 1],
-				vertex_normals_avg[face.c_normal - 1]
-			};
-			tri.local_intersect(local_ray, intersections);
-		}
-		else
-		{
-			const Triangle tri{
-				vertices[face.a - 1],
-				vertices[face.b - 1],
-				vertices[face.c - 1],
-				uvs[face.a_uv - 1],
-				uvs[face.b_uv - 1],
-				uvs[face.c_uv - 1]
-			};
-			tri.local_intersect(local_ray, intersections);
-		}
+		triangle->local_intersect(local_ray, intersections);
 	}
 }
 

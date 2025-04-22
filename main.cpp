@@ -1,9 +1,8 @@
 #include "./exercises/hexagon.h"
-#include "./exercises/reflect_refract.h"
+#include "./exercises/triangles.h"
 
 int main()
 {
-	//hexagon_exercise();
-	reflect_refract_exercise();
+	triangles_exercise();
 	return 0;
 }

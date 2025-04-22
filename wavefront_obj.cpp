@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <exception>
 #include "utils.h"
+#include "tuple.h"
 #include "wavefront_obj.h"
 
 wavefront_t::wavefront_t(const char* obj_filename)
@@ -27,7 +28,8 @@ wavefront_t::wavefront_t(const char* obj_filename)
 				if (parts[0] == "v")
 				{
 					// vertex line in obj: v 1.000000 1.000000 -1.000000
-					vertices.emplace_back(std::stod(parts[1]), std::stod(parts[2]), std::stod(parts[3]));
+					//vertices.emplace_back(tuple_t::vector(std::stod(parts[1]), std::stod(parts[2]), std::stod(parts[3])));
+					vertices.emplace_back(tuple_t::point(std::stod(parts[1]), std::stod(parts[2]), std::stod(parts[3])));
 					// create an empty array for each vertex to store it's normals so we can index it when we add the vtx normals
 					vertex_normals.emplace_back(std::vector<tuple_t>{});
 					added_normal_indices.push_back(std::vector<double>{});
@@ -35,7 +37,7 @@ wavefront_t::wavefront_t(const char* obj_filename)
 				if (parts[0] == "vn")
 				{
 					// vertex normal line in obj vn -0.0000 1.0000 - 0.0000
-					obj_normals.emplace_back(std::stod(parts[1]), std::stod(parts[2]), std::stod(parts[3]));
+					obj_normals.emplace_back(tuple_t::vector(std::stod(parts[1]), std::stod(parts[2]), std::stod(parts[3])));
 				}
 				if (parts[0] == "vt")
 				{
@@ -91,9 +93,9 @@ wavefront_t::wavefront_t(const char* obj_filename)
 		for (const std::vector<tuple_t>& vtx_normals : vertex_normals)
 		{
 			tuple_t normal_avg{ tuple_t::vector(0.0, 0.0, 0.0) };
-			for (std::size_t i{ 0 }; i < vtx_normals.size(); ++i)
+			for (const auto& normal : vtx_normals)
 			{
-				normal_avg += vtx_normals[i];
+				normal_avg += normal;
 			}
 			normal_avg /= vtx_normals.size();
 			normal_avg.normalize();

@@ -1,40 +1,23 @@
 #pragma once
+#include <memory>
 #include "geometry.h"
+#include "triangle.h"
 #include "wavefront_obj.h"
 
 class Mesh : public Geometry
 {
 public:
-    /** @brief List of vertex positions. */
-    std::vector<tuple_t> vertices;
-
-    /**
-     * @brief List of per-vertex normals (unaveraged).
-     * Each entry is a list of normals associated with the same vertex position.
-     */
-    std::vector<std::vector<tuple_t>> vertex_normals;
-
-    /**
-     * @brief Averaged normal vectors per vertex.
-     * Computed from `vertex_normals` to support smooth shading.
-     */
-    std::vector<tuple_t> vertex_normals_avg;
-
-    /** @brief List of 2D texture coordinates (UVs). */
-    std::vector<std::pair<double, double>> uvs;
-
-    /** @brief List of triangle faces defined in the .obj file. */
-    std::vector<face_t> faces;
+    std::vector<std::shared_ptr<Triangle>> triangles;
 
     bool smooth{ false };
 
-    Mesh(const wavefront_t& obj);
+    Mesh(const wavefront_t& obj, bool smooth = true);
 
-    Mesh(const char* obj_filename);
+    Mesh(const char* obj_filename, bool smooth = true);
 
-    static std::shared_ptr<Mesh> create(const wavefront_t& obj);
+    static std::shared_ptr<Mesh> create(const wavefront_t& obj, bool smooth = true);
 
-    static std::shared_ptr<Mesh> create(const char* obj_filename);
+    static std::shared_ptr<Mesh> create(const char* obj_filename, bool smooth = true);
 
     void local_intersect(const ray_t& local_ray, intersections_t& intersections) const override;
 
