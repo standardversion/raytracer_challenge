@@ -119,6 +119,15 @@ tuple_t tuple_t::operator+(const tuple_t& t) const
 	};
 }
 
+tuple_t& tuple_t::operator+=(const tuple_t& t)
+{
+	this->x += t.x;
+	this->y += t.y;
+	this->z += t.z;
+	this->w += t.w;
+	return *this;
+}
+
 tuple_t tuple_t::operator-(const tuple_t& t) const
 {
 	if (this->is_vector() && t.is_point())

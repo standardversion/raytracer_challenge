@@ -119,7 +119,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>gtest_main.lib;gtest.lib;gmock.lib;gmock_main.lib;tuple.obj;colour.obj;canvas.obj;ppm.obj;utils.obj;matrix.obj;ray.obj;sphere.obj;intersection.obj;phong.obj;geometry.obj;scene_object.obj;light.obj;world.obj;camera.obj;plane.obj;pattern.obj;stripe.obj;gradient.obj;ring.obj;checker.obj;intersection_state.obj;cube.obj;cylinder.obj;cone.obj;group.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gtest_main.lib;gtest.lib;gmock.lib;gmock_main.lib;tuple.obj;colour.obj;canvas.obj;ppm.obj;utils.obj;matrix.obj;ray.obj;sphere.obj;intersection.obj;phong.obj;geometry.obj;scene_object.obj;light.obj;world.obj;camera.obj;plane.obj;pattern.obj;stripe.obj;gradient.obj;ring.obj;checker.obj;intersection_state.obj;cube.obj;cylinder.obj;cone.obj;group.obj;triangle.obj;wavefront_obj.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -139,7 +139,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;gtest_main.lib;gtest.lib;gmock.lib;gmock_main.lib;tuple.obj;colour.obj;canvas.obj;ppm.obj;utils.obj;matrix.obj;ray.obj;sphere.obj;intersection.obj;phong.obj;geometry.obj;scene_object.obj;light.obj;world.obj;camera.obj;plane.obj;pattern.obj;stripe.obj;gradient.obj;ring.obj;checker.obj;intersection_state.obj;cube.obj;cylinder.obj;cone.obj;group.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;gtest_main.lib;gtest.lib;gmock.lib;gmock_main.lib;tuple.obj;colour.obj;canvas.obj;ppm.obj;utils.obj;matrix.obj;ray.obj;sphere.obj;intersection.obj;phong.obj;geometry.obj;scene_object.obj;light.obj;world.obj;camera.obj;plane.obj;pattern.obj;stripe.obj;gradient.obj;ring.obj;checker.obj;intersection_state.obj;cube.obj;cylinder.obj;cone.obj;group.obj;triangle.obj;wavefront_obj.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -166,8 +166,10 @@
     <ClCompile Include="ppm_tests.cpp" />
     <ClCompile Include="ray_tests.cpp" />
     <ClCompile Include="sphere_tests.cpp" />
+    <ClCompile Include="triangle_tests.cpp" />
     <ClCompile Include="tuple_tests.cpp" />
     <ClCompile Include="utils_tests.cpp" />
+    <ClCompile Include="wavefront_obj_tests.cpp" />
     <ClCompile Include="world_tests.cpp" />
   </ItemGroup>
   <ItemGroup>

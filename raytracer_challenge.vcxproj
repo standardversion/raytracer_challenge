@@ -192,8 +192,10 @@
     <ClInclude Include="settings.h" />
     <ClInclude Include="sphere.h" />
     <ClInclude Include="stripe.h" />
+    <ClInclude Include="triangle.h" />
     <ClInclude Include="tuple.h" />
     <ClInclude Include="utils.h" />
+    <ClInclude Include="wavefront_obj.h" />
     <ClInclude Include="world.h" />
   </ItemGroup>
   <ItemGroup>
@@ -221,8 +223,10 @@
     <ClCompile Include="ray.cpp" />
     <ClCompile Include="scene_object.cpp" />
     <ClCompile Include="sphere.cpp" />
+    <ClCompile Include="triangle.cpp" />
     <ClCompile Include="tuple.cpp" />
     <ClCompile Include="utils.cpp" />
+    <ClCompile Include="wavefront_obj.cpp" />
     <ClCompile Include="world.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
