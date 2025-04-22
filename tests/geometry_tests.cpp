@@ -15,7 +15,7 @@ public:
 	TestGeometry()
 		: Geometry{}
 	{}
-	tuple_t local_normal_at(const tuple_t& local_point) const
+	tuple_t local_normal_at(const tuple_t& local_point, const double alpha, const double beta, const double gamma) const
 	{
 		return tuple_t::vector(local_point.x, local_point.y, local_point.z);
 	}

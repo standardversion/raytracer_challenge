@@ -19,13 +19,13 @@ Scenario: Constructing a triangle
 */
 TEST(triangle, should_construct_triangle_from_3_points)
 {
-    const tuple_t p1{ tuple_t::point(0, 1, 0) };
+    const tuple_t v1{ tuple_t::point(0, 1, 0) };
     const tuple_t v2{ tuple_t::point(-1, 0, 0) };
-    const tuple_t p3{ tuple_t::point(1, 0, 0) };
-    auto t{ Triangle::create(p1, v2, p3) };
-	EXPECT_EQ(t->p1, p1);
+    const tuple_t v3{ tuple_t::point(1, 0, 0) };
+    auto t{ Triangle::create(v1, v2, v3) };
+	EXPECT_EQ(t->v1, v1);
     EXPECT_EQ(t->v2, v2);
-    EXPECT_EQ(t->p3, p3);
+    EXPECT_EQ(t->v3, v3);
     EXPECT_EQ(t->e1, tuple_t::vector(-1, -1, 0));
     EXPECT_EQ(t->e2, tuple_t::vector(1, -1, 0));
     EXPECT_EQ(t->normal, tuple_t::vector(0, 0, -1));
@@ -43,10 +43,10 @@ Scenario: Finding the normal on a triangle
 */
 TEST(triangle, should_calculate_normal_at_point)
 {
-    const tuple_t p1{ tuple_t::point(0, 1, 0) };
+    const tuple_t v1{ tuple_t::point(0, 1, 0) };
     const tuple_t v2{ tuple_t::point(-1, 0, 0) };
-    const tuple_t p3{ tuple_t::point(1, 0, 0) };
-    auto t{ Triangle::create(p1, v2, p3) };
+    const tuple_t v3{ tuple_t::point(1, 0, 0) };
+    auto t{ Triangle::create(v1, v2, v3) };
     EXPECT_EQ(t->local_normal_at(tuple_t::point(0, 0.5, 0)), t->normal);
     EXPECT_EQ(t->local_normal_at(tuple_t::point(-0.5, 0.75, 0)), t->normal);
     EXPECT_EQ(t->local_normal_at(tuple_t::point(1, 0, 0)), t->normal);
@@ -61,10 +61,10 @@ Scenario: Intersecting a ray parallel to the triangle
 */
 TEST(triangle, should_not_have_any_intersections_when_ray_misses)
 {
-    const tuple_t p1{ tuple_t::point(0, 1, 0) };
+    const tuple_t v1{ tuple_t::point(0, 1, 0) };
     const tuple_t v2{ tuple_t::point(-1, 0, 0) };
-    const tuple_t p3{ tuple_t::point(1, 0, 0) };
-    auto t{ Triangle::create(p1, v2, p3) };
+    const tuple_t v3{ tuple_t::point(1, 0, 0) };
+    auto t{ Triangle::create(v1, v2, v3) };
     const ray_t r{ tuple_t::point(0, -1, -2), tuple_t::vector(0, 1, 0) };
     intersections_t i{};
     t->local_intersect(r, i);
@@ -80,10 +80,10 @@ Scenario: A ray misses the p1-p3 edge
 */
 TEST(triangle, should_not_have_any_intersections_when_ray_misses_p1_p3_edge)
 {
-    const tuple_t p1{ tuple_t::point(0, 1, 0) };
+    const tuple_t v1{ tuple_t::point(0, 1, 0) };
     const tuple_t v2{ tuple_t::point(-1, 0, 0) };
-    const tuple_t p3{ tuple_t::point(1, 0, 0) };
-    auto t{ Triangle::create(p1, v2, p3) };
+    const tuple_t v3{ tuple_t::point(1, 0, 0) };
+    auto t{ Triangle::create(v1, v2, v3) };
     const ray_t r{ tuple_t::point(1, 1, -2), tuple_t::vector(0, 0, 1) };
     intersections_t i{};
     t->local_intersect(r, i);
@@ -99,10 +99,10 @@ Scenario: A ray misses the p1-p2 edge
 */
 TEST(triangle, should_not_have_any_intersections_when_ray_misses_p1_p2_edge)
 {
-    const tuple_t p1{ tuple_t::point(0, 1, 0) };
+    const tuple_t v1{ tuple_t::point(0, 1, 0) };
     const tuple_t v2{ tuple_t::point(-1, 0, 0) };
-    const tuple_t p3{ tuple_t::point(1, 0, 0) };
-    auto t{ Triangle::create(p1, v2, p3) };
+    const tuple_t v3{ tuple_t::point(1, 0, 0) };
+    auto t{ Triangle::create(v1, v2, v3) };
     const ray_t r{ tuple_t::point(-1, 1, -2), tuple_t::vector(0, 0, 1) };
     intersections_t i{};
     t->local_intersect(r, i);
@@ -118,10 +118,10 @@ Scenario: A ray misses the p2-p3 edge
 */
 TEST(triangle, should_not_have_any_intersections_when_ray_misses_p2_p3_edge)
 {
-    const tuple_t p1{ tuple_t::point(0, 1, 0) };
+    const tuple_t v1{ tuple_t::point(0, 1, 0) };
     const tuple_t v2{ tuple_t::point(-1, 0, 0) };
-    const tuple_t p3{ tuple_t::point(1, 0, 0) };
-    auto t{ Triangle::create(p1, v2, p3) };
+    const tuple_t v3{ tuple_t::point(1, 0, 0) };
+    auto t{ Triangle::create(v1, v2, v3) };
     const ray_t r{ tuple_t::point(0, -1, -2), tuple_t::vector(0, 0, 1) };
     intersections_t i{};
     t->local_intersect(r, i);
@@ -138,10 +138,10 @@ Scenario: A ray strikes a triangle
 */
 TEST(triangle, should_have_one_intersection_when_ray_strikes_a_triangle)
 {
-    const tuple_t p1{ tuple_t::point(0, 1, 0) };
+    const tuple_t v1{ tuple_t::point(0, 1, 0) };
     const tuple_t v2{ tuple_t::point(-1, 0, 0) };
-    const tuple_t p3{ tuple_t::point(1, 0, 0) };
-    auto t{ Triangle::create(p1, v2, p3) };
+    const tuple_t v3{ tuple_t::point(1, 0, 0) };
+    auto t{ Triangle::create(v1, v2, v3) };
     const ray_t r{ tuple_t::point(0, 0.5, -2), tuple_t::vector(0, 0, 1) };
     intersections_t i{};
     t->local_intersect(r, i);
