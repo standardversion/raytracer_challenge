@@ -19,7 +19,7 @@ void Plane::local_intersect(const ray_t& local_ray, intersections_t& intersectio
 	}
 }
 
-tuple_t Plane::local_normal_at(const tuple_t& local_point) const
+tuple_t Plane::local_normal_at(const tuple_t& local_point, const double alpha, const double beta, const double gamma) const
 {
 	return tuple_t::vector(0, 1, 0);
 }

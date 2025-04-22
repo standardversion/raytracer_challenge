@@ -65,7 +65,7 @@ public:
      * @param local_point The point in the cylinder's local space.
      * @return A normalized vector representing the surface normal at that point.
      */
-    tuple_t local_normal_at(const tuple_t& local_point) const override;
+    tuple_t local_normal_at(const tuple_t& local_point, const double alpha = 0, const double beta = 0, const double gamma = 0) const override;
 
 protected:
     /**

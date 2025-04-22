@@ -3,6 +3,21 @@
 #include "settings.h"
 #include "phong.h"
 
+intersection_t::intersection_t()
+	: time{ 0 }, object{ nullptr }, alpha{ 0 }, beta{ 0 }, gamma{ 0 }
+{
+
+}
+
+intersection_t::intersection_t(double time, const Geometry* object)
+	: time{ time }, object{ object }
+{
+
+}
+
+intersection_t::intersection_t(double time, const Geometry*, double alpha, double beta, double gamma)
+	: time{ time }, object{ object }, alpha{ alpha }, beta{ beta }, gamma{ gamma }
+{ }
 
 bool intersection_t::operator==(const intersection_t& i) const
 {
@@ -16,7 +31,7 @@ intersection_state intersection_t::prepare(const ray_t& r, const intersections_t
 	state.object = object;
 	state.point = r.position(time);
 	state.eye_vector = -r.direction;
-	state.normal = object->normal_at(state.point);
+	state.normal = object->normal_at(state.point, alpha, beta, gamma);
 	if (tuple_t::dot(state.eye_vector, state.normal) < 0)
 	{
 		state.inside = true;
@@ -98,6 +113,13 @@ intersection_t intersections_t::operator[](const std::size_t i) const
 void intersections_t::add(const double time, const Geometry* geo)
 {
 	intersection_t intersection{ time, geo };
+	entries.push_back(intersection);
+	sort();
+}
+
+void intersections_t::add(const double time, const Geometry* geo, const double alpha, const double beta, const double gamma)
+{
+	intersection_t intersection{ time, geo, alpha, beta, gamma };
 	entries.push_back(intersection);
 	sort();
 }

@@ -34,11 +34,11 @@ TEST(ray, should_compute_a_point_from_a_distance)
 	const tuple_t direction{ tuple_t::vector(1, 0, 0) };
 	const ray_t ray{ origin, direction };
 	const tuple_t p1{ tuple_t::point(2, 3, 4) };
-	const tuple_t p2{ tuple_t::point(3, 3, 4) };
+	const tuple_t v2{ tuple_t::point(3, 3, 4) };
 	const tuple_t p3{ tuple_t::point(1, 3, 4) };
 	const tuple_t p4{ tuple_t::point(4.5, 3, 4) };
 	EXPECT_EQ(ray.position(0), p1);
-	EXPECT_EQ(ray.position(1), p2);
+	EXPECT_EQ(ray.position(1), v2);
 	EXPECT_EQ(ray.position(-1), p3);
 	EXPECT_EQ(ray.position(2.5), p4);
 }

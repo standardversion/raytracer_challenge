@@ -21,38 +21,52 @@ public:
 
     /**
      * @brief Constructs a triangle from three points.
-     * @param p1 First vertex of the triangle.
+     * @param v1 First vertex of the triangle.
      * @param p2 Second vertex of the triangle.
-     * @param p3 Third vertex of the triangle.
+     * @param v3 Third vertex of the triangle.
      */
-    Triangle(const tuple_t& p1, const tuple_t& p2, const tuple_t& p3);
+    Triangle(const tuple_t& v1, const tuple_t& v2, const tuple_t& v3);
+
+    Triangle
+    (
+        const tuple_t& v1,
+        const tuple_t& v2,
+        const tuple_t& v3,
+        const std::pair<double, double>& v1_uv,
+        const std::pair<double, double>& v2_uv,
+        const std::pair<double, double>& v3_uv
+    );
 
     /** @brief The first vertex of the triangle. */
-    tuple_t p1;
+    tuple_t v1;
 
     /** @brief The second vertex of the triangle. */
-    tuple_t p2;
+    tuple_t v2;
 
     /** @brief The third vertex of the triangle. */
-    tuple_t p3;
+    tuple_t v3;
 
-    /** @brief Edge vector from p1 to p2 (e1 = p2 - p1). */
+    /** @brief Edge vector from v1 to p2 (e1 = p2 - v1). */
     tuple_t e1;
 
-    /** @brief Edge vector from p1 to p3 (e2 = p3 - p1). */
+    /** @brief Edge vector from v1 to v3 (e2 = v3 - v1). */
     tuple_t e2;
 
     /** @brief The surface normal of the triangle (normalized cross product of e1 and e2). */
     tuple_t normal;
 
+    std::pair<double, double> v1_uv;
+    std::pair<double, double> v2_uv;
+    std::pair<double, double> v3_uv;
+
     /**
      * @brief Factory method to create a shared pointer to a Triangle.
-     * @param p1 First vertex.
+     * @param v1 First vertex.
      * @param p2 Second vertex.
-     * @param p3 Third vertex.
+     * @param v3 Third vertex.
      * @return Shared pointer to the newly created Triangle.
      */
-    static std::shared_ptr<Triangle> create(const tuple_t& p1, const tuple_t& p2, const tuple_t& p3);
+    static std::shared_ptr<Triangle> create(const tuple_t& v1, const tuple_t& v2, const tuple_t& v3);
 
     /**
      * @brief Computes the intersection(s) between a ray and the triangle in local space.
@@ -66,7 +80,7 @@ public:
      * @param local_point The point on the triangle in local space (not used for flat shading).
      * @return The normal vector at the given point.
      */
-    tuple_t local_normal_at(const tuple_t& local_point) const override;
+    tuple_t local_normal_at(const tuple_t& local_point, const double alpha = 0, const double beta = 0, const double gamma = 0) const override;
 };
 
 

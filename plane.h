@@ -50,7 +50,7 @@ public:
      * @param local_point The point on the plane (ignored).
      * @return The up-facing unit vector (0, 1, 0).
      */
-    tuple_t local_normal_at(const tuple_t& local_point) const override;
+    tuple_t local_normal_at(const tuple_t& local_point, const double alpha = 0, const double beta = 0, const double gamma = 0) const override;
 };
 
 

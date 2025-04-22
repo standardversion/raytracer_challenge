@@ -58,7 +58,7 @@ TEST(world, should_create_default_world)
     p.colour = colour_t{ 0.8, 1.0, 0.6 };
     p.diffuse = 0.7;
     p.specular = 0.2;
-    Phong p2{};
+    Phong v2{};
     Light l{};
     l.transform = matrix_t::translation(-10, 10, -10);
     auto assigned_phong1{ std::dynamic_pointer_cast<Phong>(w.renderables[0].lock()->material) };
@@ -68,7 +68,7 @@ TEST(world, should_create_default_world)
     EXPECT_EQ(w.renderables[0].lock().get()->transform, matrix_t::identity());
     EXPECT_EQ(*assigned_phong1, p);
     EXPECT_EQ(w.renderables[1].lock().get()->transform, matrix_t::scaling(0.5, 0.5, 0.5));
-    EXPECT_EQ(*assigned_phong2, p2);
+    EXPECT_EQ(*assigned_phong2, v2);
     EXPECT_EQ(w.lights[0].lock().get()->intensity, l.intensity);
     EXPECT_EQ(w.lights[0].lock().get()->transform, l.transform);
 }

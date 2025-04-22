@@ -49,7 +49,7 @@ void Sphere::local_intersect(const ray_t& local_ray, intersections_t& intersecti
 	}
 }
 
-tuple_t Sphere::local_normal_at(const tuple_t& local_point) const
+tuple_t Sphere::local_normal_at(const tuple_t& local_point, const double alpha, const double beta, const double gamma) const
 {
 	return (local_point - tuple_t::point(0, 0, 0));
 }

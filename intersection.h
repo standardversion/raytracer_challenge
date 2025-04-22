@@ -23,6 +23,11 @@ struct intersection_t
 	 */
 	double time{};
 
+	// barycentric weights for tris
+	double alpha;
+	double beta;
+	double gamma;
+
 	/**
 	 * @brief A pointer to the geometry object that was intersected.
 	 *
@@ -30,6 +35,10 @@ struct intersection_t
 	 * It should never be null in a valid intersection.
 	 */
 	const Geometry* object{ nullptr };
+
+	intersection_t();
+	intersection_t(double time, const Geometry* object);
+	intersection_t(double time, const Geometry* object, double alpha, double beta, double gamma);
 
 	/**
 	 * @brief Compares this intersection object with another for equality.
@@ -81,12 +90,14 @@ struct intersections_t
 	 * @brief Adds a single intersection to the collection.
 	 *
 	 * @param time The time or distance at which the intersection occurs.
-	 * @param sph A pointer to the geometry involved in the intersection.
+	 * @param geo A pointer to the geometry involved in the intersection.
 	 *
 	 * Stores the intersection data (typically time and object pointer)
 	 * for later processing, such as determining the closest visible hit.
 	 */
-	void add(const double time, const Geometry* sph);
+	void add(const double time, const Geometry* geo);
+
+	void add(const double time, const Geometry* geo, const double alpha, const double beta, const double gamma);
 
 	/**
 	 * @brief Adds one or more intersections to the collection.

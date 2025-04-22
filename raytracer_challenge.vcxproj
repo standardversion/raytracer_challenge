@@ -182,6 +182,7 @@
     <ClInclude Include="material.h" />
     <ClInclude Include="matrix.h" />
     <ClInclude Include="geometry.h" />
+    <ClInclude Include="mesh.h" />
     <ClInclude Include="pattern.h" />
     <ClInclude Include="phong.h" />
     <ClInclude Include="plane.h" />
@@ -190,6 +191,7 @@
     <ClInclude Include="ring.h" />
     <ClInclude Include="scene_object.h" />
     <ClInclude Include="settings.h" />
+    <ClInclude Include="smooth_triangle.h" />
     <ClInclude Include="sphere.h" />
     <ClInclude Include="stripe.h" />
     <ClInclude Include="triangle.h" />
@@ -214,8 +216,10 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="matrix.cpp" />
     <ClCompile Include="geometry.cpp" />
+    <ClCompile Include="mesh.cpp" />
     <ClCompile Include="pattern.cpp" />
     <ClCompile Include="ring.cpp" />
+    <ClCompile Include="smooth_triangle.cpp" />
     <ClCompile Include="stripe.cpp" />
     <ClCompile Include="phong.cpp" />
     <ClCompile Include="plane.cpp" />

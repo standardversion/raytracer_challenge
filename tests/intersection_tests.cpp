@@ -8,6 +8,7 @@
 #include "../intersection_state.h"
 #include "../settings.h"
 #include "../phong.h"
+#include "../triangle.h"
 
 /*
 Scenario: An intersection encapsulates t and object
@@ -445,4 +446,22 @@ TEST(intersect, should_calculate_schlick_approximation_with_small_angle_and_n2_g
     intersections.add(i);
     const intersection_state state{ intersections[0].prepare(r, intersections) };
     EXPECT_NEAR(state.schlick(), 0.48873, 0.0001);
+}
+
+/*
+Scenario: An intersection can encapsulate `u` and `v` and `w`
+  Given s ← triangle(point(0, 1, 0), point(-1, 0, 0), point(1, 0, 0))
+  When i ← intersection_with_uv(3.5, s, 0.2, 0.4)
+  Then i.u = 0.2
+    And i.v = 0.4
+    And i.w = 0.4
+*/
+TEST(intersect, should_have_u_v_w)
+{
+
+    auto t{ Triangle::create(tuple_t::point(0, 1, 0), tuple_t::point(-1, 0, 0), tuple_t::point(1, 0, 0)) };
+    const intersection_t i{ 3.5, t.get(), 0.2, 0.4, 0.4 };
+    EXPECT_EQ(i.alpha, 0.2);
+    EXPECT_EQ(i.beta, 0.4);
+    EXPECT_EQ(i.gamma, 0.4);
 }
