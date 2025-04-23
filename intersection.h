@@ -1,4 +1,5 @@
-#pragma once
+﻿#pragma once
+#include <optional>
 #include <memory>
 #include <vector>
 #include <algorithm>
@@ -24,12 +25,53 @@ struct intersection_t
 	double time{};
 
 	/**
+	 * @brief Barycentric alpha value (weight of the first vertex in a triangle).
+	 */
+	double alpha;
+
+	/**
+	 * @brief Barycentric beta value (weight of the second vertex in a triangle).
+	 */
+	double beta;
+
+	/**
+	 * @brief Barycentric gamma value (weight of the third vertex in a triangle).
+	 */
+	double gamma;
+
+	/**
 	 * @brief A pointer to the geometry object that was intersected.
 	 *
-	 * This is a unique pointer to a constant `Geometry` instance.
+	 * This is a shared pointer to a constant `Geometry` instance.
 	 * It should never be null in a valid intersection.
 	 */
-	const Geometry* object{ nullptr };
+	std::shared_ptr<const Geometry> object;
+
+	/** @brief Default constructor. Initializes members to default values. */
+	intersection_t() = default;
+
+	/** @brief Copy constructor. */
+	intersection_t(const intersection_t&) = default;
+
+	/** @brief Copy assignment operator. */
+	intersection_t& operator=(const intersection_t&) = default;
+
+	/**
+	 * @brief Constructs an intersection with a time value and object.
+	 * @param time The distance along the ray where the intersection occurs.
+	 * @param object The object that was intersected.
+	 */
+	intersection_t(double time, const std::shared_ptr<const Geometry>& object);
+
+	/**
+	 * @brief Constructs an intersection with time, object, and barycentric coordinates.
+	 * @param time The distance along the ray where the intersection occurs.
+	 * @param object The object that was intersected.
+	 * @param alpha Barycentric coordinate for the first vertex.
+	 * @param beta Barycentric coordinate for the second vertex.
+	 * @param gamma Barycentric coordinate for the third vertex.
+	 */
+	intersection_t(double time, const std::shared_ptr<const Geometry>& object, double alpha, double beta, double gamma);
 
 	/**
 	 * @brief Compares this intersection object with another for equality.
@@ -81,12 +123,26 @@ struct intersections_t
 	 * @brief Adds a single intersection to the collection.
 	 *
 	 * @param time The time or distance at which the intersection occurs.
-	 * @param sph A pointer to the geometry involved in the intersection.
+	 * @param geo A pointer to the geometry involved in the intersection.
 	 *
 	 * Stores the intersection data (typically time and object pointer)
 	 * for later processing, such as determining the closest visible hit.
 	 */
-	void add(const double time, const Geometry* sph);
+	void add(const double time, const std::shared_ptr<const Geometry>& geo);
+
+	/**
+	 * @brief Adds a single triangle intersection with barycentric coordinates.
+	 *
+	 * @param time The time or distance at which the intersection occurs.
+	 * @param geo A pointer to the geometry involved in the intersection.
+	 * @param alpha Barycentric coordinate for the first triangle vertex.
+	 * @param beta Barycentric coordinate for the second triangle vertex.
+	 * @param gamma Barycentric coordinate for the third triangle vertex.
+	 *
+	 * This overload is used when working with smooth triangles and requires
+	 * barycentric weights to enable normal interpolation at the intersection point.
+	 */
+	void add(const double time, const std::shared_ptr<const Geometry>& geo, const double alpha, const double beta, const double gamma);
 
 	/**
 	 * @brief Adds one or more intersections to the collection.
@@ -116,7 +172,7 @@ struct intersections_t
 	 * (typically the one with the smallest positive `t` value). Returns a sentinel
 	 * or null intersection if no valid hit exists.
 	 */
-	intersection_t hit() const;
+	std::optional<intersection_t> hit() const;
 
 	/**
 	 * @brief Accesses an intersection at a specific index.

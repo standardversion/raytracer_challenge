@@ -29,9 +29,12 @@ public:
      * to provide shape-specific normal calculations.
      *
      * @param local_point The point in object-local space to compute the normal at.
+     * @param alpha Barycentric alpha value (unused in flat triangle).
+     * @param beta Barycentric beta value (unused in flat triangle).
+     * @param gamma Barycentric gamma value (unused in flat triangle).
      * @return tuple_t The normal vector at the point (unit vector).
      */
-    virtual tuple_t local_normal_at(const tuple_t& local_point) const = 0;
+    virtual tuple_t local_normal_at(const tuple_t& local_point, const double alpha = 0, const double beta = 0, const double gamma = 0) const = 0;
 
     /**
      * @brief Calculates intersections between a ray and the object in local space.
@@ -62,9 +65,12 @@ public:
      * transforms it back to world space.
      *
      * @param point The point on the geometry in world space.
+     * @param alpha Barycentric alpha value (unused in flat triangle).
+     * @param beta Barycentric beta value (unused in flat triangle).
+     * @param gamma Barycentric gamma value (unused in flat triangle).
      * @return tuple_t The normal vector at the point (unit vector).
      */
-    tuple_t normal_at(const tuple_t& point) const;
+    tuple_t normal_at(const tuple_t& point, const double alpha = 0, const double beta = 0, const double gamma = 0) const;
 
 protected:
     /**

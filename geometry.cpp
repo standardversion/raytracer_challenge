@@ -14,8 +14,8 @@ void Geometry::intersect(const ray_t& ray, intersections_t& intersections) const
     local_intersect(local_ray, intersections);
 }
 
-tuple_t Geometry::normal_at(const tuple_t& world_point) const {
+tuple_t Geometry::normal_at(const tuple_t& world_point, const double alpha, const double beta, const double gamma) const {
     tuple_t local_point = world_to_object(world_point);
-    tuple_t local_normal = local_normal_at(local_point);
+    tuple_t local_normal = local_normal_at(local_point, alpha, beta, gamma);
     return normal_to_world(local_normal);
 }

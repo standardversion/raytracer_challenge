@@ -41,7 +41,7 @@ struct tuple_t
 	 * @param z The z-coordinate of the point.
 	 * @return A tuple_t representing the point in 3D space.
 	 */
-	static tuple_t point(const double x, const double y, const double z);
+	static tuple_t point(const double x, const double y, const double z, const double w = 1.0);
 
 	/**
 	 * @brief Creates a vector tuple with the given components.
@@ -169,6 +169,17 @@ struct tuple_t
 	tuple_t operator+(const tuple_t& t) const;
 
 	/**
+	 * @brief Adds a tuple component-wise in-place.
+	 *
+	 * This function performs component-wise addition of two tuples. 
+	 *	The original tuple is modified directly..
+	 *
+	 * @param t The tuple to add.
+	 * @return A reference to the modified tuple.
+	 */
+	tuple_t& operator+=(const tuple_t& t);
+
+	/**
 	 * @brief Subtracts one tuple from another component-wise.
 	 *
 	 * This function performs component-wise subtraction of two tuples. The result is a new tuple
@@ -225,7 +236,7 @@ struct tuple_t
 	 * This function divides each component of the tuple by a scalar factor and returns a new tuple.
 	 *
 	 * @param factor The scalar factor to divide each component by.
-	 * @return A new tuple representing the scaled tuple.
+	 * @return A reference to the modified tuple.
 	 */
 	tuple_t operator/(const double factor) const;
 

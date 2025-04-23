@@ -46,11 +46,11 @@ void Cube::local_intersect(const ray_t& local_ray, intersections_t& intersection
 	{
 		return;
 	}
-	intersections.add(tmin, this);
-	intersections.add(tmax, this);
+	intersections.add(tmin, std::static_pointer_cast<const Geometry>(shared_from_this()));
+	intersections.add(tmax, std::static_pointer_cast<const Geometry>(shared_from_this()));
 }
 
-tuple_t Cube::local_normal_at(const tuple_t& local_point) const
+tuple_t Cube::local_normal_at(const tuple_t& local_point, const double alpha, const double beta, const double gamma) const
 {
 	const double maxc{ std::max(std::max(abs(local_point.x), abs(local_point.y)), abs(local_point.z)) };
 	if (maxc == abs(local_point.x))

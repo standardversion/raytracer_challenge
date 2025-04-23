@@ -44,9 +44,12 @@ public:
      * The normal differs depending on whether the point is on the side surface or a cap.
      *
      * @param local_point The point on the cone, expressed in object-local coordinates.
+     * @param alpha Barycentric alpha value (unused in flat triangle).
+     * @param beta Barycentric beta value (unused in flat triangle).
+     * @param gamma Barycentric gamma value (unused in flat triangle).
      * @return A normalized vector representing the surface normal at the point.
      */
-    tuple_t local_normal_at(const tuple_t& local_point) const override;
+    tuple_t local_normal_at(const tuple_t& local_point, const double alpha = 0, const double beta = 0, const double gamma = 0) const override;
 
 protected:
     /**

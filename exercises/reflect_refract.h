@@ -1,7 +1,7 @@
 #pragma once
 #include "../tuple.h"
 #include "../canvas.h"
-#include "../colour.h";
+#include "../colour.h"
 #include "../ppm.h"
 #include "../intersection.h"
 #include "../sphere.h"

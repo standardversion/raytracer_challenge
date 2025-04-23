@@ -129,9 +129,9 @@ Scenario: Subtracting two points
 TEST(tuple, should_implement_subtraction_operator_two_points_gives_a_vector)
 {
 	const tuple_t p1{ tuple_t::point(3, 2, 1) };
-	const tuple_t p2{ tuple_t::point(5, 6, 7) };
+	const tuple_t v2{ tuple_t::point(5, 6, 7) };
 	const tuple_t v{ tuple_t::vector(-2, -4, -6) };
-	EXPECT_EQ(p1 - p2, v);
+	EXPECT_EQ(p1 - v2, v);
 	EXPECT_TRUE(v.is_vector());
 }
 

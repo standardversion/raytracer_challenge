@@ -947,11 +947,11 @@ TEST(matrix, should_apply_individual_transforms_sequntially)
     const matrix_t A{ matrix_t::rotation_x(M_PI / 2)};
     const matrix_t B{ matrix_t::scaling(5, 5, 5) };
     const matrix_t C{ matrix_t::translation(10, 5, 7) };
-    const tuple_t p2{ tuple_t::point(1, -1, 0) };
+    const tuple_t v2{ tuple_t::point(1, -1, 0) };
     const tuple_t p3{ tuple_t::point(5, -5, 0) };
     const tuple_t p4{ tuple_t::point(15, 0, 7) };
-    EXPECT_EQ(A * p, p2);
-    EXPECT_EQ(B * p2, p3);
+    EXPECT_EQ(A * p, v2);
+    EXPECT_EQ(B * v2, p3);
     EXPECT_EQ(C * p3, p4);
 }
 

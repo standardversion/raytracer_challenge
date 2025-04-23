@@ -8,7 +8,7 @@ SceneObject::SceneObject()
 
 tuple_t SceneObject::world_to_object(const tuple_t& point) const
 {
-    tuple_t out_point{ point };
+    tuple_t out_point{ tuple_t::point(point.x, point.y, point.z, point.w) };
     if (auto p = parent.lock())
     {
         out_point = p->world_to_object(out_point);

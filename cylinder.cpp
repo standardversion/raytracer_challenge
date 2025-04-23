@@ -14,12 +14,12 @@ void Cylinder::intersect_caps(const ray_t& local_ray, intersections_t& intersect
 	double t{ (minimum - local_ray.origin.y) / local_ray.direction.y };
 	if (check_cap(local_ray, t))
 	{
-		intersections.add(t, this);
+		intersections.add(t, std::static_pointer_cast<const Geometry>(shared_from_this()));
 	}
 	t = (maximum - local_ray.origin.y) / local_ray.direction.y;
 	if (check_cap(local_ray, t))
 	{
-		intersections.add(t, this);
+		intersections.add(t, std::static_pointer_cast<const Geometry>(shared_from_this()));
 	}
 }
 
@@ -60,18 +60,18 @@ void Cylinder::local_intersect(const ray_t& local_ray, intersections_t& intersec
 	double y0{ local_ray.origin.y + t0 * local_ray.direction.y };
 	if (minimum < y0 && y0 < maximum)
 	{
-		intersections.add(t0, this);
+		intersections.add(t0, std::static_pointer_cast<const Geometry>(shared_from_this()));
 	}
 	double y1{ local_ray.origin.y + t1 * local_ray.direction.y };
 	if (minimum < y1 && y1 < maximum)
 	{
-		intersections.add(t1, this);
+		intersections.add(t1, std::static_pointer_cast<const Geometry>(shared_from_this()));
 	}
 	intersect_caps(local_ray, intersections);
 	return;
 }
 
-tuple_t Cylinder::local_normal_at(const tuple_t& local_point) const
+tuple_t Cylinder::local_normal_at(const tuple_t& local_point, const double alpha, const double beta, const double gamma) const
 {
 	const double distance{ pow(local_point.x, 2) + pow(local_point.z, 2) };
 	if (distance < 1 && local_point.y >= maximum - EPSILON)

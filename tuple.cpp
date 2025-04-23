@@ -3,9 +3,9 @@
 #include "tuple.h"
 #include "settings.h"
 
-tuple_t tuple_t::point(const double x, const double y, const double z)
+tuple_t tuple_t::point(const double x, const double y, const double z, const double w)
 {
-	return { x, y, z, 1.0 };
+	return { x, y, z, w };
 }
 
 tuple_t tuple_t::vector(const double x, const double y, const double z)
@@ -117,6 +117,15 @@ tuple_t tuple_t::operator+(const tuple_t& t) const
 		this->z + t.z,
 		this->w + t.w
 	};
+}
+
+tuple_t& tuple_t::operator+=(const tuple_t& t)
+{
+	this->x += t.x;
+	this->y += t.y;
+	this->z += t.z;
+	this->w += t.w;
+	return *this;
 }
 
 tuple_t tuple_t::operator-(const tuple_t& t) const
