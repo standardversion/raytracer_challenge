@@ -24,9 +24,5 @@ tuple_t SmoothTriangle::local_normal_at
 	const double gamma
 ) const
 {
-	tuple_t interpolated_normal{ n1 * alpha + n2 * beta + n3 * gamma };
-	std::cout << "alpha: " << alpha << ", beta: " << beta << ", gamma: " << gamma << "\n";
-	std::cout << "normal: " << interpolated_normal.x << " " << interpolated_normal.y << " " << interpolated_normal.z << "\n";
-
-	return interpolated_normal;
+	return { n1 * alpha + n2 * beta + n3 * gamma };
 }
