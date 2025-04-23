@@ -15,7 +15,7 @@ Mesh::Mesh(const wavefront_t& obj, bool smooth)
 		if (smooth)
 		{
 			triangles.push_back(
-					std::make_shared<SmoothTriangle>(
+				SmoothTriangle::create(
 					obj.vertices.at(face.a - 1),
 					obj.vertices.at(face.b - 1),
 					obj.vertices.at(face.c - 1),
@@ -31,7 +31,7 @@ Mesh::Mesh(const wavefront_t& obj, bool smooth)
 		else
 		{
 			triangles.push_back(
-				std::make_shared<Triangle>(
+				Triangle::create(
 					obj.vertices.at(face.a - 1),
 					obj.vertices.at(face.b - 1),
 					obj.vertices.at(face.c - 1),
@@ -81,5 +81,8 @@ void Mesh::local_intersect(const ray_t& local_ray, intersections_t& intersection
 
 tuple_t Mesh::local_normal_at(const tuple_t& local_point, const double alpha, const double beta, const double gamma) const
 {
-	return local_point;
+	// just return the input as a normal
+	// this should never get called since the object in the intersection will be the
+	// triangle which is part of this mesh and not the mesh itself
+	return tuple_t::vector(local_point.x, local_point.y, local_point.z);
 }

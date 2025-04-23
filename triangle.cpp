@@ -30,6 +30,16 @@ std::shared_ptr<Triangle> Triangle::create(const tuple_t& v1, const tuple_t& v2,
 	return std::make_shared<Triangle>(v1, v2, v3);
 }
 
+std::shared_ptr<Triangle> Triangle::create(const tuple_t& v1,
+	const tuple_t& v2,
+	const tuple_t& v3,
+	const std::pair<double, double>& v1_uv,
+	const std::pair<double, double>& v2_uv,
+	const std::pair<double, double>& v3_uv
+)
+{
+	return std::make_shared<Triangle>(v1, v2, v3, v1_uv, v2_uv, v3_uv);
+}
 
 void Triangle::local_intersect(const ray_t& local_ray, intersections_t& intersections) const
 {

@@ -224,8 +224,10 @@
     <ClCompile Include="intersection_tests.cpp" />
     <ClCompile Include="light_tests.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="mesh_tests.cpp" />
     <ClCompile Include="pattern_tests.cpp" />
     <ClCompile Include="ring_tests.cpp" />
+    <ClCompile Include="smooth_triangle_tests.cpp" />
     <ClCompile Include="stripe_tests.cpp" />
     <ClCompile Include="phong_tests.cpp" />
     <ClCompile Include="matrix_tests.cpp" />
