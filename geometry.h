@@ -65,6 +65,9 @@ public:
      * transforms it back to world space.
      *
      * @param point The point on the geometry in world space.
+     * @param alpha Barycentric alpha value (unused in flat triangle).
+     * @param beta Barycentric beta value (unused in flat triangle).
+     * @param gamma Barycentric gamma value (unused in flat triangle).
      * @return tuple_t The normal vector at the point (unit vector).
      */
     tuple_t normal_at(const tuple_t& point, const double alpha = 0, const double beta = 0, const double gamma = 0) const;
