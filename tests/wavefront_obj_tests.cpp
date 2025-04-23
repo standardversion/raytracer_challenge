@@ -19,28 +19,28 @@ Scenario: Reading vertex values from obj file
   Given filepath ← "./assets/cube.obj"
   When w ← wavefront_t(filepath)
   Then w.vertices.size() = 8
-	And w.vertices[0] = vector(1.0, 1.0, -1.0)
-	And w.vertices[1] = vector(1.0, -1.0, -1.0)
-	And w.vertices[2] = vector(1.0, 1.0, 1.0)
-	And w.vertices[3] = vector(1.0, -1.0, 1.0)
-	And w.vertices[4] = vector(-1.0, 1.0, -1.0)
-	And w.vertices[5] = vector(-1.0, -1.0, -1.0)
-	And w.vertices[6] = vector(-1.0, 1.0, 1.0)
-	And w.vertices[0] = vector(-1.0, -1.0, 1.0)
+	And w.vertices[0] = point(1.0, 1.0, -1.0)
+	And w.vertices[1] = point(1.0, -1.0, -1.0)
+	And w.vertices[2] = point(1.0, 1.0, 1.0)
+	And w.vertices[3] = point(1.0, -1.0, 1.0)
+	And w.vertices[4] = point(-1.0, 1.0, -1.0)
+	And w.vertices[5] = point(-1.0, -1.0, -1.0)
+	And w.vertices[6] = point(-1.0, 1.0, 1.0)
+	And w.vertices[0] = point(-1.0, -1.0, 1.0)
 */
 TEST(wavefront_obj, should_read_vertex_values)
 {
 
 	const wavefront_t w{ "..\\..\\tests\\assets\\cube.obj" };
 	EXPECT_EQ(w.vertices.size(), 8);
-	EXPECT_EQ(w.vertices[0], tuple_t::vector(1.0, 1.0, -1.0));
-	EXPECT_EQ(w.vertices[1], tuple_t::vector(1.0, -1.0, -1.0));
-	EXPECT_EQ(w.vertices[2], tuple_t::vector(1.0, 1.0, 1.0));
-	EXPECT_EQ(w.vertices[3], tuple_t::vector(1.0, -1.0, 1.0));
-	EXPECT_EQ(w.vertices[4], tuple_t::vector(-1.0, 1.0, -1.0));
-	EXPECT_EQ(w.vertices[5], tuple_t::vector(-1.0, -1.0, -1.0));
-	EXPECT_EQ(w.vertices[6], tuple_t::vector(-1.0, 1.0, 1.0));
-	EXPECT_EQ(w.vertices[7], tuple_t::vector(-1.0, -1.0, 1.0));
+	EXPECT_EQ(w.vertices[0], tuple_t::point(1.0, 1.0, -1.0));
+	EXPECT_EQ(w.vertices[1], tuple_t::point(1.0, -1.0, -1.0));
+	EXPECT_EQ(w.vertices[2], tuple_t::point(1.0, 1.0, 1.0));
+	EXPECT_EQ(w.vertices[3], tuple_t::point(1.0, -1.0, 1.0));
+	EXPECT_EQ(w.vertices[4], tuple_t::point(-1.0, 1.0, -1.0));
+	EXPECT_EQ(w.vertices[5], tuple_t::point(-1.0, -1.0, -1.0));
+	EXPECT_EQ(w.vertices[6], tuple_t::point(-1.0, 1.0, 1.0));
+	EXPECT_EQ(w.vertices[7], tuple_t::point(-1.0, -1.0, 1.0));
 }
 
 /*

@@ -23,9 +23,9 @@ TEST(intersect, should_have_time_and_object_attrs)
     const auto s{ Sphere::create() };
     const double t{ 3.5 };
     intersections_t intersections{};
-    intersections.add(t, s.get());
+    intersections.add(t, s);
     EXPECT_EQ(intersections[0].time, 3.5);
-    EXPECT_EQ(intersections[0].object, s.get());
+    EXPECT_EQ(intersections[0].object.get(), s.get());
 }
 
 /*
@@ -45,13 +45,13 @@ TEST(intersect, should_be_able_to_aggregate_intersection)
     const double t{ 3.5 };
     const double t2{ 7.0 };
     intersections_t intersections{};
-    const intersection_t intersection1{ t, s.get() };
-    const intersection_t intersection2{ t2, s.get() };
+    const intersection_t intersection1{ t, s };
+    const intersection_t intersection2{ t2, s };
     intersections.add(intersection1, intersection2);
     EXPECT_EQ(intersections[0].time, 3.5);
-    EXPECT_EQ(intersections[0].object, s.get());
+    EXPECT_EQ(intersections[0].object.get(), s.get());
     EXPECT_EQ(intersections[1].time, 7.0);
-    EXPECT_EQ(intersections[0].object, s.get());
+    EXPECT_EQ(intersections[0].object.get(), s.get());
 }
 
 /*
@@ -69,12 +69,12 @@ TEST(intersect, should_return_lowest_positive_intersection)
     const auto s{ Sphere::create() };
     const double t{ 1 };
     const double t2{ 2 };
-    const intersection_t i{ t, s.get() };
+    const intersection_t i{ t, s };
     intersections_t intersections{};
-    const intersection_t intersection1{ t, s.get() };
-    const intersection_t intersection2{ t2, s.get() };
+    const intersection_t intersection1{ t, s };
+    const intersection_t intersection2{ t2, s };
     intersections.add(intersection2, intersection1);
-    const intersection_t ir{ intersections.hit() };
+    const auto ir{ intersections.hit() };
     EXPECT_EQ(i, ir);
 }
 
@@ -93,12 +93,12 @@ TEST(intersect, should_return_lowest_positive_intersection_even_when_negative_t_
     const auto s{ Sphere::create() };
     const double t{ -1 };
     const double t2{ 1 };
-    const intersection_t i{ t2, s.get() };
+    const intersection_t i{ t2, s };
     intersections_t intersections{};
-    const intersection_t intersection1{ t, s.get() };
-    const intersection_t intersection2{ t2, s.get() };
+    const intersection_t intersection1{ t, s };
+    const intersection_t intersection2{ t2, s };
     intersections.add(intersection2, intersection1);
-    const intersection_t ir{ intersections.hit() };
+    const auto ir{ intersections.hit() };
     EXPECT_EQ(i, ir);
 }
 
@@ -117,13 +117,13 @@ TEST(intersect, should_return_empty_intersection_even_only_negative_t_exist)
     const auto s{ Sphere::create() };
     const double t{ -2 };
     const double t2{ -1 };
-    const intersection_t i{ t2, s.get() };
+    const intersection_t i{ t2, s };
     intersections_t intersections{};
-    const intersection_t intersection1{ t, s.get() };
-    const intersection_t intersection2{ t2, s.get() };
+    const intersection_t intersection1{ t, s };
+    const intersection_t intersection2{ t2, s };
     intersections.add(intersection2, intersection1);
-    const intersection_t ir{ intersections.hit() };
-    EXPECT_EQ(ir.object, nullptr);
+    const auto ir{ intersections.hit() };
+    EXPECT_FALSE(ir.has_value());
 }
 
 /*
@@ -144,14 +144,14 @@ TEST(intersect, should_always_return_lowest_positive_intersection)
     const double t2{ 7 };
     const double t3{ -3 };
     const double t4{ 2 };
-    const intersection_t i{ t4, s.get() };
+    const intersection_t i{ t4, s };
     intersections_t intersections{};
-    const intersection_t intersection1{ t, s.get() };
-    const intersection_t intersection2{ t2, s.get() };
-    const intersection_t intersection3{ t3, s.get() };
-    const intersection_t intersection4{ t4, s.get() };
+    const intersection_t intersection1{ t, s };
+    const intersection_t intersection2{ t2, s };
+    const intersection_t intersection3{ t3, s };
+    const intersection_t intersection4{ t4, s };
     intersections.add(intersection1, intersection2, intersection3, intersection4);
-    const intersection_t ir{ intersections.hit() };
+    const auto ir{ intersections.hit() };
     EXPECT_EQ(ir, i);
 }
 
@@ -174,10 +174,10 @@ TEST(intersect, should_precompute_state_of_an_intersection)
     const ray_t r{ origin, direction };
     const auto s{ Sphere::create() };
     const intersections_t intersections{};
-    const intersection_t i{ 4, s.get() };
+    const intersection_t i{ 4, s };
     const intersection_state state{ i.prepare(r, intersections) };
     EXPECT_EQ(state.time, 4);
-    EXPECT_EQ(state.object, i.object);
+    EXPECT_EQ(state.object, i.object.get());
     EXPECT_EQ(state.point, tuple_t::point(0, 0, -1));
     EXPECT_EQ(state.eye_vector, tuple_t::vector(0, 0, -1));
     EXPECT_EQ(state.normal, tuple_t::vector(0, 0, -1));
@@ -198,7 +198,7 @@ TEST(intersect, should_set_state_inside_attr_to_false)
     const ray_t r{ origin, direction };
     const auto s{ Sphere::create() };
     const intersections_t intersections{};
-    const intersection_t i{ 4, s.get() };
+    const intersection_t i{ 4, s };
     const intersection_state state{ i.prepare(r, intersections) };
     EXPECT_FALSE(state.inside);
 }
@@ -222,7 +222,7 @@ TEST(intersect, should_set_state_inside_attr_to_true)
     const ray_t r{ origin, direction };
     const auto s{ Sphere::create() };
     const intersections_t intersections{};
-    const intersection_t i{ 1, s.get() };
+    const intersection_t i{ 1, s };
     const intersection_state state{ i.prepare(r, intersections) };
     EXPECT_TRUE(state.inside);
     EXPECT_EQ(state.point, tuple_t::point(0, 0, 1));
@@ -248,7 +248,7 @@ TEST(intersect, should_offset_the_point_on_hit)
     auto s{ Sphere::create() };
     s->transform = matrix_t::translation(0, 0, 1);
     const intersections_t intersections{};
-    const intersection_t i{ 5, s.get() };
+    const intersection_t i{ 5, s };
     const intersection_state state{ i.prepare(r, intersections) };
     EXPECT_TRUE(state.over_point.z < -EPSILON / 2);
     EXPECT_TRUE(state.point.z > state.over_point.z);
@@ -269,7 +269,7 @@ TEST(intersect, should_precompute_reflection_vector)
     const ray_t r{ origin, direction };
     const auto p{ Plane::create() };
     const intersections_t intersections{};
-    const intersection_t i{ std::sqrt(2), p.get() };
+    const intersection_t i{ std::sqrt(2), p };
     const intersection_state state{ i.prepare(r, intersections) };
     EXPECT_EQ(state.reflect_vector, tuple_t::vector(0, std::sqrt(2) / 2, std::sqrt(2) / 2));
 }
@@ -326,12 +326,12 @@ TEST(intersect, should_find_n1_and_n2_at_various_intersections)
     {
         phong->refractive_index = 2.5;
     }
-    const intersection_t i{ 2, a.get() };
-    const intersection_t i2{ 2.75, b.get() };
-    const intersection_t i3{ 3.25, c.get() };
-    const intersection_t i4{ 4.75, b.get() };
-    const intersection_t i5{ 5.25, c.get() };
-    const intersection_t i6{ 6, a.get() };
+    const intersection_t i{ 2, a };
+    const intersection_t i2{ 2.75, b };
+    const intersection_t i3{ 3.25, c };
+    const intersection_t i4{ 4.75, b };
+    const intersection_t i5{ 5.25, c };
+    const intersection_t i6{ 6, a };
     intersections_t intersections{};
     intersections.add(i, i2, i3, i4, i5, i6);
     intersection_state state{ intersections[0].prepare(r, intersections)};
@@ -373,7 +373,7 @@ TEST(intersect, should_set_under_point_as_offset_below_the_surface)
     auto s{ Sphere::glass_sphere() };
     s->transform = matrix_t::translation(0, 0, 1);
     intersections_t intersections{};
-    const intersection_t i{ 5, s.get() };
+    const intersection_t i{ 5, s };
     intersections.add(i);
     const intersection_state state{ i.prepare(r, intersections) };
     EXPECT_TRUE(state.under_point.z > EPSILON / 2);
@@ -395,8 +395,8 @@ TEST(intersect, should_calculate_schlick_approximation_under_total_internal_refl
     const tuple_t direction{ tuple_t::vector(0, 1, 0) };
     const ray_t r{ origin, direction };
     auto s{ Sphere::glass_sphere() };
-    const intersection_t i{ -std::sqrt(2) / 2, s.get() };
-    const intersection_t i2{ std::sqrt(2) / 2, s.get() };
+    const intersection_t i{ -std::sqrt(2) / 2, s };
+    const intersection_t i2{ std::sqrt(2) / 2, s };
     intersections_t intersections{};
     intersections.add(i, i2);
     const intersection_state state{ intersections[1].prepare(r, intersections) };
@@ -418,8 +418,8 @@ TEST(intersect, should_calculate_schlick_approximation_with_a_perpendicular_view
     const tuple_t direction{ tuple_t::vector(0, 1, 0) };
     const ray_t r{ origin, direction };
     auto s{ Sphere::glass_sphere() };
-    const intersection_t i{ -1, s.get() };
-    const intersection_t i2{ 1, s.get() };
+    const intersection_t i{ -1, s };
+    const intersection_t i2{ 1, s };
     intersections_t intersections{};
     intersections.add(i, i2);
     const intersection_state state{ intersections[1].prepare(r, intersections) };
@@ -441,7 +441,7 @@ TEST(intersect, should_calculate_schlick_approximation_with_small_angle_and_n2_g
     const tuple_t direction{ tuple_t::vector(0, 0, 1) };
     const ray_t r{ origin, direction };
     auto s{ Sphere::glass_sphere() };
-    const intersection_t i{ 1.8589, s.get() };
+    const intersection_t i{ 1.8589, s };
     intersections_t intersections{};
     intersections.add(i);
     const intersection_state state{ intersections[0].prepare(r, intersections) };
@@ -460,7 +460,7 @@ TEST(intersect, should_have_u_v_w)
 {
 
     auto t{ Triangle::create(tuple_t::point(0, 1, 0), tuple_t::point(-1, 0, 0), tuple_t::point(1, 0, 0)) };
-    const intersection_t i{ 3.5, t.get(), 0.2, 0.4, 0.4 };
+    const intersection_t i{ 3.5, t, 0.2, 0.4, 0.4 };
     EXPECT_EQ(i.alpha, 0.2);
     EXPECT_EQ(i.beta, 0.4);
     EXPECT_EQ(i.gamma, 0.4);

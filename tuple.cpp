@@ -3,9 +3,9 @@
 #include "tuple.h"
 #include "settings.h"
 
-tuple_t tuple_t::point(const double x, const double y, const double z)
+tuple_t tuple_t::point(const double x, const double y, const double z, const double w)
 {
-	return { x, y, z, 1.0 };
+	return { x, y, z, w };
 }
 
 tuple_t tuple_t::vector(const double x, const double y, const double z)
@@ -130,10 +130,10 @@ tuple_t& tuple_t::operator+=(const tuple_t& t)
 
 tuple_t tuple_t::operator-(const tuple_t& t) const
 {
-	/*if (this->is_vector() && t.is_point())
+	if (this->is_vector() && t.is_point())
 	{
 		throw std::invalid_argument("Cannot subtract point from vector");
-	}*/
+	}
 	return {
 		this->x - t.x,
 		this->y - t.y,

@@ -41,7 +41,7 @@ struct tuple_t
 	 * @param z The z-coordinate of the point.
 	 * @return A tuple_t representing the point in 3D space.
 	 */
-	static tuple_t point(const double x, const double y, const double z);
+	static tuple_t point(const double x, const double y, const double z, const double w = 1.0);
 
 	/**
 	 * @brief Creates a vector tuple with the given components.

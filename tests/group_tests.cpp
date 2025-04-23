@@ -99,10 +99,10 @@ TEST(group, should_have_intersections_when_group_is_not_empty)
 	intersections_t i{};
 	g->intersect(r, i);
 	EXPECT_EQ(i.entries.size(), 4);
-	EXPECT_EQ(i[0].object, s2.get());
-	EXPECT_EQ(i[1].object, s2.get());
-	EXPECT_EQ(i[2].object, s1.get());
-	EXPECT_EQ(i[3].object, s1.get());
+	EXPECT_EQ(i[0].object.get(), s2.get());
+	EXPECT_EQ(i[1].object.get(), s2.get());
+	EXPECT_EQ(i[2].object.get(), s1.get());
+	EXPECT_EQ(i[3].object.get(), s1.get());
 }
 
 /*

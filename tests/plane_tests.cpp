@@ -69,7 +69,7 @@ TEST(plane, should_intersect_with_a_ray_from_above)
 	p->intersect(r, i);
 	EXPECT_EQ(i.entries.size(), 1);
 	EXPECT_EQ(i[0].time, 1);
-	EXPECT_EQ(i[0].object, p.get());
+	EXPECT_EQ(i[0].object.get(), p.get());
 }
 
 /*
@@ -89,5 +89,5 @@ TEST(plane, should_intersect_with_a_ray_from_below)
 	p->intersect(r, i);
 	EXPECT_EQ(i.entries.size(), 1);
 	EXPECT_EQ(i[0].time, 1);
-	EXPECT_EQ(i[0].object, p.get());
+	EXPECT_EQ(i[0].object.get(), p.get());
 }
