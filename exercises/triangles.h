@@ -15,34 +15,81 @@
 #include "../stripe.h"
 #include "../gradient.h"
 #include "../cube.h"
+#include "../plane.h"
 
 void triangles_exercise()
 {
-	auto mesh{ Mesh::create(".\\assets\\sphere.obj", true) };
-	//auto mesh{ Cube::create() };
+	auto mesh{ Mesh::create(".\\assets\\crab.obj", false) };
+
+	// Position the jet with a nice angle
+	mesh->transform = matrix_t::rotation_y(-PI / 6) *
+		matrix_t::rotation_x(-PI / 16) *
+		matrix_t::translation(0, 0.5, 0);
+
+	// Neutral gray material
 	auto phong = std::dynamic_pointer_cast<Phong>(mesh->material);
 	if (phong) {
-		phong->colour = { 1, 1, 1 };
-		phong->specular = 0;
+		phong->colour = { 1, 0.4, 0.4 };
+		phong->specular = 0.1;
 		phong->diffuse = 0.8;
-		phong->ambient = 1;
-		//Checker checker{ { 0, 0, 0 }, { 1, 1, 1 } };
-		//checker.transform = matrix_t::scaling(0.25, 0.25, 0.25);
-		//phong->pattern = std::make_shared<Checker>(checker);
+		phong->ambient = 0.1;
 	}
 
-	Light light{ colour_t{1, 1, 1} };
-	light.transform = matrix_t::translation(0, 1.5, -1);
-	World world{};
-	world.add_object(std::make_shared<Light>(light));
-	world.add_object(std::move(mesh));
+	// === Lights ===
+	auto key = std::make_shared<Light>(colour_t{ 1.0, 0.95, 0.9 });
+	key->transform = matrix_t::translation(-4, 5, -4);
 
-	Camera camera{ 240, 135, PI / 2 };
+	auto fill = std::make_shared<Light>(colour_t{ 0.4, 0.4, 0.5 });
+	fill->transform = matrix_t::translation(3, 1, -2);
+
+	auto rim = std::make_shared<Light>(colour_t{ 0.8, 0.8, 1.0 });
+	rim->transform = matrix_t::translation(0, 3, 5);
+
+	// === Ground Plane ===
+	auto plane = Plane::create();
+	auto plane_material = std::dynamic_pointer_cast<Phong>(plane->material);
+	if (plane_material) {
+		plane_material->colour = { 0.5, 0.5, 0.5 };  // Neutral tarmac look
+		plane_material->specular = 0;
+		plane_material->diffuse = 0.9;
+		plane_material->ambient = 0.1;
+	}
+
+	// === Sky Background (Gradient Pattern) ===
+	auto sky = Plane::create();
+	auto sky_material = std::dynamic_pointer_cast<Phong>(sky->material);
+	if (sky_material) {
+		auto gradient = std::make_shared<Gradient>(
+			colour_t{ 0.7, 0.85, 1.0 },  // light blue top
+			colour_t{ 1.0, 1.0, 1.0 }    // white bottom
+		);
+		gradient->transform = matrix_t::scaling(1, 5, 1) *
+			matrix_t::rotation_x(PI / 2);
+		sky_material->pattern = gradient;
+		sky_material->ambient = 1;
+		sky_material->diffuse = 0;
+		sky_material->specular = 0;
+	}
+	sky->transform = matrix_t::translation(0, 5, 0); // behind jet
+
+	// === World Setup ===
+	World world{};
+	world.add_object(key);
+	world.add_object(fill);
+	world.add_object(rim);
+	world.add_object(std::move(mesh));
+	//world.add_object(plane); // ground
+	//world.add_object(sky);   // background sky
+
+	// === Camera ===
+	//Camera camera{ 320, 180, PI / 3 };
+	Camera camera{ 960, 540, PI / 3 };
 	camera.transform = matrix_t::view_transform(
-		tuple_t::point(0, 0, -5),
-		tuple_t::point(0, 0, 0),
+		tuple_t::point(0, 1.5, -5),
+		tuple_t::point(0, 0.1, 0),
 		tuple_t::vector(0, 1, 0)
 	);
+
 	canvas_t image{ camera.render(world) };
 	const ppm_t ppm{ image };
 	ppm.write_to_file("./x64/Release/triangle_mesh.ppm");

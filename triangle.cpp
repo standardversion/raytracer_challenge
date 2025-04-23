@@ -21,7 +21,8 @@ Triangle::Triangle
 )
 	: v1{ v1 }, v2{ v2 }, v3{ v3 }, e1{ v2 - v1 }, e2{ v3 - v1 }, v1_uv{ v1_uv }, v2_uv{ v2_uv }, v3_uv{ v3_uv }
 {
-
+	normal = tuple_t::cross(e2, e1);
+	normal.normalize();
 }
 
 std::shared_ptr<Triangle> Triangle::create(const tuple_t& v1, const tuple_t& v2, const tuple_t& v3)
