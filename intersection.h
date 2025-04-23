@@ -1,4 +1,5 @@
-#pragma once
+﻿#pragma once
+#include <optional>
 #include <memory>
 #include <vector>
 #include <algorithm>
@@ -34,11 +35,13 @@ struct intersection_t
 	 * This is a unique pointer to a constant `Geometry` instance.
 	 * It should never be null in a valid intersection.
 	 */
-	const Geometry* object{ nullptr };
+	std::shared_ptr<const Geometry> object;
 
-	intersection_t();
-	intersection_t(double time, const Geometry* object);
-	intersection_t(double time, const Geometry* object, double alpha, double beta, double gamma);
+	intersection_t() = default;
+	intersection_t(const intersection_t&) = default;
+	intersection_t& operator=(const intersection_t&) = default;
+	intersection_t(double time, const std::shared_ptr<const Geometry>& object);
+	intersection_t(double time, const std::shared_ptr<const Geometry>& object, double alpha, double beta, double gamma);
 
 	/**
 	 * @brief Compares this intersection object with another for equality.
@@ -95,9 +98,9 @@ struct intersections_t
 	 * Stores the intersection data (typically time and object pointer)
 	 * for later processing, such as determining the closest visible hit.
 	 */
-	void add(const double time, const Geometry* geo);
+	void add(const double time, const std::shared_ptr<const Geometry>& geo);
 
-	void add(const double time, const Geometry* geo, const double alpha, const double beta, const double gamma);
+	void add(const double time, const std::shared_ptr<const Geometry>& geo, const double alpha, const double beta, const double gamma);
 
 	/**
 	 * @brief Adds one or more intersections to the collection.
@@ -127,7 +130,7 @@ struct intersections_t
 	 * (typically the one with the smallest positive `t` value). Returns a sentinel
 	 * or null intersection if no valid hit exists.
 	 */
-	intersection_t hit() const;
+	std::optional<intersection_t> hit() const;
 
 	/**
 	 * @brief Accesses an intersection at a specific index.

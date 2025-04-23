@@ -1,34 +1,29 @@
 #include <algorithm>
+#include <stdexcept>
 #include "intersection.h"
 #include "settings.h"
 #include "phong.h"
 
-intersection_t::intersection_t()
-	: time{ 0 }, object{ nullptr }, alpha{ 0 }, beta{ 0 }, gamma{ 0 }
-{
-
-}
-
-intersection_t::intersection_t(double time, const Geometry* object)
+intersection_t::intersection_t(double time, const std::shared_ptr<const Geometry>& object)
 	: time{ time }, object{ object }
 {
 
 }
 
-intersection_t::intersection_t(double time, const Geometry*, double alpha, double beta, double gamma)
+intersection_t::intersection_t(double time, const std::shared_ptr<const Geometry>& object, double alpha, double beta, double gamma)
 	: time{ time }, object{ object }, alpha{ alpha }, beta{ beta }, gamma{ gamma }
 { }
 
 bool intersection_t::operator==(const intersection_t& i) const
 {
-	return this->time == i.time && this->object == i.object;
+	return this->time == i.time && this->object.get() == i.object.get();
 }
 
 intersection_state intersection_t::prepare(const ray_t& r, const intersections_t& intersections) const
 {
 	intersection_state state{};
 	state.time = time;
-	state.object = object;
+	state.object = object.get();
 	state.point = r.position(time);
 	state.eye_vector = -r.direction;
 	state.normal = object->normal_at(state.point, alpha, beta, gamma);
@@ -67,10 +62,10 @@ intersection_state intersection_t::prepare(const ray_t& r, const intersections_t
 				}
 			}
 		}
-		auto found{ std::find(containers.begin(), containers.end(), intersection.object) };
+		auto found{ std::find(containers.begin(), containers.end(), intersection.object.get()) };
 		if (found == containers.end())
 		{
-			containers.push_back(intersection.object);
+			containers.push_back(intersection.object.get());
 		}
 		else
 		{
@@ -107,17 +102,19 @@ intersection_t intersections_t::operator[](const std::size_t i) const
 	{
 		return entries[i];
 	}
+	throw std::out_of_range("intersections_t index out of range");
+
 }
 
 
-void intersections_t::add(const double time, const Geometry* geo)
+void intersections_t::add(const double time, const std::shared_ptr<const Geometry>& geo)
 {
 	intersection_t intersection{ time, geo };
 	entries.push_back(intersection);
 	sort();
 }
 
-void intersections_t::add(const double time, const Geometry* geo, const double alpha, const double beta, const double gamma)
+void intersections_t::add(const double time, const std::shared_ptr<const Geometry>& geo, const double alpha, const double beta, const double gamma)
 {
 	intersection_t intersection{ time, geo, alpha, beta, gamma };
 	entries.push_back(intersection);
@@ -131,17 +128,12 @@ void intersections_t::sort()
 	});
 }
 
-intersection_t intersections_t::hit() const
+std::optional<intersection_t> intersections_t::hit() const
 {
-	intersection_t intersection;
-	for (const auto& i : entries)
-	{
-		if (i.time < 0)
-		{
-			continue;
+	for (const auto& i : entries) {
+		if (i.time >= 0) {
+			return i; // shared_ptr copy is safe
 		}
-		intersection = i;
-		break;
 	}
-	return intersection;
+	return std::nullopt;
 }

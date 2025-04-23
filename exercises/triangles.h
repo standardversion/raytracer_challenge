@@ -14,16 +14,18 @@
 #include "../ring.h"
 #include "../stripe.h"
 #include "../gradient.h"
+#include "../cube.h"
 
 void triangles_exercise()
 {
 	auto mesh{ Mesh::create(".\\assets\\sphere.obj", true) };
+	//auto mesh{ Cube::create() };
 	auto phong = std::dynamic_pointer_cast<Phong>(mesh->material);
 	if (phong) {
 		phong->colour = { 1, 1, 1 };
 		phong->specular = 0;
-		phong->diffuse = .8;
-		phong->ambient = .75;
+		phong->diffuse = 0.8;
+		phong->ambient = 1;
 		//Checker checker{ { 0, 0, 0 }, { 1, 1, 1 } };
 		//checker.transform = matrix_t::scaling(0.25, 0.25, 0.25);
 		//phong->pattern = std::make_shared<Checker>(checker);
@@ -37,7 +39,7 @@ void triangles_exercise()
 
 	Camera camera{ 240, 135, PI / 2 };
 	camera.transform = matrix_t::view_transform(
-		tuple_t::point(0, 0, -2),
+		tuple_t::point(0, 0, -5),
 		tuple_t::point(0, 0, 0),
 		tuple_t::vector(0, 1, 0)
 	);

@@ -15,15 +15,15 @@ Mesh::Mesh(const wavefront_t& obj, bool smooth)
 		{
 			triangles.push_back(
 				std::make_shared<SmoothTriangle>(
-					obj.vertices[face.a - 1],
-					obj.vertices[face.b - 1],
-					obj.vertices[face.c - 1],
-					obj.uvs[face.a_uv - 1],
-					obj.uvs[face.b_uv - 1],
-					obj.uvs[face.c_uv - 1],
-					obj.vertex_normals_avg[face.a - 1],
-					obj.vertex_normals_avg[face.b - 1],
-					obj.vertex_normals_avg[face.c - 1]
+					obj.vertices.at(face.a - 1),
+					obj.vertices.at(face.b - 1),
+					obj.vertices.at(face.c - 1),
+					obj.uvs.at(face.a_uv - 1),
+					obj.uvs.at(face.b_uv - 1),
+					obj.uvs.at(face.c_uv - 1),
+					obj.vertex_normals_avg.at(face.a - 1),
+					obj.vertex_normals_avg.at(face.b - 1),
+					obj.vertex_normals_avg.at(face.c - 1)
 				)
 			);
 		}
@@ -31,12 +31,12 @@ Mesh::Mesh(const wavefront_t& obj, bool smooth)
 		{
 			triangles.push_back(
 				std::make_shared<Triangle>(
-					obj.vertices[face.a - 1],
-					obj.vertices[face.b - 1],
-					obj.vertices[face.c - 1],
-					obj.uvs[face.a_uv - 1],
-					obj.uvs[face.b_uv - 1],
-					obj.uvs[face.c_uv - 1]
+					obj.vertices.at(face.a - 1),
+					obj.vertices.at(face.b - 1),
+					obj.vertices.at(face.c - 1),
+					obj.uvs.at(face.a_uv - 1),
+					obj.uvs.at(face.b_uv - 1),
+					obj.uvs.at(face.c_uv - 1)
 				)
 			);
 		}

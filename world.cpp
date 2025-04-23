@@ -139,10 +139,10 @@ colour_t World::colour_at(const ray_t& ray, int remaining) const
 	colour_t colour{ 0, 0, 0 };
 	intersections_t intersections{};
 	intersect(ray, intersections);
-	const intersection_t intersection{ intersections.hit() };
-	if (intersection.object)
+	const auto intersection{ intersections.hit() };
+	if (intersection)
 	{
-		intersection_state state{ intersection.prepare(ray, intersections) };
+		intersection_state state{ intersection->prepare(ray, intersections) };
 		colour += shade_hit(state, remaining);
 	}
 	return colour;
@@ -158,8 +158,8 @@ bool World::is_shadowed(const tuple_t point, const std::weak_ptr<Light>& light) 
 		const ray_t ray{ point, light_to_point };
 		intersections_t intersections{};
 		intersect(ray, intersections);
-		const intersection_t intersection{ intersections.hit() };
-		return intersection.object && intersection.time < distance;
+		const auto intersection{ intersections.hit() };
+		return intersection && intersection->time < distance;
 	}
 	else
 	{

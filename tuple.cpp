@@ -130,10 +130,10 @@ tuple_t& tuple_t::operator+=(const tuple_t& t)
 
 tuple_t tuple_t::operator-(const tuple_t& t) const
 {
-	if (this->is_vector() && t.is_point())
+	/*if (this->is_vector() && t.is_point())
 	{
 		throw std::invalid_argument("Cannot subtract point from vector");
-	}
+	}*/
 	return {
 		this->x - t.x,
 		this->y - t.y,

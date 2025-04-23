@@ -53,7 +53,7 @@ void Triangle::local_intersect(const ray_t& local_ray, intersections_t& intersec
 	}
 	double t{ f * tuple_t::dot(e2, origin_cross_e1) };
 	double alpha{ 1 - beta - gamma };
-	intersections.add(t, this);
+	intersections.add(t, std::static_pointer_cast<const Triangle>(shared_from_this()), alpha, beta, gamma);
 	return;
 }
 

@@ -20,12 +20,13 @@ void Cone::intersect_caps(const ray_t& local_ray, intersections_t& intersections
 	double t{ (minimum - local_ray.origin.y) / local_ray.direction.y };
 	if (check_cap(local_ray, t, minimum))
 	{
-		intersections.add(t, this);
+		intersections.add(t, std::static_pointer_cast<const Geometry>(shared_from_this()));
 	}
 	t = (maximum - local_ray.origin.y) / local_ray.direction.y;
 	if (check_cap(local_ray, t,  maximum))
 	{
-		intersections.add(t, this);
+		intersections.add(t, std::static_pointer_cast<const Geometry>(shared_from_this()));
+
 	}
 }
 
@@ -54,7 +55,7 @@ void Cone::local_intersect(const ray_t& local_ray, intersections_t& intersection
 	if (a == 0 && abs(b) > 0)
 	{
 		double t{ -c / (2 * b) };
-		intersections.add(t, this);
+		intersections.add(t, std::static_pointer_cast<const Geometry>(shared_from_this()));
 	}
 	if (abs(a) >= EPSILON)
 	{
@@ -71,12 +72,12 @@ void Cone::local_intersect(const ray_t& local_ray, intersections_t& intersection
 			double y0{ local_ray.origin.y + t0 * local_ray.direction.y };
 			if (minimum < y0 && y0 < maximum)
 			{
-				intersections.add(t0, this);
+				intersections.add(t0, std::static_pointer_cast<const Geometry>(shared_from_this()));
 			}
 			double y1{ local_ray.origin.y + t1 * local_ray.direction.y };
 			if (minimum < y1 && y1 < maximum)
 			{
-				intersections.add(t1, this);
+				intersections.add(t1, std::static_pointer_cast<const Geometry>(shared_from_this()));
 			}
 		}
 	}

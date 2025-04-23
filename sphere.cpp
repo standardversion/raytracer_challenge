@@ -44,8 +44,8 @@ void Sphere::local_intersect(const ray_t& local_ray, intersections_t& intersecti
 		{
 			std::swap(t0, t1);
 		}
-		intersections.add(t0, this);
-		intersections.add(t1, this);
+		intersections.add(t0, std::static_pointer_cast<const Geometry>(shared_from_this()));
+		intersections.add(t1, std::static_pointer_cast<const Geometry>(shared_from_this()));
 	}
 }
 
