@@ -16,6 +16,7 @@
 #include "../gradient.h"
 #include "../cube.h"
 #include "../plane.h"
+#include "../point_light.h"
 
 void triangles_exercise()
 {
@@ -36,13 +37,13 @@ void triangles_exercise()
 	}
 
 	// === Lights ===
-	auto key = std::make_shared<Light>(colour_t{ 1.0, 0.95, 0.9 });
+	auto key = std::make_shared<PointLight>(colour_t{ 1.0, 0.95, 0.9 });
 	key->transform = matrix_t::translation(-4, 5, -4);
 
-	auto fill = std::make_shared<Light>(colour_t{ 0.4, 0.4, 0.5 });
+	auto fill = std::make_shared<PointLight>(colour_t{ 0.4, 0.4, 0.5 });
 	fill->transform = matrix_t::translation(3, 1, -2);
 
-	auto rim = std::make_shared<Light>(colour_t{ 0.8, 0.8, 1.0 });
+	auto rim = std::make_shared<PointLight>(colour_t{ 0.8, 0.8, 1.0 });
 	rim->transform = matrix_t::translation(0, 3, 5);
 
 	// === Ground Plane ===

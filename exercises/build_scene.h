@@ -9,6 +9,7 @@
 #include "../world.h"
 #include "../camera.h"
 #include "../settings.h"
+#include "../point_light.h"
 
 void build_scene_exercise()
 {
@@ -64,10 +65,10 @@ void build_scene_exercise()
 		phong->diffuse = 0.7;
 		phong->specular = 0.3;
 	}
-	Light light{ colour_t{1, 1, 1} };
+	PointLight light{ colour_t{1, 1, 1} };
 	light.transform = matrix_t::translation(-10, 10, -10);
 	World world{};
-	world.add_object(std::make_shared<Light>(light));
+	world.add_object(std::make_shared<PointLight>(light));
 	world.add_object(std::move(floor));
 	world.add_object(std::move(left_wall));
 	world.add_object(std::move(right_wall));

@@ -1,7 +1,7 @@
 #include <memory>
 #include <cmath>
 #include "world.h"
-#include "light.h"
+#include "point_light.h"
 #include "geometry.h"
 #include "sphere.h"
 #include "phong.h"
@@ -22,9 +22,9 @@ World World::default_world()
 	auto sphere2{ Sphere::create() };
 	sphere2->transform = matrix_t::scaling(0.5, 0.5, 0.5);
 	w.add_object(std::move(sphere2));
-	Light light{ colour_t{1, 1, 1} };
-	light.transform = matrix_t::translation(-10, 10, -10);
-	w.add_object(std::make_unique<Light>(light));
+	auto light{ std::make_shared<PointLight>(colour_t{1, 1, 1}) };
+	light->transform = matrix_t::translation(-10, 10, -10);
+	w.add_object(std::move(light));
 	return w;
 }
 

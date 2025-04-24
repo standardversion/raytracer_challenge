@@ -1,10 +1,9 @@
 #pragma once
 #include "../sphere.h"
 #include "../group.h"
-#include "../sphere.h"
 #include "../cylinder.h"
 #include "../settings.h"
-#include "../light.h"
+#include "../point_light.h"
 #include "../world.h"
 #include "../camera.h"
 #include "../canvas.h"
@@ -32,10 +31,10 @@ void hexagon_exercise()
 		hex->add(side);
 	}
 	world.add_object(hex);
-	Light light{ colour_t{1, 1, 1} };
+	PointLight light{ colour_t{1, 1, 1} };
 	light.transform = matrix_t::translation(0, 1.5, -1);
 	
-	world.add_object(std::make_shared<Light>(light));
+	world.add_object(std::make_shared<PointLight>(light));
 	Camera camera{ 960, 540, PI / 2 };
 	camera.transform = matrix_t::view_transform(
 		tuple_t::point(3, 2, -5),    // Camera position: right + up + back

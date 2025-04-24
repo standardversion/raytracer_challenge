@@ -3,7 +3,7 @@
 #include "../phong.h"
 #include "../colour.h"
 #include "../tuple.h"
-#include "../light.h"
+#include "../point_light.h"
 #include "../stripe.h"
 #include "../sphere.h"
 #include "../world.h"
@@ -43,7 +43,7 @@ TEST(phong, should_return_colur_when_the_eye_between_the_light_and_the_surface)
     const tuple_t position{ tuple_t::point(0, 0, 0) };
     const tuple_t eye_vector{ tuple_t::vector(0, 0, -1) };
     const tuple_t normal_vector{ tuple_t::vector(0, 0, -1) };
-    Light light{ colour_t{1, 1, 1} };
+    PointLight light{ colour_t{1, 1, 1} };
     light.transform = matrix_t::translation(0, 0, -10);
     const colour_t r{ 1.9, 1.9, 1.9 };
     const double intensity{ 1.0 };
@@ -65,7 +65,7 @@ TEST(phong, should_return_colur_when_the_eye_between_the_light_and_the_surface_e
     const tuple_t position{ tuple_t::point(0, 0, 0) };
     const tuple_t eye_vector{ tuple_t::vector(0, std::sqrt(2) / 2, -std::sqrt(2) / 2)};
     const tuple_t normal_vector{ tuple_t::vector(0, 0, -1) };
-    Light light{ colour_t{1, 1, 1} };
+    PointLight light{ colour_t{1, 1, 1} };
     light.transform = matrix_t::translation(0, 0, -10);
     const colour_t r{ 1.0, 1.0, 1.0 };
     const double intensity{ 1.0 };
@@ -87,7 +87,7 @@ TEST(phong, should_return_colur_when_the_eye_between_the_light_and_the_surface_l
     const tuple_t position{ tuple_t::point(0, 0, 0) };
     const tuple_t eye_vector{ tuple_t::vector(0, 0, -1) };
     const tuple_t normal_vector{ tuple_t::vector(0, 0, -1) };
-    Light light{ colour_t{1, 1, 1} };
+    PointLight light{ colour_t{1, 1, 1} };
     light.transform = matrix_t::translation(0, 10, -10);
     const colour_t r{ 0.7364, 0.7364, 0.7364 };
     const double intensity{ 1.0 };
@@ -109,7 +109,7 @@ TEST(phong, should_return_colur_when_the_eye_in_the_path_of_reflection_vector)
     const tuple_t position{ tuple_t::point(0, 0, 0) };
     const tuple_t eye_vector{ tuple_t::vector(0, -std::sqrt(2) / 2, -std::sqrt(2) / 2) };
     const tuple_t normal_vector{ tuple_t::vector(0, 0, -1) };
-    Light light{ colour_t{1, 1, 1} };
+    PointLight light{ colour_t{1, 1, 1} };
     light.transform = matrix_t::translation(0, 10, -10);
     const colour_t expected{ 1.6364, 1.6364, 1.6364 };
     const double intensity{ 1.0 };
@@ -132,7 +132,7 @@ TEST(phong, should_return_colur_when_the_eye_behind_the_surface)
     const tuple_t position{ tuple_t::point(0, 0, 0) };
     const tuple_t eye_vector{ tuple_t::vector(0, 0, -1) };
     const tuple_t normal_vector{ tuple_t::vector(0, 0, -1) };
-    Light light{ colour_t{1, 1, 1} };
+    PointLight light{ colour_t{1, 1, 1} };
     light.transform = matrix_t::translation(0, 0, 10);
     const colour_t r{ 0.1, 0.1, 0.1 };
     const double intensity{ 0.0 };
@@ -155,7 +155,7 @@ TEST(phong, should_return_colur_when_surface_in_shadow)
     const tuple_t position{ tuple_t::point(0, 0, 0) };
     const tuple_t eye_vector{ tuple_t::vector(0, 0, -1) };
     const tuple_t normal_vector{ tuple_t::vector(0, 0, -1) };
-    Light light{ colour_t{1, 1, 1} };
+    PointLight light{ colour_t{1, 1, 1} };
     light.transform = matrix_t::translation(0, 0, -10);
     const colour_t r{ 0.1, 0.1, 0.1 };
     const double intensity{ 0.0 };
@@ -186,7 +186,7 @@ TEST(phong, should_take_applied_pattern_into_account)
     m.specular = 0;
     const tuple_t eye_vector{ tuple_t::vector(0, 0, -1) };
     const tuple_t normal_vector{ tuple_t::vector(0, 0, -1) };
-    Light light{ colour_t{1, 1, 1} };
+    PointLight light{ colour_t{1, 1, 1} };
     light.transform = matrix_t::translation(0, 0, -10);
     const colour_t r{ 1, 1, 1 };
     const colour_t r2{ 0, 0, 0 };

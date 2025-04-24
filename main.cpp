@@ -1,6 +1,5 @@
 #include <iostream>
 #include <exception>
-#include "./exercises/hexagon.h"
 #include "./exercises/triangles.h"
 
 int main()

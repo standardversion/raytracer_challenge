@@ -6,7 +6,7 @@
 #include "../colour.h"
 #include "../ray.h"
 #include "../intersection.h"
-#include "../light.h"
+#include "../point_light.h"
 #include "../sphere.h"
 #include "../plane.h"
 
@@ -59,7 +59,7 @@ TEST(world, should_create_default_world)
     p.diffuse = 0.7;
     p.specular = 0.2;
     Phong v2{};
-    Light l{};
+    PointLight l{};
     l.transform = matrix_t::translation(-10, 10, -10);
     auto assigned_phong1{ std::dynamic_pointer_cast<Phong>(w.renderables[0].lock()->material) };
     auto assigned_phong2{ std::dynamic_pointer_cast<Phong>(w.renderables[1].lock()->material) };
@@ -231,12 +231,12 @@ Scenario: shade_hit() is given an intersection in shadow
 TEST(world, should_handle_in_shadow_in_shade_hit_func)
 {
     World w{};
-    Light light{ colour_t{1, 1, 1} };
+    PointLight light{ colour_t{1, 1, 1} };
     light.transform = matrix_t::translation(0, 0, -10);
     auto s1{ Sphere::create() };
     auto s2{ Sphere::create() };
     s2->transform = matrix_t::translation(0, 0, 10);
-    w.add_object(std::make_unique<Light>(light));
+    w.add_object(std::make_unique<PointLight>(light));
     w.add_object(std::move(s1));
     w.add_object(std::move(s2));
     const ray_t r{ tuple_t::point(0, 0, 5), tuple_t::vector(0, 0, 1) };
@@ -347,8 +347,8 @@ Scenario: color_at() with mutually reflective surfaces
 TEST(world, should_terminate_successfully_for_mutually_reflective_surfaces)
 {
     World w{};
-    Light light{ colour_t{ 1, 1, 1 } };
-    w.add_object(std::make_unique<Light>(light));
+    PointLight light{ colour_t{ 1, 1, 1 } };
+    w.add_object(std::make_unique<PointLight>(light));
     auto plane{ Plane::create() };
     plane->transform = matrix_t::translation(0, -1, 0);
     w.add_object(std::move(plane));
