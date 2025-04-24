@@ -4,6 +4,7 @@
 #include "tuple.h"
 #include "ray.h"
 
+class World;
 /**
  * @brief Represents a point light source in the scene.
  *
@@ -46,4 +47,6 @@ public:
      * Useful for testing, deduplication, or scene comparison.
      */
     bool operator==(const Light& l) const;
+
+    double intensity_at(const tuple_t& point, const World& w) const;
 };

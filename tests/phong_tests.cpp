@@ -6,6 +6,7 @@
 #include "../light.h"
 #include "../stripe.h"
 #include "../sphere.h"
+#include "../world.h"
 
 /*
 Scenario: The default phong
@@ -45,8 +46,8 @@ TEST(phong, should_return_colur_when_the_eye_between_the_light_and_the_surface)
     Light light{ colour_t{1, 1, 1} };
     light.transform = matrix_t::translation(0, 0, -10);
     const colour_t r{ 1.9, 1.9, 1.9 };
-    const bool in_shadow{ false };
-    EXPECT_EQ(m.lighting(light, dynamic_cast<Sphere*>(s.get()), position, eye_vector, normal_vector, in_shadow), r);
+    const double intensity{ 1.0 };
+    EXPECT_EQ(m.lighting(light, dynamic_cast<Sphere*>(s.get()), position, eye_vector, normal_vector, intensity), r);
 }
 
 /*
@@ -67,8 +68,8 @@ TEST(phong, should_return_colur_when_the_eye_between_the_light_and_the_surface_e
     Light light{ colour_t{1, 1, 1} };
     light.transform = matrix_t::translation(0, 0, -10);
     const colour_t r{ 1.0, 1.0, 1.0 };
-    const bool in_shadow{ false };
-    EXPECT_EQ(m.lighting(light, dynamic_cast<Sphere*>(s.get()), position, eye_vector, normal_vector, in_shadow), r);
+    const double intensity{ 1.0 };
+    EXPECT_EQ(m.lighting(light, dynamic_cast<Sphere*>(s.get()), position, eye_vector, normal_vector, intensity), r);
 }
 
 /*
@@ -89,8 +90,8 @@ TEST(phong, should_return_colur_when_the_eye_between_the_light_and_the_surface_l
     Light light{ colour_t{1, 1, 1} };
     light.transform = matrix_t::translation(0, 10, -10);
     const colour_t r{ 0.7364, 0.7364, 0.7364 };
-    const bool in_shadow{ false };
-    EXPECT_EQ(m.lighting(light, dynamic_cast<Sphere*>(s.get()), position, eye_vector, normal_vector, in_shadow), r);
+    const double intensity{ 1.0 };
+    EXPECT_EQ(m.lighting(light, dynamic_cast<Sphere*>(s.get()), position, eye_vector, normal_vector, intensity), r);
 }
 
 /*
@@ -111,8 +112,8 @@ TEST(phong, should_return_colur_when_the_eye_in_the_path_of_reflection_vector)
     Light light{ colour_t{1, 1, 1} };
     light.transform = matrix_t::translation(0, 10, -10);
     const colour_t expected{ 1.6364, 1.6364, 1.6364 };
-    const bool in_shadow{ false };
-    const colour_t r{ m.lighting(light, dynamic_cast<Sphere*>(s.get()), position, eye_vector, normal_vector, in_shadow) };
+    const double intensity{ 1.0 };
+    const colour_t r{ m.lighting(light, dynamic_cast<Sphere*>(s.get()), position, eye_vector, normal_vector, intensity) };
     EXPECT_EQ(r, expected);
 }
 
@@ -134,8 +135,8 @@ TEST(phong, should_return_colur_when_the_eye_behind_the_surface)
     Light light{ colour_t{1, 1, 1} };
     light.transform = matrix_t::translation(0, 0, 10);
     const colour_t r{ 0.1, 0.1, 0.1 };
-    const bool in_shadow{ false };
-    EXPECT_EQ(m.lighting(light, dynamic_cast<Sphere*>(s.get()), position, eye_vector, normal_vector, in_shadow), r);
+    const double intensity{ 0.0 };
+    EXPECT_EQ(m.lighting(light, dynamic_cast<Sphere*>(s.get()), position, eye_vector, normal_vector, intensity), r);
 }
 
 /*
@@ -157,8 +158,8 @@ TEST(phong, should_return_colur_when_surface_in_shadow)
     Light light{ colour_t{1, 1, 1} };
     light.transform = matrix_t::translation(0, 0, -10);
     const colour_t r{ 0.1, 0.1, 0.1 };
-    const bool in_shadow{ true };
-    EXPECT_EQ(m.lighting(light, dynamic_cast<Sphere*>(s.get()), position, eye_vector, normal_vector, in_shadow), r);
+    const double intensity{ 0.0 };
+    EXPECT_EQ(m.lighting(light, dynamic_cast<Sphere*>(s.get()), position, eye_vector, normal_vector, intensity), r);
 }
 
 /*
@@ -189,9 +190,9 @@ TEST(phong, should_take_applied_pattern_into_account)
     light.transform = matrix_t::translation(0, 0, -10);
     const colour_t r{ 1, 1, 1 };
     const colour_t r2{ 0, 0, 0 };
-    const bool in_shadow{ false };
-    EXPECT_EQ(m.lighting(light, dynamic_cast<Sphere*>(s.get()), tuple_t::point(0.9, 0, 0), eye_vector, normal_vector, in_shadow), r);
-    EXPECT_EQ(m.lighting(light, dynamic_cast<Sphere*>(s.get()), tuple_t::point(1.1, 0, 0), eye_vector, normal_vector, in_shadow), r2);
+    const double intensity{ 0.0 };
+    EXPECT_EQ(m.lighting(light, dynamic_cast<Sphere*>(s.get()), tuple_t::point(0.9, 0, 0), eye_vector, normal_vector, intensity), r);
+    EXPECT_EQ(m.lighting(light, dynamic_cast<Sphere*>(s.get()), tuple_t::point(1.1, 0, 0), eye_vector, normal_vector, intensity), r2);
 }
 
 /*
@@ -216,4 +217,47 @@ TEST(phong, should_have_default_transparency_and_refractive_index_value)
     const Phong m{};
     EXPECT_EQ(m.transparency, 0.0);
     EXPECT_EQ(m.refractive_index, 1.0);
+}
+
+/*
+Scenario Outline: lighting() uses light intensity to attenuate color
+  Given w ← default_world()
+    And w.light ← point_light(point(0, 0, -10), color(1, 1, 1))
+    And shape ← the first object in w
+    And shape.material.ambient ← 0.1
+    And shape.material.diffuse ← 0.9
+    And shape.material.specular ← 0
+    And shape.material.color ← color(1, 1, 1)
+    And pt ← point(0, 0, -1)
+    And eyev ← vector(0, 0, -1)
+    And normalv ← vector(0, 0, -1)
+  When result ← lighting(shape.material, w.light, pt, eyev, normalv, <intensity>)
+  Then result = <result>
+
+  Examples:
+    | intensity | result                  |
+    | 1.0       | color(1, 1, 1)          |
+    | 0.5       | color(0.55, 0.55, 0.55) |
+    | 0.0       | color(0.1, 0.1, 0.1)    |
+*/
+TEST(phong, should_use_intensity_in_lighting_func)
+{
+    World w{ World::default_world() };
+    auto l{ w.lights[0].lock() };
+    l->intensity = colour_t{ 1, 1, 1 };
+    l->transform = matrix_t::translation(0, 0, -10);
+    auto phong{ std::dynamic_pointer_cast<Phong>(w.renderables[0].lock()->material) };
+    phong->ambient = 0.1;
+    phong->diffuse = 0.9;
+    phong->specular = 0;
+    phong->colour = colour_t{ 1, 1, 1 };
+    const tuple_t point{ tuple_t::point(0, 0, -1) };
+    const tuple_t eyev{ tuple_t::vector(0, 0, -1) };
+    const tuple_t normal{ tuple_t::vector(0, 0, -1) };
+    const colour_t r1{ phong->lighting(*l, dynamic_cast<Sphere*>(w.renderables[0].lock().get()), point, eyev, normal, 1.0) };
+    const colour_t r2{ phong->lighting(*l, dynamic_cast<Sphere*>(w.renderables[0].lock().get()), point, eyev, normal, 0.5) };
+    const colour_t r3{ phong->lighting(*l, dynamic_cast<Sphere*>(w.renderables[0].lock().get()), point, eyev, normal, 0.0) };
+    EXPECT_EQ(r1, colour_t(1, 1, 1));
+    EXPECT_EQ(r2, colour_t(0.55, 0.55, 0.55));
+    EXPECT_EQ(r3, colour_t(0.1, 0.1, 0.1));
 }

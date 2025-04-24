@@ -9,7 +9,7 @@ colour_t Phong::lighting
 	const tuple_t& position,
 	const tuple_t& eye_vector,
 	const tuple_t& normal_vector,
-	const bool in_shadow
+	const double intensity
 ) const
 {
 	colour_t material_coluur{ colour };
@@ -30,7 +30,7 @@ colour_t Phong::lighting
 	// A negative number means the light is on the other side of the surface.
 	const double light_dot_normal{ tuple_t::dot(light_vector, normal_vector) };
 	colour_t black{ 0, 0, 0 };
-	if (light_dot_normal < 0 || in_shadow)
+	if (light_dot_normal < 0)
 	{
 		diffuse_colour = black;
 		specular_colour = black;
@@ -55,7 +55,7 @@ colour_t Phong::lighting
 		}
 	}
 	// Add the three contributions together to get the final shading
-	return ambient_colour + diffuse_colour + specular_colour;
+	return ambient_colour + (diffuse_colour * intensity) + (specular_colour * intensity);
 }
 
 bool Phong::operator==(const Material& m) const

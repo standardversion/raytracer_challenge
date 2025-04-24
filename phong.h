@@ -125,7 +125,7 @@ public:
         const tuple_t& position,
         const tuple_t& eye_vector,
         const tuple_t& normal_vector,
-        const bool in_shadow
+        const double intensity
     ) const override;
 
     /**
