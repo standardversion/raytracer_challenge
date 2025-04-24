@@ -19,11 +19,16 @@ bool PointLight::operator==(const Light& l) const
 
 bool PointLight::operator==(const PointLight& l) const
 {
-	return this->intensity == l.intensity && this->position() == l.position();
+	return this->intensity == l.intensity && this->position() == l.position() && this->usteps == l.usteps && this->vsteps == l.vsteps;
 }
 
-double PointLight::intensity_at(const tuple_t& point, const World& w) const
+double PointLight::intensity_at(const tuple_t& point, const World& w)
 {
 	return w.is_shadowed(point, position()) ? 0.0 : 1.0;
 
+}
+
+tuple_t PointLight::point_on_light(const double u, const double v)
+{
+	return transform * tuple_t::point(0, 0, 0);
 }

@@ -127,4 +127,15 @@ struct colour_t
 	 * @return A new colour representing the multiplied colour.
 	 */
 	colour_t operator*(const colour_t& c) const;
+
+	/**
+	 * @brief Divides the colour by a scalar.
+	 *
+	 * This function divides each component of the colour by a scalar factor and returns a new colour.
+	 * Alpha is clamped between 0.0 and 1.0
+	 *
+	 * @param factor The scalar factor to divide each component by.
+	 * @return A new colour representing the scaled colour.
+	 */
+	colour_t operator/(const double factor) const;
 };

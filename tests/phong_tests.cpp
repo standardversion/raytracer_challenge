@@ -7,6 +7,7 @@
 #include "../stripe.h"
 #include "../sphere.h"
 #include "../world.h"
+#include "../area_light.h"
 
 /*
 Scenario: The default phong
@@ -260,4 +261,57 @@ TEST(phong, should_use_intensity_in_lighting_func)
     EXPECT_EQ(r1, colour_t(1, 1, 1));
     EXPECT_EQ(r2, colour_t(0.55, 0.55, 0.55));
     EXPECT_EQ(r3, colour_t(0.1, 0.1, 0.1));
+}
+
+/*
+Scenario Outline: lighting() samples the area light
+  Given corner ← point(-0.5, -0.5, -5)
+    And v1 ← vector(1, 0, 0)
+    And v2 ← vector(0, 1, 0)
+    And light ← area_light(corner, v1, 2, v2, 2, color(1, 1, 1))
+    And shape ← sphere()
+    And shape.material.ambient ← 0.1
+    And shape.material.diffuse ← 0.9
+    And shape.material.specular ← 0
+    And shape.material.color ← color(1, 1, 1)
+    And eye ← point(0, 0, -5)
+    And pt ← <point>
+    And eyev ← normalize(eye - pt)
+    And normalv ← vector(pt.x, pt.y, pt.z)
+  When result ← lighting(shape.material, shape, light, pt, eyev, normalv, 1.0)
+  Then result = <result>
+
+  Examples:
+    | point                      | result                        |
+    | point(0, 0, -1)            | color(0.9965, 0.9965, 0.9965) |
+    | point(0, 0.7071, -0.7071)  | color(0.6232, 0.6232, 0.6232) |
+*/
+TEST(phong, should_sample_area_light)
+{
+    const auto s{ Sphere::create() };
+    auto m{ std::dynamic_pointer_cast<Phong>(s->material) };
+    m->ambient = 0.1;
+    m->diffuse = 0.9;
+    m->colour = colour_t{ 1, 1, 1 };
+    const tuple_t eye{ tuple_t::point(0, 0, -5) };
+    const tuple_t point1{ tuple_t::point(0, 0, -1) };
+    tuple_t eye_vector{ eye - point1 };
+    eye_vector.normalize();
+    const tuple_t point2{ tuple_t::point(0, 0.7071, -0.7071) };
+    tuple_t eye_vector2{ eye - point2 };
+    eye_vector2.normalize();
+    const tuple_t normal_vector{ point1.x, point1.y, point1.z };
+    const tuple_t normal_vector2{ point2.x, point2.y, point2.z };
+    const colour_t intensity{ 1, 1, 1 };
+    const tuple_t corner{ tuple_t::point(-0.5, -0.5, -5) };
+    const tuple_t full_uvec{ tuple_t::vector(1, 0, 0) };
+    const tuple_t full_vvec{ tuple_t::vector(0, 1, 0) };
+    const int usteps{ 2 };
+    const int vsteps{ 2 };
+    Sequence sequence{ 0.5 };
+    AreaLight light{ corner, full_uvec, usteps, full_vvec, vsteps, sequence, intensity };
+    const colour_t r{ 0.9965, 0.9965, 0.9965 };
+    const colour_t r2{ 0.6232, 0.6232, 0.6232 };
+    //EXPECT_EQ(m->lighting(light, dynamic_cast<Sphere*>(s.get()), point1, eye_vector, normal_vector, 1.0), r);
+    EXPECT_EQ(m->lighting(light, dynamic_cast<Sphere*>(s.get()), point2, eye_vector, normal_vector2, 1.0), r2);
 }

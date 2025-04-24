@@ -69,7 +69,6 @@ colour_t World::shade_hit(const intersection_state& state, int remaining) const
 	{
 		if (auto light = weak_light.lock())
 		{
-			//const bool in_shadow{ is_shadowed(state.over_point, light->position()) };
 			const double intensity{ light->intensity_at(state.over_point, *this) };
 			colour += state.object->material->lighting(*light, state.object, state.point, state.eye_vector, state.normal, intensity);
 			colour_t reflected_c{ reflected_colour(state, remaining) };

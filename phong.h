@@ -120,7 +120,7 @@ public:
      */
     virtual colour_t lighting
     (
-        const Light& light,
+        Light& light,
         const Geometry* geo,
         const tuple_t& position,
         const tuple_t& eye_vector,

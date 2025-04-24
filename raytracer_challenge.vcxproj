@@ -238,6 +238,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="area_light.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="canvas.h" />
     <ClInclude Include="checker.h" />
@@ -272,6 +273,7 @@
     <ClInclude Include="ray.h" />
     <ClInclude Include="ring.h" />
     <ClInclude Include="scene_object.h" />
+    <ClInclude Include="sequence.h" />
     <ClInclude Include="settings.h" />
     <ClInclude Include="smooth_triangle.h" />
     <ClInclude Include="sphere.h" />
@@ -283,6 +285,7 @@
     <ClInclude Include="world.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="area_light.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="canvas.cpp" />
     <ClCompile Include="checker.cpp" />
@@ -302,6 +305,7 @@
     <ClCompile Include="pattern.cpp" />
     <ClCompile Include="point_light.cpp" />
     <ClCompile Include="ring.cpp" />
+    <ClCompile Include="sequence.cpp" />
     <ClCompile Include="smooth_triangle.cpp" />
     <ClCompile Include="stripe.cpp" />
     <ClCompile Include="phong.cpp" />
