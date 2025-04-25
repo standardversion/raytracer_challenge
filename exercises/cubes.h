@@ -14,6 +14,7 @@
 #include "../ring.h"
 #include "../stripe.h"
 #include "../gradient.h"
+#include "../point_light.h"
 
 void cubes_exercise()
 {
@@ -42,7 +43,7 @@ void cubes_exercise()
 		phong->refractive_index = 1.5;
 	}
 
-	Light light{ colour_t{1, 1, 1} };
+	PointLight light{ colour_t{1, 1, 1} };
 	light.transform = matrix_t::translation(0, 1.5, -1);
 	World world{};
 	world.add_object(std::make_shared<Light>(light));

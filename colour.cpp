@@ -88,3 +88,13 @@ colour_t colour_t::operator*(const colour_t& c) const
 		this->alpha * c.alpha > 1.0 ? 1.0 : this->alpha * c.alpha
 	};
 }
+
+colour_t colour_t::operator/(const double factor) const
+{
+	return {
+		this->red / factor,
+		this->green / factor,
+		this->blue / factor,
+		this->alpha / factor > 1.0 ? 1.0 : this->alpha / factor
+	};
+}

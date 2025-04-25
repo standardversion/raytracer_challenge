@@ -14,6 +14,7 @@
 #include "../ring.h"
 #include "../stripe.h"
 #include "../gradient.h"
+#include "../point_light.h"
 
 void reflect_refract_exercise()
 {
@@ -93,10 +94,10 @@ void reflect_refract_exercise()
 		stripe2.transform = matrix_t::scaling(.1, .1, .1) * matrix_t::rotation_z(PI / 4);
 		phong->pattern = std::make_shared<Stripe>(stripe2);
 	}
-	Light light{ colour_t{1, 1, 1} };
+	PointLight light{ colour_t{1, 1, 1} };
 	light.transform = matrix_t::translation(-10, 10, -10);
 	World world{};
-	world.add_object(std::make_shared<Light>(light));
+	world.add_object(std::make_shared<PointLight>(light));
 	world.add_object(std::move(floor));
 	world.add_object(std::move(back_wall));
 	world.add_object(std::move(front_wall));

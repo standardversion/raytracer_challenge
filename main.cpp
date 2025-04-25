@@ -1,13 +1,12 @@
 #include <iostream>
 #include <exception>
-#include "./exercises/hexagon.h"
-#include "./exercises/triangles.h"
+#include "./exercises/area_lights.h"
 
 int main()
 {
     try
     {
-        triangles_exercise();
+        area_lights_exercise();
         return 0;
     }
     catch (const std::exception& e)

@@ -1,7 +1,7 @@
 #include <memory>
 #include <cmath>
 #include "world.h"
-#include "light.h"
+#include "point_light.h"
 #include "geometry.h"
 #include "sphere.h"
 #include "phong.h"
@@ -22,9 +22,9 @@ World World::default_world()
 	auto sphere2{ Sphere::create() };
 	sphere2->transform = matrix_t::scaling(0.5, 0.5, 0.5);
 	w.add_object(std::move(sphere2));
-	Light light{ colour_t{1, 1, 1} };
-	light.transform = matrix_t::translation(-10, 10, -10);
-	w.add_object(std::make_unique<Light>(light));
+	auto light{ std::make_shared<PointLight>(colour_t{1, 1, 1}) };
+	light->transform = matrix_t::translation(-10, 10, -10);
+	w.add_object(std::move(light));
 	return w;
 }
 
@@ -69,8 +69,8 @@ colour_t World::shade_hit(const intersection_state& state, int remaining) const
 	{
 		if (auto light = weak_light.lock())
 		{
-			const bool in_shadow{ is_shadowed(state.over_point, light) };
-			colour += state.object->material->lighting(*light, state.object, state.point, state.eye_vector, state.normal, in_shadow);
+			const double intensity{ light->intensity_at(state.over_point, *this) };
+			colour += state.object->material->lighting(*light, state.object, state.point, state.eye_vector, state.normal, intensity);
 			colour_t reflected_c{ reflected_colour(state, remaining) };
 			colour_t refracted_c{ refracted_colour(state, remaining) };
 			auto phong{ std::dynamic_pointer_cast<Phong>(state.object->material) };
@@ -139,7 +139,7 @@ colour_t World::colour_at(const ray_t& ray, int remaining) const
 	colour_t colour{ 0, 0, 0 };
 	intersections_t intersections{};
 	intersect(ray, intersections);
-	const auto intersection{ intersections.hit() };
+	const auto intersection{ intersections.hit([](const intersection_t&) { return true; }) };
 	if (intersection)
 	{
 		intersection_state state{ intersection->prepare(ray, intersections) };
@@ -148,21 +148,17 @@ colour_t World::colour_at(const ray_t& ray, int remaining) const
 	return colour;
 }
 
-bool World::is_shadowed(const tuple_t point, const std::weak_ptr<Light>& light) const
+bool World::is_shadowed(const tuple_t& point, const tuple_t& light_position) const
 {
-	if (auto light_shared_ptr = light.lock())
-	{
-		tuple_t light_to_point{ light_shared_ptr->position() - point };
-		const double distance{ light_to_point.magnitude() };
-		light_to_point.normalize();
-		const ray_t ray{ point, light_to_point };
-		intersections_t intersections{};
-		intersect(ray, intersections);
-		const auto intersection{ intersections.hit() };
-		return intersection && intersection->time < distance;
-	}
-	else
-	{
-		return false;
-	}
+	tuple_t light_to_point{ light_position - point };
+	const double distance{ light_to_point.magnitude() };
+	light_to_point.normalize();
+	const ray_t ray{ point, light_to_point };
+	intersections_t intersections{};
+	intersect(ray, intersections);
+	const auto intersection{ intersections.hit([](const intersection_t& i) { 
+			return i.object->cast_shadows;
+		}
+	) };
+	return intersection && intersection->time < distance;
 }

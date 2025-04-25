@@ -29,8 +29,8 @@ void sphere_shadow_exercise()
 			const ray_t ray{ ray_origin, direction };
 			intersections_t intersections{};
 			sphere->intersect(ray, intersections);
-			const intersection_t intersection{ intersections.hit() };
-			if (intersection.object != nullptr)
+			const auto intersection{ intersections.hit() };
+			if (intersection && intersection->object != nullptr)
 			{
 				canvas.write_pixel(x, y, red);
 			}

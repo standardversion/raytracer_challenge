@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <functional>
 #include <optional>
 #include <memory>
 #include <vector>
@@ -172,7 +173,7 @@ struct intersections_t
 	 * (typically the one with the smallest positive `t` value). Returns a sentinel
 	 * or null intersection if no valid hit exists.
 	 */
-	std::optional<intersection_t> hit() const;
+	std::optional<intersection_t> hit(std::function<bool(const intersection_t& intersection)> filter) const;
 
 	/**
 	 * @brief Accesses an intersection at a specific index.

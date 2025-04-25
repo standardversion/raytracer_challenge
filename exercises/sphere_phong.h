@@ -6,6 +6,7 @@
 #include "../intersection.h"
 #include "../sphere.h"
 #include "../phong.h"
+#include "../point_light.h"
 
 void sphere_phong_exercise()
 {
@@ -21,7 +22,7 @@ void sphere_phong_exercise()
 	if (phong) {
 		phong->colour = { 1, 0.2, 1 };
 	}
-	Light light{ colour_t{1, 1, 1} };
+	PointLight light{ colour_t{1, 1, 1} };
 	light.transform = matrix_t::translation(-10, 10, -10);
 	const bool in_shadow{ false };
 	for (int y{ 0 }; y < canvas_pixels - 1; y++)
@@ -36,19 +37,19 @@ void sphere_phong_exercise()
 			ray_t ray{ ray_origin, direction };
 			intersections_t intersections{};
 			sphere->intersect(ray, intersections);
-			const intersection_t intersection{ intersections.hit() };
-			if (intersection.object != nullptr)
+			const auto intersection{ intersections.hit() };
+			if (intersection && intersection->object != nullptr)
 			{
-				const tuple_t point_on_sphere{ ray.position(intersection.time) };
-				const tuple_t normal{ intersection.object->normal_at(point_on_sphere) };
+				const tuple_t point_on_sphere{ ray.position(intersection->time) };
+				const tuple_t normal{ intersection->object->normal_at(point_on_sphere) };
 				const tuple_t eye{ -ray.direction };
-				const colour_t pixel_colour{ intersection.object->material->lighting(
+				const colour_t pixel_colour{ intersection->object->material->lighting(
 					light,
-					intersection.object,
+					intersection->object.get(),
 					point_on_sphere,
 					eye,
 					normal,
-					in_shadow
+					1.0
 				) };
 				canvas.write_pixel(x, y, pixel_colour);
 			}

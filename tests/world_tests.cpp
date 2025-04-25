@@ -6,7 +6,7 @@
 #include "../colour.h"
 #include "../ray.h"
 #include "../intersection.h"
-#include "../light.h"
+#include "../point_light.h"
 #include "../sphere.h"
 #include "../plane.h"
 
@@ -59,7 +59,7 @@ TEST(world, should_create_default_world)
     p.diffuse = 0.7;
     p.specular = 0.2;
     Phong v2{};
-    Light l{};
+    PointLight l{};
     l.transform = matrix_t::translation(-10, 10, -10);
     auto assigned_phong1{ std::dynamic_pointer_cast<Phong>(w.renderables[0].lock()->material) };
     auto assigned_phong2{ std::dynamic_pointer_cast<Phong>(w.renderables[1].lock()->material) };
@@ -213,58 +213,6 @@ TEST(world, should_return_colour_when_intersection_is_behind_the_ray)
 }
 
 /*
-Scenario: There is no shadow when nothing is collinear with point and light
-  Given w ← default_world()
-    And p ← point(0, 10, 0)
-   Then w.is_shadowed(p) is false
-*/
-TEST(world, should_return_false_when_nothing_is_collinear_with_point_and_light)
-{
-    World w{ World::default_world() };
-    const tuple_t p{ tuple_t::point(0, 10, 0) };
-    EXPECT_FALSE(w.is_shadowed(p, w.lights[0]));
-}
-
-/*
-Scenario: The shadow when an object is between the point and the light
-  Given w ← default_world()
-    And p ← point(10, -10, 10)
-   Then w.is_shadowed(p) is true
-*/
-TEST(world, should_return_true_when_object_between_point_and_light)
-{
-    World w{ World::default_world() };
-    const tuple_t p{ tuple_t::point(10, -10, 10) };
-    EXPECT_TRUE(w.is_shadowed(p, w.lights[0]));
-}
-
-/*
-Scenario: There is no shadow when an object is behind the light
-  Given w ← default_world()
-    And p ← point(-20, 20, -20)
-   Then w.is_shadowed(p) is false
-*/
-TEST(world, should_return_false_when_object_is_behind_the_light)
-{
-    World w{ World::default_world() };
-    const tuple_t p{ tuple_t::point(-20, 20, -20) };
-    EXPECT_FALSE(w.is_shadowed(p, w.lights[0]));
-}
-
-/*
-Scenario: There is no shadow when an object is behind the point
-  Given w ← default_world()
-    And p ← point(-2, 2, -2)
-   Then w.is_shadowed(p) is false
-*/
-TEST(world, should_return_false_when_object_is_behind_the_point)
-{
-    World w{ World::default_world() };
-    const tuple_t p{ tuple_t::point(-2, 2, -2) };
-    EXPECT_FALSE(w.is_shadowed(p, w.lights[0]));
-}
-
-/*
 Scenario: shade_hit() is given an intersection in shadow
   Given w ← world()
     And light ← point_light(point(0, 0, -10), color(1, 1, 1))
@@ -283,12 +231,12 @@ Scenario: shade_hit() is given an intersection in shadow
 TEST(world, should_handle_in_shadow_in_shade_hit_func)
 {
     World w{};
-    Light light{ colour_t{1, 1, 1} };
+    PointLight light{ colour_t{1, 1, 1} };
     light.transform = matrix_t::translation(0, 0, -10);
     auto s1{ Sphere::create() };
     auto s2{ Sphere::create() };
     s2->transform = matrix_t::translation(0, 0, 10);
-    w.add_object(std::make_unique<Light>(light));
+    w.add_object(std::make_unique<PointLight>(light));
     w.add_object(std::move(s1));
     w.add_object(std::move(s2));
     const ray_t r{ tuple_t::point(0, 0, 5), tuple_t::vector(0, 0, 1) };
@@ -399,8 +347,8 @@ Scenario: color_at() with mutually reflective surfaces
 TEST(world, should_terminate_successfully_for_mutually_reflective_surfaces)
 {
     World w{};
-    Light light{ colour_t{ 1, 1, 1 } };
-    w.add_object(std::make_unique<Light>(light));
+    PointLight light{ colour_t{ 1, 1, 1 } };
+    w.add_object(std::make_unique<PointLight>(light));
     auto plane{ Plane::create() };
     plane->transform = matrix_t::translation(0, -1, 0);
     w.add_object(std::move(plane));
@@ -678,4 +626,64 @@ TEST(world, should_return_colour_for_shade_hit_with_reflective_transparent_mater
     const intersection_state state{ intersections[0].prepare(r, intersections) };
     const colour_t c{ 0.93391, 0.69643, 0.69243 };
     EXPECT_EQ(w.shade_hit(state, 5), c);
+}
+
+/*
+Scenario: is_shadow tests for occlusion between two points
+  Given w ← default_world()
+    And light_position ← point(-10, -10, -10)
+    And point ← <point>
+  Then is_shadowed(w, light_position, point) is <result>
+
+  Examples:
+    | point                | result |
+    | point(-10, -10, 10)  | false  |
+    | point(10, 10, 10)    | true   |
+    | point(-20, -20, -20) | false  |
+    | point(-5, -5, -5)    | false  |
+*/
+TEST(world, should_return_false_when_object_is_behind_the_point)
+{
+    World w{ World::default_world() };
+    w.lights[0].lock()->transform = matrix_t::translation(-10, -10, -10);
+    const tuple_t p1{ tuple_t::point(-10, -10, -10) };
+    const tuple_t p2{ tuple_t::point(10, 10, 10) };
+    const tuple_t p3{ tuple_t::point(-20, -20, -20) };
+    const tuple_t p4{ tuple_t::point(-5, -5, -5) };
+    EXPECT_FALSE(w.is_shadowed(p1, w.lights[0].lock()->position()));
+    EXPECT_TRUE(w.is_shadowed(p2, w.lights[0].lock()->position()));
+    EXPECT_FALSE(w.is_shadowed(p3, w.lights[0].lock()->position()));
+    EXPECT_FALSE(w.is_shadowed(p4, w.lights[0].lock()->position()));
+}
+
+/*
+Scenario: is_shadow tests for occlusion between two points
+  Given w ← default_world()
+    And light_position ← point(-10, -10, -10)
+    And point ← <point>
+  Then is_shadowed(w, light_position, point) is <result>
+
+  Examples:
+    | point                | result |
+    | point(-10, -10, 10)  | false  |
+    | point(10, 10, 10)    | true   |
+    | point(-20, -20, -20) | false  |
+    | point(-5, -5, -5)    | false  |
+*/
+TEST(world, should_return_false_when_object_has_cast_shadows_off)
+{
+    World w{ World::default_world() };
+    for (auto& o : w.renderables)
+    {
+        o.lock()->cast_shadows = false;
+    }
+    w.lights[0].lock()->transform = matrix_t::translation(-10, -10, -10);
+    const tuple_t p1{ tuple_t::point(-10, -10, -10) };
+    const tuple_t p2{ tuple_t::point(10, 10, 10) };
+    const tuple_t p3{ tuple_t::point(-20, -20, -20) };
+    const tuple_t p4{ tuple_t::point(-5, -5, -5) };
+    EXPECT_FALSE(w.is_shadowed(p1, w.lights[0].lock()->position()));
+    EXPECT_FALSE(w.is_shadowed(p2, w.lights[0].lock()->position()));
+    EXPECT_FALSE(w.is_shadowed(p3, w.lights[0].lock()->position()));
+    EXPECT_FALSE(w.is_shadowed(p4, w.lights[0].lock()->position()));
 }

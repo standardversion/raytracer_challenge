@@ -57,6 +57,18 @@ TEST(geometry, should_be_able_to_assign_material)
 }
 
 /*
+Scenario: Should cast shadows by default
+  Given s ← TestGeometry()
+  When m ← s.material
+  Then m = Phong()
+*/
+TEST(geometry, should_cast_shadows)
+{
+	const TestGeometry s{};
+	EXPECT_TRUE(s.cast_shadows);
+}
+
+/*
 Scenario: Intersecting a scaled shape with a ray
   Given r ← ray(point(0, 0, -5), vector(0, 0, 1))
 	And s ← test_shape()

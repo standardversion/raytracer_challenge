@@ -40,17 +40,17 @@ public:
      * @param position The point on the surface where the lighting calculation is performed.
      * @param eye_vector The direction from the surface point toward the eye (camera/viewer).
      * @param normal_vector The surface normal at the point of intersection.
-     * @param in_shadow A boolean indicating whether the point is in shadow (true) or fully lit (false).
+     * @param intensity Light intensity at point.
      * @return colour_t The final color resulting from the lighting model applied at the given point.
      */
     virtual colour_t lighting
     (
-        const Light& light,
+        Light& light,
         const Geometry* geo,
         const tuple_t& position,
         const tuple_t& eye_vector,
         const tuple_t& normal_vector,
-        const bool in_shadow
+        const double intensity
     ) const = 0;
 
 

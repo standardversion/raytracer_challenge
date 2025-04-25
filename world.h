@@ -127,7 +127,7 @@ public:
 	 * This function casts a ray from the point toward each light in the scene
 	 * and checks for any objects obstructing the path. Used during shading to apply shadow effects.
 	 */
-	bool is_shadowed(const tuple_t point, const std::weak_ptr<Light>& light) const;
+	bool is_shadowed(const tuple_t& point, const tuple_t& light_position) const;
 
 };
 
