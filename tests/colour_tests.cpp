@@ -107,6 +107,6 @@ Scenario: Dividing a colour by a scalar
 TEST(colour, should_be_able_to_divide_colour_with_scalar)
 {
     const colour_t c{ 0.2, 0.4, 0.6, 1.0 };
-    const colour_t expected{ 0.1, 0.2, 0.6, 1.0 };
-    EXPECT_EQ(c / 0.2, expected);
+    const colour_t expected{ 0.1, 0.2, 0.3, 0.5 };
+    EXPECT_EQ(c / 2, expected);
 }

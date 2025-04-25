@@ -128,10 +128,10 @@ void intersections_t::sort()
 	});
 }
 
-std::optional<intersection_t> intersections_t::hit() const
+std::optional<intersection_t> intersections_t::hit(std::function<bool(const intersection_t& intersection)> filter) const
 {
 	for (const auto& i : entries) {
-		if (i.time >= 0) {
+		if (i.time >= 0 && filter(i)) {
 			return i; // shared_ptr copy is safe
 		}
 	}

@@ -74,7 +74,7 @@ TEST(intersect, should_return_lowest_positive_intersection)
     const intersection_t intersection1{ t, s };
     const intersection_t intersection2{ t2, s };
     intersections.add(intersection2, intersection1);
-    const auto ir{ intersections.hit() };
+    const auto ir{ intersections.hit([](const intersection_t&) { return true; }) };
     EXPECT_EQ(i, ir);
 }
 
@@ -98,7 +98,7 @@ TEST(intersect, should_return_lowest_positive_intersection_even_when_negative_t_
     const intersection_t intersection1{ t, s };
     const intersection_t intersection2{ t2, s };
     intersections.add(intersection2, intersection1);
-    const auto ir{ intersections.hit() };
+    const auto ir{ intersections.hit([](const intersection_t&) { return true; }) };
     EXPECT_EQ(i, ir);
 }
 
@@ -122,7 +122,7 @@ TEST(intersect, should_return_empty_intersection_even_only_negative_t_exist)
     const intersection_t intersection1{ t, s };
     const intersection_t intersection2{ t2, s };
     intersections.add(intersection2, intersection1);
-    const auto ir{ intersections.hit() };
+    const auto ir{ intersections.hit([](const intersection_t&) { return true; }) };
     EXPECT_FALSE(ir.has_value());
 }
 
@@ -151,7 +151,7 @@ TEST(intersect, should_always_return_lowest_positive_intersection)
     const intersection_t intersection3{ t3, s };
     const intersection_t intersection4{ t4, s };
     intersections.add(intersection1, intersection2, intersection3, intersection4);
-    const auto ir{ intersections.hit() };
+    const auto ir{ intersections.hit([](const intersection_t&) { return true; }) };
     EXPECT_EQ(ir, i);
 }
 

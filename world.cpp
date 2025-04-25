@@ -139,7 +139,7 @@ colour_t World::colour_at(const ray_t& ray, int remaining) const
 	colour_t colour{ 0, 0, 0 };
 	intersections_t intersections{};
 	intersect(ray, intersections);
-	const auto intersection{ intersections.hit() };
+	const auto intersection{ intersections.hit([](const intersection_t&) { return true; }) };
 	if (intersection)
 	{
 		intersection_state state{ intersection->prepare(ray, intersections) };
@@ -156,6 +156,9 @@ bool World::is_shadowed(const tuple_t& point, const tuple_t& light_position) con
 	const ray_t ray{ point, light_to_point };
 	intersections_t intersections{};
 	intersect(ray, intersections);
-	const auto intersection{ intersections.hit() };
+	const auto intersection{ intersections.hit([](const intersection_t& i) { 
+			return i.object->cast_shadows;
+		}
+	) };
 	return intersection && intersection->time < distance;
 }

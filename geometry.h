@@ -15,6 +15,7 @@ struct intersections_t;
 class Geometry : public SceneObject
 {
 public:
+    bool cast_shadows{ true };
     /**
      * @brief The material associated with this geometry.
      *

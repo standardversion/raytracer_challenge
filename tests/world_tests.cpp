@@ -655,3 +655,35 @@ TEST(world, should_return_false_when_object_is_behind_the_point)
     EXPECT_FALSE(w.is_shadowed(p3, w.lights[0].lock()->position()));
     EXPECT_FALSE(w.is_shadowed(p4, w.lights[0].lock()->position()));
 }
+
+/*
+Scenario: is_shadow tests for occlusion between two points
+  Given w ← default_world()
+    And light_position ← point(-10, -10, -10)
+    And point ← <point>
+  Then is_shadowed(w, light_position, point) is <result>
+
+  Examples:
+    | point                | result |
+    | point(-10, -10, 10)  | false  |
+    | point(10, 10, 10)    | true   |
+    | point(-20, -20, -20) | false  |
+    | point(-5, -5, -5)    | false  |
+*/
+TEST(world, should_return_false_when_object_has_cast_shadows_off)
+{
+    World w{ World::default_world() };
+    for (auto& o : w.renderables)
+    {
+        o.lock()->cast_shadows = false;
+    }
+    w.lights[0].lock()->transform = matrix_t::translation(-10, -10, -10);
+    const tuple_t p1{ tuple_t::point(-10, -10, -10) };
+    const tuple_t p2{ tuple_t::point(10, 10, 10) };
+    const tuple_t p3{ tuple_t::point(-20, -20, -20) };
+    const tuple_t p4{ tuple_t::point(-5, -5, -5) };
+    EXPECT_FALSE(w.is_shadowed(p1, w.lights[0].lock()->position()));
+    EXPECT_FALSE(w.is_shadowed(p2, w.lights[0].lock()->position()));
+    EXPECT_FALSE(w.is_shadowed(p3, w.lights[0].lock()->position()));
+    EXPECT_FALSE(w.is_shadowed(p4, w.lights[0].lock()->position()));
+}
