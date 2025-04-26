@@ -172,3 +172,20 @@ TEST(geometry, should_be_able_to_compute_normal_on_a_child_object)
 		tuple_t::vector(0.2857, 0.4286, -0.8571)
 	);
 }
+
+/*
+Scenario: Querying a shape's bounding box in its parent's space
+  Given shape ← sphere()
+	And set_transform(shape, translation(1, -3, 5) * scaling(0.5, 2, 4))
+  When box ← parent_space_bounds_of(shape)
+  Then box.min = point(0.5, -5, 1)
+	And box.max = point(1.5, -1, 9)
+*/
+TEST(geometry, should_be_query_geometrys_bounding_box_in_parents_space)
+{
+	TestGeometry s{};
+	s.transform = matrix_t::translation(1, -3, 5) * matrix_t::scaling(0.5, 2, 4);
+	const bbox_t box{ s.bounds_in_parent_space() };
+	EXPECT_EQ(box.min, tuple_t::point(0.5, -5, 1));
+	EXPECT_EQ(box.max, tuple_t::point(1.5, -1, 9));
+}

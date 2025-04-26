@@ -75,6 +75,17 @@ public:
     tuple_t normal_at(const tuple_t& point, const double alpha = 0, const double beta = 0, const double gamma = 0) const;
 
     /**
+     * @brief Computes the bounding box of the shape in its parent space.
+     *
+     * Applies the shape's local transformation to its object-space bounds,
+     * returning an axis-aligned bounding box in the coordinate system of its parent.
+     *
+     * @return bbox_t The transformed bounding box in parent space.
+     */
+    bbox_t bounds_in_parent_space() const;
+
+
+    /**
      * @brief Get the bounding box of the object.
      *
      * This is a pure virtual function that must be implemented by derived classes.

@@ -4,6 +4,7 @@
 #include "../phong.h"
 #include "../smooth_triangle.h"
 #include "../intersection.h"
+#include "../bounding_box.h"
 
 /*
 Scenario: Create mesh from obj file path
@@ -133,4 +134,43 @@ TEST(mesh, should_not_do_anything_in_loca_normal_at_func)
 	const tuple_t p{ tuple_t::point(0, 1, 0) };
 	intersections_t i{};
 	EXPECT_EQ(m->local_normal_at(p), tuple_t::vector(0, 1, 0));
+}
+
+/*
+Scenario: A mesh has a bounding box that contains all its triangles
+  Given p1 ← point(1, 1, 1)
+	And p2 ← point(3, 1, 1)
+	And p3 ← point(2, 4, 1)
+	And p4 ← point(-2, -1, 0)
+	And p5 ← point(-1, 2, 0)
+	And p6 ← point(0, -1, 0)
+	And t1 ← triangle(p1, p2, p3)
+	And t2 ← triangle(p4, p5, p6)
+	And mesh ← mesh()
+	And add_triangle(mesh, t1)
+	And add_triangle(mesh, t2)
+  When box ← bounds_of(mesh)
+  Then box.min = point(-2, -1, 0)
+	And box.max = point(3, 4, 1)
+*/
+TEST(mesh, should_have_bounding_box)
+{
+	Mesh m{};
+	m.triangles.push_back(
+		Triangle::create(
+			tuple_t::point(1, 1, 1),
+			tuple_t::point(3, 1, 1),
+			tuple_t::point(2, 4, 1)
+		)
+	);
+	m.triangles.push_back(
+		Triangle::create(
+			tuple_t::point(-2, -1, 0),
+			tuple_t::point(-1, 2, 0),
+			tuple_t::point(0, -1, 0)
+		)
+	);
+	const bbox_t box{ m.bounds() };
+	EXPECT_EQ(box.min, tuple_t::point(-2, -1, 0));
+	EXPECT_EQ(box.max, tuple_t::point(3, 4, 1));
 }

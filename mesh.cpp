@@ -3,6 +3,9 @@
 #include "phong.h"
 #include "smooth_triangle.h"
 
+Mesh::Mesh() = default;
+
+
 Mesh::Mesh(const wavefront_t& obj, bool smooth)
 	: smooth{ smooth }
 {
@@ -90,5 +93,10 @@ tuple_t Mesh::local_normal_at(const tuple_t& local_point, const double alpha, co
 bbox_t Mesh::bounds() const
 {
 	bbox_t box{};
+	for (const auto& triangle : triangles)
+	{
+		const bbox_t child_box{ triangle->bounds_in_parent_space() };
+		box += child_box;
+	}
 	return box;
 }

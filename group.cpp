@@ -31,3 +31,17 @@ void Group::intersect(const ray_t& ray, intersections_t& intersections) const
 		}
 	}
 }
+
+bbox_t Group::bounds() const
+{
+	bbox_t box{};
+	for (const auto& child : children)
+	{
+		if (const auto geo{ dynamic_pointer_cast<Geometry>(child) })
+		{
+			const bbox_t child_box{geo->bounds_in_parent_space()};
+			box += child_box;
+		}
+	}
+	return box;
+}

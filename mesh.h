@@ -22,6 +22,14 @@ public:
     bool smooth{ false };
 
     /**
+     * @brief Default constructor for an empty mesh.
+     *
+     * Creates an empty mesh with no geometry or data loaded.
+     * Typically used when manually constructing a mesh by adding triangles later.
+     */
+    Mesh();
+
+    /**
      * @brief Constructs a mesh from a parsed wavefront OBJ structure.
      * @param obj The parsed Wavefront OBJ data.
      * @param smooth Whether to use smooth shading (default is true).

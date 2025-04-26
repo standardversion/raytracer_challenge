@@ -6,6 +6,8 @@
 #include "../intersection.h"
 #include "../scene_object.h"
 #include "../sphere.h"
+#include "../bounding_box.h"
+#include "../cylinder.h"
 
 class TestObject : public SceneObject
 {
@@ -127,4 +129,35 @@ TEST(group, should_have_intersections_when_group_is_transformed)
 	intersections_t i{};
 	g->intersect(r, i);
 	EXPECT_EQ(i.entries.size(), 2);
+}
+
+/*
+Scenario: A group has a bounding box that contains its children
+  Given s ← sphere()
+	And set_transform(s, translation(2, 5, -3) * scaling(2, 2, 2))
+	And c ← cylinder()
+	And c.minimum ← -2
+	And c.maximum ← 2
+	And set_transform(c, translation(-4, -1, 4) * scaling(0.5, 1, 0.5))
+	And shape ← group()
+	And add_child(shape, s)
+	And add_child(shape, c)
+  When box ← bounds_of(shape)
+  Then box.min = point(-4.5, -3, -5)
+	And box.max = point(4, 7, 4.5)
+*/
+TEST(group, should_have_bounding_box_containing_its_children)
+{
+	auto g{ std::make_shared<Group>() };
+	auto s{ Sphere::create() };
+	g->add(s);
+	s->transform = matrix_t::translation(2, 5, -3) * matrix_t::scaling(2, 2, 2);
+	auto c{ Cylinder::create() };
+	c->minimum = -2;
+	c->maximum = 2;
+	c->transform = matrix_t::translation(-4, -1, 4) * matrix_t::scaling(0.5, 1, 0.5);
+	g->add(c);
+	const bbox_t box{ g->bounds() };
+	EXPECT_EQ(box.min, tuple_t::point(-4.5, -3, -5));
+	EXPECT_EQ(box.max, tuple_t::point(4, 7, 4.5));
 }

@@ -19,3 +19,8 @@ tuple_t Geometry::normal_at(const tuple_t& world_point, const double alpha, cons
     tuple_t local_normal = local_normal_at(local_point, alpha, beta, gamma);
     return normal_to_world(local_normal);
 }
+
+bbox_t Geometry::bounds_in_parent_space() const
+{
+    return bounds().transform(transform);
+}
