@@ -86,3 +86,9 @@ tuple_t Mesh::local_normal_at(const tuple_t& local_point, const double alpha, co
 	// triangle which is part of this mesh and not the mesh itself
 	return tuple_t::vector(local_point.x, local_point.y, local_point.z);
 }
+
+bbox_t Mesh::bounds() const
+{
+	bbox_t box{};
+	return box;
+}

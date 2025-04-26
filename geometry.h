@@ -3,6 +3,7 @@
 #include "scene_object.h"
 #include "material.h"
 #include "ray.h"
+#include "bounding_box.h"
 
 struct intersections_t;
 
@@ -72,6 +73,16 @@ public:
      * @return tuple_t The normal vector at the point (unit vector).
      */
     tuple_t normal_at(const tuple_t& point, const double alpha = 0, const double beta = 0, const double gamma = 0) const;
+
+    /**
+     * @brief Get the bounding box of the object.
+     *
+     * This is a pure virtual function that must be implemented by derived classes.
+     * It returns a bounding box (`bbox_t`) representing the spatial limits of the object.
+     *
+     * @return bbox_t The bounding box of the object.
+     */
+    virtual bbox_t bounds() const = 0;
 
 protected:
     /**

@@ -5,6 +5,7 @@
 #include "../intersection.h"
 #include "../settings.h"
 #include "../group.h"
+#include "../bounding_box.h"
 
 
 static ray_t test_helper_ray{ tuple_t::point(0, 0, 0), tuple_t::vector(0, 0, 1)};
@@ -23,6 +24,10 @@ public:
 	void local_intersect(const ray_t& local_ray, intersections_t& intersections) const override
 	{
 		test_helper_ray = local_ray;
+	}
+	bbox_t bounds() const override
+	{
+		return bbox_t{ tuple_t::point(-1, -1, -1), tuple_t::point(1, 1, 1) };
 	}
 };
 

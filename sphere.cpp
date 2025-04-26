@@ -53,3 +53,8 @@ tuple_t Sphere::local_normal_at(const tuple_t& local_point, const double alpha, 
 {
 	return (local_point - tuple_t::point(0, 0, 0));
 }
+
+bbox_t Sphere::bounds() const
+{
+	return bbox_t{ tuple_t::point(-radius, -radius, -radius), tuple_t::point(radius, radius, radius) };
+}

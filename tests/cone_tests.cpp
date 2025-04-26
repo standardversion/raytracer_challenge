@@ -198,3 +198,41 @@ TEST(cone, should_compute_normal_vectors)
         index++;
     }
 }
+
+/*
+Scenario: An unbounded cone has a bounding box
+  Given shape ← cone()
+  When box ← bounds_of(shape)
+  Then box.min = point(-infinity, -infinity, -infinity)
+    And box.max = point(infinity, infinity, infinity)
+*/
+TEST(cone, should_have_bounding_box)
+{
+    const auto c{ Cone::create() };
+    const bbox_t box{ c->bounds() };
+    EXPECT_EQ(box.min.x, -INFINITY);
+    EXPECT_EQ(box.min.y, -INFINITY);
+    EXPECT_EQ(box.min.z, -INFINITY);
+    EXPECT_EQ(box.max.x, INFINITY);
+    EXPECT_EQ(box.max.y, INFINITY);
+    EXPECT_EQ(box.max.z, INFINITY);
+}
+
+/*
+Scenario: A bounded cone has a bounding box
+  Given shape ← cone()
+    And shape.minimum ← -5
+    And shape.maximum ← 3
+  When box ← bounds_of(shape)
+  Then box.min = point(-5, -5, -5)
+    And box.max = point(5, 3, 5)
+*/
+TEST(cone, should_have_bounding_box_for_bounded_cone)
+{
+    auto c{ Cone::create() };
+    c->maximum = 3;
+    c->minimum = -5;
+    const bbox_t box{ c->bounds() };
+    EXPECT_EQ(box.min, tuple_t::point(-5, -5, -5));
+    EXPECT_EQ(box.max, tuple_t::point(5, 3, 5));
+}

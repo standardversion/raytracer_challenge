@@ -239,6 +239,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="area_light.h" />
+    <ClInclude Include="bounding_box.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="canvas.h" />
     <ClInclude Include="checker.h" />
@@ -287,6 +288,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="area_light.cpp" />
+    <ClCompile Include="bounding_box.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="canvas.cpp" />
     <ClCompile Include="checker.cpp" />

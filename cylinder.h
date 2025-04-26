@@ -70,6 +70,16 @@ public:
      */
     tuple_t local_normal_at(const tuple_t& local_point, const double alpha = 0, const double beta = 0, const double gamma = 0) const override;
 
+    /**
+     * @brief Returns the bounding box of the object.
+     *
+     * Overrides the base class implementation to provide the specific bounding box
+     * for this derived class.
+     *
+     * @return bbox_t The bounding box of the object.
+     */
+    bbox_t bounds() const override;
+
 protected:
     /**
      * @brief Helper function to compute ray intersections with the cylinder's end caps.

@@ -23,3 +23,8 @@ tuple_t Plane::local_normal_at(const tuple_t& local_point, const double alpha, c
 {
 	return tuple_t::vector(0, 1, 0);
 }
+
+bbox_t Plane::bounds() const
+{
+	return bbox_t{ tuple_t::point(-INFINITY, 0, -INFINITY), tuple_t::point(INFINITY, 0, INFINITY) };
+}

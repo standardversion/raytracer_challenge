@@ -73,3 +73,10 @@ tuple_t Triangle::local_normal_at(const tuple_t& local_point, const double alpha
 {
 	return normal;
 }
+
+bbox_t Triangle::bounds() const
+{
+	bbox_t box{};
+	box.add(v1, v2, v3);
+	return box;
+}

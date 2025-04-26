@@ -106,3 +106,11 @@ tuple_t Cone::local_normal_at(const tuple_t& local_point, const double alpha, co
 		return tuple_t::vector(local_point.x, y, local_point.z);
 	}
 }
+
+bbox_t Cone::bounds() const
+{
+	const double a{ abs(minimum) };
+	const double b{ abs(maximum) };
+	const double limit{ std::max(a, b) };
+	return bbox_t{ tuple_t::point(-limit, minimum, -limit), tuple_t::point(limit, maximum, limit) };
+}

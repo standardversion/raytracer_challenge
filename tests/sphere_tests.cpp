@@ -6,6 +6,7 @@
 #include "../matrix.h"
 #include "../settings.h"
 #include "../phong.h"
+#include "../bounding_box.h"
 
 /*
 Scenario: Creating and querying a sphere
@@ -363,4 +364,19 @@ TEST(sphere, should_create_a_glass_sphere)
 	auto m { std::dynamic_pointer_cast<Phong>(s->material) };
 	EXPECT_EQ(m->transparency, 1.0);
 	EXPECT_EQ(m->refractive_index, 1.5);
+}
+
+/*
+Scenario: A sphere has a bounding box
+  Given shape ← sphere()
+  When box ← bounds_of(shape)
+  Then box.min = point(-1, -1, -1)
+	And box.max = point(1, 1, 1)
+*/
+TEST(sphere, should_have_bounding_box)
+{
+	const auto s{ Sphere::glass_sphere() };
+	const bbox_t box{ s->bounds() };
+	EXPECT_EQ(box.min, tuple_t::point(-1, -1, -1));
+	EXPECT_EQ(box.max, tuple_t::point(1, 1, 1));
 }

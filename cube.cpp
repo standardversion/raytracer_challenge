@@ -66,3 +66,8 @@ tuple_t Cube::local_normal_at(const tuple_t& local_point, const double alpha, co
 		return tuple_t::vector(0, 0, local_point.z);
 	}
 }
+
+bbox_t Cube::bounds() const
+{
+	return bbox_t{ tuple_t::point(-1, -1, -1), tuple_t::point(1, 1, 1) };
+}
