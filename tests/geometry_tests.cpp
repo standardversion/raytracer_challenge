@@ -23,6 +23,7 @@ public:
 
 	void local_intersect(const ray_t& local_ray, intersections_t& intersections) const override
 	{
+
 		test_helper_ray = local_ray;
 	}
 	bbox_t bounds() const override

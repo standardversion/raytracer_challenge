@@ -2,6 +2,7 @@
 #include <cmath>
 #include "tuple.h"
 #include "matrix.h"
+#include "ray.h"
 
 /**
  * @brief Represents an axis-aligned bounding box in 3D space.
@@ -55,6 +56,18 @@ struct bbox_t
      * @return bbox_t The transformed bounding box.
      */
     bbox_t transform(const matrix_t& m) const;
+
+    /**
+     * @brief Tests if a ray intersects the bounding box.
+     *
+     * Performs an axis-aligned bounding box (AABB) intersection test
+     * using the given ray.
+     *
+     * @param r The ray to test for intersection.
+     * @return true if the ray intersects the bounding box, false otherwise.
+     */
+    bool intersect(const ray_t& r) const;
+
 
     /**
      * @brief Expands this bounding box to include another bounding box.

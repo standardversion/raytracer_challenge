@@ -45,6 +45,7 @@ Mesh::Mesh(const wavefront_t& obj, bool smooth)
 			);
 		}
 	}
+	bbox = bounds();
 }
 
 Mesh::Mesh(const char* obj_filename, bool smooth)
@@ -76,9 +77,12 @@ std::shared_ptr<Mesh> Mesh::create(const char* obj_filename, bool smooth)
 
 void Mesh::local_intersect(const ray_t& local_ray, intersections_t& intersections) const
 {
-	for (const auto& triangle : triangles)
+	if (bbox.intersect(local_ray))
 	{
-		triangle->local_intersect(local_ray, intersections);
+		for (const auto& triangle : triangles)
+		{
+			triangle->local_intersect(local_ray, intersections);
+		}
 	}
 }
 

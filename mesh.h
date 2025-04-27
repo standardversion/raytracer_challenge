@@ -20,7 +20,9 @@ public:
 
     /** @brief Whether the mesh should use smooth shading (per-vertex normals). */
     bool smooth{ false };
-
+    
+    /** @brief Bounding box of the mesh. */
+    bbox_t bbox{};
     /**
      * @brief Default constructor for an empty mesh.
      *

@@ -3,6 +3,7 @@
 #include "../bounding_box.h"
 #include "../matrix.h"
 #include "../settings.h"
+#include "../ray.h"
 
 /*
 Scenario: Creating an empty bounding box
@@ -127,4 +128,86 @@ TEST(bounding_box, should_be_able_to_transform_bbox)
 	const bbox_t box2{ box.transform(transform) };
 	EXPECT_EQ(box2.min, tuple_t::point(-1.4142, -1.7071, -1.7071));
 	EXPECT_EQ(box2.max, tuple_t::point(1.4142, 1.7071, 1.7071));
+}
+
+/*
+Scenario: Intersecting a ray with a bounding box at the origin
+  Given box ← bounding_box(min=point(-1, -1, -1) max=point(1, 1, 1))
+	And direction ← normalize(<direction>)
+	And r ← ray(<origin>, direction)
+  Then intersects(box, r) is <result>
+
+  Examples:
+	| origin            | direction        | result |
+	| point(5, 0.5, 0)  | vector(-1, 0, 0) | true   |
+	| point(-5, 0.5, 0) | vector(1, 0, 0)  | true   |
+	| point(0.5, 5, 0)  | vector(0, -1, 0) | true   |
+	| point(0.5, -5, 0) | vector(0, 1, 0)  | true   |
+	| point(0.5, 0, 5)  | vector(0, 0, -1) | true   |
+	| point(0.5, 0, -5) | vector(0, 0, 1)  | true   |
+	| point(0, 0.5, 0)  | vector(0, 0, 1)  | true   |
+	| point(-2, 0, 0)   | vector(2, 4, 6)  | false  |
+	| point(0, -2, 0)   | vector(6, 2, 4)  | false  |
+	| point(0, 0, -2)   | vector(4, 6, 2)  | false  |
+	| point(2, 0, 2)    | vector(0, 0, -1) | false  |
+	| point(0, 2, 2)    | vector(0, -1, 0) | false  |
+	| point(2, 2, 0)    | vector(-1, 0, 0) | false  |
+*/
+TEST(bounding_box, should_check_if_ray_intersects_bounding_box)
+{
+	const bbox_t box{ tuple_t::point(-1, -1, -1), tuple_t::point(1, 1, 1) };
+	EXPECT_TRUE(box.intersect(ray_t{ tuple_t::point(5, 0.5, 0), tuple_t::vector(-1, 0, 0) }));
+	EXPECT_TRUE(box.intersect(ray_t{ tuple_t::point(-5, 0.5, 0), tuple_t::vector(1, 0, 0) }));
+	EXPECT_TRUE(box.intersect(ray_t{ tuple_t::point(0.5, 5, 0), tuple_t::vector(0, -1, 0) }));
+	EXPECT_TRUE(box.intersect(ray_t{ tuple_t::point(0.5, -5, 0), tuple_t::vector(0, 1, 0) }));
+	EXPECT_TRUE(box.intersect(ray_t{ tuple_t::point(0.5, 0, 5), tuple_t::vector(0, 0, -1) }));
+	EXPECT_TRUE(box.intersect(ray_t{ tuple_t::point(0.5, 0, -5), tuple_t::vector(0, 0, 1) }));
+	EXPECT_TRUE(box.intersect(ray_t{ tuple_t::point(0, 0.5, 0), tuple_t::vector(0, 0, 1) }));
+	EXPECT_FALSE(box.intersect(ray_t{ tuple_t::point(-2, 0, 0), tuple_t::vector(2, 4, 6) }));
+	EXPECT_FALSE(box.intersect(ray_t{ tuple_t::point(0, -2, 0), tuple_t::vector(6, 2, 4) }));
+	EXPECT_FALSE(box.intersect(ray_t{ tuple_t::point(0, 0, -2), tuple_t::vector(4, 6, 2) }));
+	EXPECT_FALSE(box.intersect(ray_t{ tuple_t::point(2, 0, 2), tuple_t::vector(0, 0, -1) }));
+	EXPECT_FALSE(box.intersect(ray_t{ tuple_t::point(0, 2, 2), tuple_t::vector(0, -1, 0) }));
+	EXPECT_FALSE(box.intersect(ray_t{ tuple_t::point(2, 2, 0), tuple_t::vector(-1, 0, 0) }));	
+}
+
+/*
+Scenario Outline: Intersecting a ray with a non-cubic bounding box
+  Given box ← bounding_box(min=point(5, -2, 0) max=point(11, 4, 7))
+	And direction ← normalize(<direction>)
+	And r ← ray(<origin>, direction)
+  Then intersects(box, r) is <result>
+
+  Examples:
+	| origin           | direction        | result |
+	| point(15, 1, 2)  | vector(-1, 0, 0) | true   |
+	| point(-5, -1, 4) | vector(1, 0, 0)  | true   |
+	| point(7, 6, 5)   | vector(0, -1, 0) | true   |
+	| point(9, -5, 6)  | vector(0, 1, 0)  | true   |
+	| point(8, 2, 12)  | vector(0, 0, -1) | true   |
+	| point(6, 0, -5)  | vector(0, 0, 1)  | true   |
+	| point(8, 1, 3.5) | vector(0, 0, 1)  | true   |
+	| point(9, -1, -8) | vector(2, 4, 6)  | false  |
+	| point(8, 3, -4)  | vector(6, 2, 4)  | false  |
+	| point(9, -1, -2) | vector(4, 6, 2)  | false  |
+	| point(4, 0, 9)   | vector(0, 0, -1) | false  |
+	| point(8, 6, -1)  | vector(0, -1, 0) | false  |
+	| point(12, 5, 4)  | vector(-1, 0, 0) | false  |
+*/
+TEST(bounding_box, should_check_if_ray_intersects_non_cubic_bounding_box)
+{
+	const bbox_t box{ tuple_t::point(5, -2, 0), tuple_t::point(11, 4, 7) };
+	EXPECT_TRUE(box.intersect(ray_t{ tuple_t::point(15, 1, 2), tuple_t::vector(-1, 0, 0) }));
+	EXPECT_TRUE(box.intersect(ray_t{ tuple_t::point(-5, -1, 4), tuple_t::vector(1, 0, 0) }));
+	EXPECT_TRUE(box.intersect(ray_t{ tuple_t::point(7, 6, 5), tuple_t::vector(0, -1, 0) }));
+	EXPECT_TRUE(box.intersect(ray_t{ tuple_t::point(9, -5, 6), tuple_t::vector(0, 1, 0) }));
+	EXPECT_TRUE(box.intersect(ray_t{ tuple_t::point(8, 2, 12), tuple_t::vector(0, 0, -1) }));
+	EXPECT_TRUE(box.intersect(ray_t{ tuple_t::point(6, 0, -5), tuple_t::vector(0, 0, 1) }));
+	EXPECT_TRUE(box.intersect(ray_t{ tuple_t::point(8, 1, 3.5), tuple_t::vector(0, 0, 1) }));
+	EXPECT_FALSE(box.intersect(ray_t{ tuple_t::point(9, -1, -8), tuple_t::vector(2, 4, 6) }));
+	EXPECT_FALSE(box.intersect(ray_t{ tuple_t::point(8, 3, -4), tuple_t::vector(6, 2, 4) }));
+	EXPECT_FALSE(box.intersect(ray_t{ tuple_t::point(9, -1, -2), tuple_t::vector(4, 6, 2) }));
+	EXPECT_FALSE(box.intersect(ray_t{ tuple_t::point(4, 0, 9), tuple_t::vector(0, 0, -1) }));
+	EXPECT_FALSE(box.intersect(ray_t{ tuple_t::point(8, 6, -1), tuple_t::vector(0, -1, 0) }));
+	EXPECT_FALSE(box.intersect(ray_t{ tuple_t::point(12, 5, 4), tuple_t::vector(-1, 0, 0) }));
 }

@@ -8,6 +8,7 @@
 #include "../sphere.h"
 #include "../bounding_box.h"
 #include "../cylinder.h"
+#include "../geometry.h"
 
 class TestObject : public SceneObject
 {
@@ -17,6 +18,33 @@ public:
 	{
 	}
 
+};
+
+static ray_t test_helper_ray{ tuple_t::point(0, 0, 0), tuple_t::vector(0, 0, 0) };
+// Test helper class since SceneObject consturctor is protected
+class TestGrpGeometry : public Geometry
+{
+public:
+	TestGrpGeometry()
+		: Geometry{}
+	{
+	}
+	tuple_t local_normal_at(const tuple_t& local_point, const double alpha, const double beta, const double gamma) const
+	{
+		return tuple_t::vector(local_point.x, local_point.y, local_point.z);
+	}
+
+	void local_intersect(const ray_t& local_ray, intersections_t& intersections) const override
+	{
+		if (local_ray.origin == tuple_t::point(0, 0, -5) && local_ray.direction == tuple_t::vector(0, 0, 1))
+		{
+			test_helper_ray = local_ray;
+		}
+	}
+	bbox_t bounds() const override
+	{
+		return bbox_t{ tuple_t::point(-1, -1, -1), tuple_t::point(1, 1, 1) };
+	}
 };
 
 /*
@@ -160,4 +188,46 @@ TEST(group, should_have_bounding_box_containing_its_children)
 	const bbox_t box{ g->bounds() };
 	EXPECT_EQ(box.min, tuple_t::point(-4.5, -3, -5));
 	EXPECT_EQ(box.max, tuple_t::point(4, 7, 4.5));
+}
+
+/*
+Scenario: Intersecting ray+group doesn't test children if box is missed
+  Given child ← test_shape()
+	And shape ← group()
+	And add_child(shape, child)
+	And r ← ray(point(0, 0, -5), vector(0, 1, 0))
+  When xs ← intersect(shape, r)
+  Then child.saved_ray is unset
+*/
+TEST(group, should_not_test_children_if_box_is_missed)
+{
+	auto g{ std::make_shared<Group>() };
+	auto t{ std::make_shared<TestGrpGeometry>() };
+	g->add(t);
+	const ray_t r{ tuple_t::point(0, 0, - 5), tuple_t::vector(0, 1, 0) };
+	intersections_t i{};
+	g->intersect(r, i);
+	EXPECT_EQ(test_helper_ray.origin, tuple_t::point(0, 0, 0));
+	EXPECT_EQ(test_helper_ray.direction, tuple_t::vector(0, 0, 0));
+}
+
+/*
+Scenario: Intersecting ray+group tests children if box is hit
+  Given child ← test_shape()
+	And shape ← group()
+	And add_child(shape, child)
+	And r ← ray(point(0, 0, -5), vector(0, 0, 1))
+  When xs ← intersect(shape, r)
+  Then child.saved_ray is set
+*/
+TEST(group, should_test_children_if_box_is_hit)
+{
+	auto g{ std::make_shared<Group>() };
+	auto t{ std::make_shared<TestGrpGeometry>() };
+	g->add(t);
+	const ray_t r{ tuple_t::point(0, 0, -5), tuple_t::vector(0, 0, 1) };
+	intersections_t i{};
+	g->intersect(r, i);
+	EXPECT_EQ(test_helper_ray.origin, tuple_t::point(0, 0, -5));
+	EXPECT_EQ(test_helper_ray.direction, tuple_t::vector(0, 0, 1));
 }

@@ -23,6 +23,7 @@ void Group::intersect(const ray_t& ray, intersections_t& intersections) const
 	{
 		if (auto geo{dynamic_pointer_cast<Geometry>(child)})
 		{
+
 			geo->intersect(transformed_ray, intersections);
 		}
 		else if (auto grp = std::dynamic_pointer_cast<Group>(child))

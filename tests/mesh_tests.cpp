@@ -12,12 +12,16 @@ Scenario: Create mesh from obj file path
   When m ← mesh(filepath,false)
   Then m.triangles.size = 2
 	And m.smooth = true
+	And m.bbox.min = point(-1, -1, 1)
+	And m.bbox.max = point(1, 1, 1)
 */
 TEST(mesh, should_load_mesh_from_obj_filepath)
 {
-	const auto m{ Mesh::create("..\\..\\tests\\assets\\face.obj", false) };
+	const auto m{ Mesh::create("..\\..\\tests\\assets\\face.obj", true) };
 	EXPECT_EQ(m->triangles.size(), 2);
-	EXPECT_EQ(m->smooth, false);
+	EXPECT_EQ(m->smooth, true);
+	EXPECT_EQ(m->bbox.min, tuple_t::point(-1, -1, 1));
+	EXPECT_EQ(m->bbox.max, tuple_t::point(1, 1, 1));
 }
 
 /*
@@ -25,7 +29,9 @@ Scenario: Create mesh wavefront obj object
   Given w ← wavefront("..\\..\\tests\\assets\\face.obj")
   When m ← mesh(w)
   Then m.triangles.size = 2
-	And m.smooth = true
+	And m.smooth = false
+	And m.bbox.min = point(-1, -1, 1)
+	And m.bbox.max = point(1, 1, 1)
 */
 TEST(mesh, should_load_mesh_from_wavefront_obj)
 {
@@ -33,6 +39,8 @@ TEST(mesh, should_load_mesh_from_wavefront_obj)
 	const auto m{ Mesh::create(w, false) };
 	EXPECT_EQ(m->triangles.size(), 2);
 	EXPECT_EQ(m->smooth, false);
+	EXPECT_EQ(m->bbox.min, tuple_t::point(-1, -1, 1));
+	EXPECT_EQ(m->bbox.max, tuple_t::point(1, 1, 1));
 }
 
 /*
@@ -173,4 +181,127 @@ TEST(mesh, should_have_bounding_box)
 	const bbox_t box{ m.bounds() };
 	EXPECT_EQ(box.min, tuple_t::point(-2, -1, 0));
 	EXPECT_EQ(box.max, tuple_t::point(3, 4, 1));
+}
+
+/*
+Scenario: A ray misses the bounding box of the mesh
+  Given p1 ← point(1, 1, 1)
+	And p2 ← point(3, 1, 1)
+	And p3 ← point(2, 4, 1)
+	And p4 ← point(-2, -1, 0)
+	And p5 ← point(-1, 2, 0)
+	And p6 ← point(0, -1, 0)
+	And t1 ← triangle(p1, p2, p3)
+	And t2 ← triangle(p4, p5, p6)
+	And mesh ← mesh()
+	And add_triangle(mesh, t1)
+	And add_triangle(mesh, t2)
+	And box ← bounds_of(mesh)
+  When r ← ray(point(5, 5, -2), vector(1, 0, 0))
+  Then intersects(box, r) is false
+*/
+TEST(mesh, should_miss_mesh_if_ray_does_not_intersect_bbox)
+{
+	Mesh m{};
+	m.triangles.push_back(
+		Triangle::create(
+			tuple_t::point(1, 1, 1),
+			tuple_t::point(3, 1, 1),
+			tuple_t::point(2, 4, 1)
+		)
+	);
+	m.triangles.push_back(
+		Triangle::create(
+			tuple_t::point(-2, -1, 0),
+			tuple_t::point(-1, 2, 0),
+			tuple_t::point(0, -1, 0)
+		)
+	);
+	m.bbox = m.bounds();
+	const ray_t r{ tuple_t::point(5, 5, -2), tuple_t::vector(1, 0, 0) };
+	intersections_t i{};
+	m.local_intersect(r, i);
+	EXPECT_EQ(i.entries.size(), 0);
+}
+
+/*
+Scenario: A ray hits the bounding box of the mesh but misses the triangles
+  Given p1 ← point(1, 1, 1)
+	And p2 ← point(3, 1, 1)
+	And p3 ← point(2, 4, 1)
+	And p4 ← point(-2, -1, 0)
+	And p5 ← point(-1, 2, 0)
+	And p6 ← point(0, -1, 0)
+	And t1 ← triangle(p1, p2, p3)
+	And t2 ← triangle(p4, p5, p6)
+	And mesh ← mesh()
+	And add_triangle(mesh, t1)
+	And add_triangle(mesh, t2)
+	And box ← bounds_of(mesh)
+  When r ← ray(point(0, 0, -5), vector(0, 0, 1))
+  Then intersects(box, r) is false
+*/
+TEST(mesh, should_hit_mesh_if_ray_intersects_bbox_but_misses_triangles)
+{
+	Mesh m{};
+	m.triangles.push_back(
+		Triangle::create(
+			tuple_t::point(1, 1, 1),
+			tuple_t::point(3, 1, 1),
+			tuple_t::point(2, 4, 1)
+		)
+	);
+	m.triangles.push_back(
+		Triangle::create(
+			tuple_t::point(-2, -1, 0),
+			tuple_t::point(-1, 2, 0),
+			tuple_t::point(0, -1, 0)
+		)
+	);
+	m.bbox = m.bounds();
+	const ray_t r{ tuple_t::point(0, 0, -5), tuple_t::vector(0, 0, 1) };
+	intersections_t i{};
+	m.local_intersect(r, i);
+	EXPECT_EQ(i.entries.size(), 0);
+}
+
+/*
+Scenario: A ray hits the bounding box of the mesh but hit the triangles
+  Given p1 ← point(1, 1, 1)
+	And p2 ← point(3, 1, 1)
+	And p3 ← point(2, 4, 1)
+	And p4 ← point(-2, -1, 0)
+	And p5 ← point(-1, 2, 0)
+	And p6 ← point(0, -1, 0)
+	And t1 ← triangle(p1, p2, p3)
+	And t2 ← triangle(p4, p5, p6)
+	And mesh ← mesh()
+	And add_triangle(mesh, t1)
+	And add_triangle(mesh, t2)
+	And box ← bounds_of(mesh)
+  When r ← ray(point(-1, 0, -2), vector(0, 0, 1))
+  Then intersects(box, r) is false
+*/
+TEST(mesh, should_hit_mesh_if_ray_intersects_bbox_and_intersects_triangles)
+{
+	Mesh m{};
+	m.triangles.push_back(
+		Triangle::create(
+			tuple_t::point(1, 1, 1),
+			tuple_t::point(3, 1, 1),
+			tuple_t::point(2, 4, 1)
+		)
+	);
+	m.triangles.push_back(
+		Triangle::create(
+			tuple_t::point(-2, -1, 0),
+			tuple_t::point(-1, 2, 0),
+			tuple_t::point(0, -1, 0)
+		)
+	);
+	m.bbox = m.bounds();
+	const ray_t r{ tuple_t::point(-1, 0, -2), tuple_t::vector(0, 0, 1) };
+	intersections_t i{};
+	m.local_intersect(r, i);
+	EXPECT_EQ(i.entries.size(), 1);
 }
