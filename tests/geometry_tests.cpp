@@ -1,4 +1,5 @@
 ﻿#include <cmath>
+#include <string>
 #include "gtest/gtest.h"
 #include "../geometry.h"
 #include "../phong.h"

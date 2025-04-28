@@ -4,6 +4,7 @@
 #include "matrix.h"
 #include "ray.h"
 
+extern int bbox_tests;
 /**
  * @brief Represents an axis-aligned bounding box in 3D space.
  *
@@ -68,6 +69,10 @@ struct bbox_t
      */
     bool intersect(const ray_t& r) const;
 
+    tuple_t centroid() const;
+
+
+    std::pair<bbox_t, bbox_t> split() const;
 
     /**
      * @brief Expands this bounding box to include another bounding box.

@@ -107,10 +107,10 @@ bool tuple_t::operator==(const tuple_t& t) const
 
 tuple_t tuple_t::operator+(const tuple_t& t) const
 {
-	if (this->is_point() && t.is_point())
+	/*if (this->is_point() && t.is_point())
 	{
 		throw std::invalid_argument("Cannot add two points");
-	}
+	}*/
 	return {
 		this->x + t.x,
 		this->y + t.y,
@@ -197,4 +197,11 @@ tuple_t& tuple_t::operator/=(const double factor)
 	this->z /= factor;
 	this->w /= factor;
 	return *this;
+}
+
+
+
+tuple_t tuple_t::inverse() const
+{
+	return tuple_t{ 1.0 / x, 1.0 / y, 1.0 / z, 0 };
 }

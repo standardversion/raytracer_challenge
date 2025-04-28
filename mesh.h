@@ -3,6 +3,7 @@
 #include "geometry.h"
 #include "triangle.h"
 #include "wavefront_obj.h"
+#include "mesh_group.h"
 
 /**
  * @class Mesh
@@ -17,6 +18,8 @@ class Mesh : public Geometry
 public:
     /** @brief A collection of triangle primitives making up the mesh geometry. */
     std::vector<std::shared_ptr<Triangle>> triangles;
+
+    std::unique_ptr<mesh_grp_t> bvh;
 
     /** @brief Whether the mesh should use smooth shading (per-vertex normals). */
     bool smooth{ false };
@@ -87,6 +90,6 @@ public:
      * @return bbox_t The bounding box of the object.
      */
     bbox_t bounds() const override;
+
+    void divide(int threshold);
 };
-
-

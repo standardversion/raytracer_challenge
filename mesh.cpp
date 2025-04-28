@@ -2,6 +2,7 @@
 #include "triangle.h"
 #include "phong.h"
 #include "smooth_triangle.h"
+#include "mesh_group.h"
 
 Mesh::Mesh() = default;
 
@@ -60,6 +61,7 @@ std::shared_ptr<Mesh> Mesh::create(const wavefront_t& obj, bool smooth)
 		tri->parent = mesh;
 		tri->material = mesh->material;
 	}
+	mesh->divide(128);
 	return mesh;
 }
 
@@ -71,13 +73,17 @@ std::shared_ptr<Mesh> Mesh::create(const char* obj_filename, bool smooth)
 		tri->parent = mesh;
 		tri->material = mesh->material;
 	}
-
+	mesh->divide(128);
 	return mesh;
 }
 
 void Mesh::local_intersect(const ray_t& local_ray, intersections_t& intersections) const
 {
-	if (bbox.intersect(local_ray))
+	if (bvh)
+	{
+		bvh->local_intersect(local_ray, intersections);
+	}
+	else if (bbox.intersect(local_ray))
 	{
 		for (const auto& triangle : triangles)
 		{
@@ -103,4 +109,14 @@ bbox_t Mesh::bounds() const
 		box += child_box;
 	}
 	return box;
+}
+
+void Mesh::divide(int threshold) {
+	if (triangles.size() <= threshold) return;
+
+	bvh = std::make_unique<mesh_grp_t>();
+	for (const auto& tri : triangles) {
+		bvh->add(tri);
+	}
+	bvh->build(threshold);
 }

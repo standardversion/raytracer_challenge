@@ -3,6 +3,8 @@
 #include "settings.h"
 #include "intersection.h"
 
+int triangle_tests = 0;
+
 Triangle::Triangle(const tuple_t& v1, const tuple_t& v2, const tuple_t& v3)
 	: v1{ v1 }, v2{ v2 }, v3{ v3 }, e1{ v2 - v1 }, e2{ v3 - v1 }
 {
@@ -43,6 +45,7 @@ std::shared_ptr<Triangle> Triangle::create(const tuple_t& v1,
 
 void Triangle::local_intersect(const ray_t& local_ray, intersections_t& intersections) const
 {
+	++triangle_tests;
 	tuple_t dir_cross_e2{ tuple_t::cross(local_ray.direction, e2) };
 	double determinant{ tuple_t::dot(e1, dir_cross_e2) };
 	if (abs(determinant) < EPSILON)

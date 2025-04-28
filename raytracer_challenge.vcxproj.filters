@@ -159,6 +159,12 @@
     <ClInclude Include="bounding_box.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="mesh_group.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="exercises\bvh.h">
+      <Filter>Exercises</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -264,6 +270,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="bounding_box.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mesh_grp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

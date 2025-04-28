@@ -211,3 +211,79 @@ TEST(bounding_box, should_check_if_ray_intersects_non_cubic_bounding_box)
 	EXPECT_FALSE(box.intersect(ray_t{ tuple_t::point(8, 6, -1), tuple_t::vector(0, -1, 0) }));
 	EXPECT_FALSE(box.intersect(ray_t{ tuple_t::point(12, 5, 4), tuple_t::vector(-1, 0, 0) }));
 }
+
+/*
+Scenario: Splitting a perfect cube
+  Given box ← bounding_box(min=point(-1, -4, -5) max=point(9, 6, 5))
+  When (left, right) ← split_bounds(box)
+  Then left.min = point(-1, -4, -5)
+	And left.max = point(4, 6, 5)
+	And right.min = point(4, -4, -5)
+	And right.max = point(9, 6, 5)
+*/
+TEST(bounding_box, should_split_a_perfect_cube)
+{
+	const bbox_t box{ tuple_t::point(-1, -4, -5), tuple_t::point(9, 6, 5) };
+	const auto [left, right]{box.split()};
+	EXPECT_EQ(left.min, tuple_t::point(-1, -4, -5));
+	EXPECT_EQ(left.max, tuple_t::point(4, 6, 5));
+	EXPECT_EQ(right.min, tuple_t::point(4, -4, -5));
+	EXPECT_EQ(right.max, tuple_t::point(9, 6, 5));
+}
+
+/*
+Scenario: Splitting an x-wide box
+  Given box ← bounding_box(min=point(-1, -2, -3) max=point(9, 5.5, 3))
+  When (left, right) ← split_bounds(box)
+  Then left.min = point(-1, -2, -3)
+	And left.max = point(4, 5.5, 3)
+	And right.min = point(4, -2, -3)
+	And right.max = point(9, 5.5, 3)
+*/
+TEST(bounding_box, should_split_a_x_wide_cube)
+{
+	const bbox_t box{ tuple_t::point(-1, -2, -3), tuple_t::point(9, 5.5, 3) };
+	const auto [left, right] {box.split()};
+	EXPECT_EQ(left.min, tuple_t::point(-1, -2, -3));
+	EXPECT_EQ(left.max, tuple_t::point(4, 5.5, 3));
+	EXPECT_EQ(right.min, tuple_t::point(4, -2, -3));
+	EXPECT_EQ(right.max, tuple_t::point(9, 5.5, 3));
+}
+
+/*
+Scenario: Splitting a y-wide box
+  Given box ← bounding_box(min=point(-1, -2, -3) max=point(5, 8, 3))
+  When (left, right) ← split_bounds(box)
+  Then left.min = point(-1, -2, -3)
+	And left.max = point(5, 3, 3)
+	And right.min = point(-1, 3, -3)
+	And right.max = point(5, 8, 3)
+*/
+TEST(bounding_box, should_split_a_y_wide_cube)
+{
+	const bbox_t box{ tuple_t::point(-1, -2, -3), tuple_t::point(5, 8, 3) };
+	const auto [left, right] {box.split()};
+	EXPECT_EQ(left.min, tuple_t::point(-1, -2, -3));
+	EXPECT_EQ(left.max, tuple_t::point(5, 3, 3));
+	EXPECT_EQ(right.min, tuple_t::point(-1, 3, -3));
+	EXPECT_EQ(right.max, tuple_t::point(5, 8, 3));
+}
+
+/*
+Scenario: Splitting a z-wide box
+  Given box ← bounding_box(min=point(-1, -2, -3) max=point(5, 3, 7))
+  When (left, right) ← split_bounds(box)
+  Then left.min = point(-1, -2, -3)
+	And left.max = point(5, 3, 2)
+	And right.min = point(-1, -2, 2)
+	And right.max = point(5, 3, 7)
+*/
+TEST(bounding_box, should_split_a_z_wide_cube)
+{
+	const bbox_t box{ tuple_t::point(-1, -2, -3), tuple_t::point(5, 3, 7) };
+	const auto [left, right] {box.split()};
+	EXPECT_EQ(left.min, tuple_t::point(-1, -2, -3));
+	EXPECT_EQ(left.max, tuple_t::point(5, 3, 2));
+	EXPECT_EQ(right.min, tuple_t::point(-1, -2, 2));
+	EXPECT_EQ(right.max, tuple_t::point(5, 3, 7));
+}

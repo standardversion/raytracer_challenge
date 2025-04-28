@@ -5,6 +5,8 @@
 #include "material.h"
 #include "geometry.h"
 
+extern int triangle_tests;
+
 struct intersections_t;
 
 /**

@@ -1,12 +1,16 @@
 #include <iostream>
 #include <exception>
-#include "./exercises/area_lights.h"
+#include "./exercises/bvh.h"
+#include "triangle.h"
+#include "bounding_box.h"
 
 int main()
 {
     try
     {
-        area_lights_exercise();
+        bvh_exercise();
+        std::cout << "Total triangle intersection tests: " << triangle_tests << "\n";
+        std::cout << "Total bbox intersection tests: " << bbox_tests << "\n";
         return 0;
     }
     catch (const std::exception& e)

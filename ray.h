@@ -24,6 +24,8 @@ struct ray_t
 	 */
 	tuple_t direction{};
 
+	tuple_t inv_direction{};
+
 	/**
 	 * @brief Constructs a ray with a given origin and direction.
 	 *
