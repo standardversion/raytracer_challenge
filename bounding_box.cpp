@@ -44,6 +44,23 @@ bbox_t bbox_t::transform(const matrix_t& m) const
 	return new_box;	
 }
 
+/*
+Determines whether a ray intersects the bounding box using the slab method, which tests the ray against the min/max bounds on each axis.
+
+How it works:
+
+For each axis (x, y, z), it calculates the entry (tmin) and exit (tmax) distances of the ray relative to the box.
+
+It computes the overall intersection range as the overlap of the 3 axis-aligned intervals.
+
+If the intervals overlap (tmin <= tmax), the ray intersects the box.
+
+Notes:
+
+Efficient and branchless (using inv_direction to avoid division).
+
+Increments a global bbox_tests counter to track how often BVH culling is attempted.
+*/
 bool bbox_t::intersect(const ray_t& ray) const
 {
 	++bbox_tests;
@@ -70,6 +87,25 @@ bool bbox_t::intersect(const ray_t& ray) const
 	return tmin <= tmax;
 }
 
+/*
+Purpose:
+Splits the bounding box into two child boxes along its longest axis. This is typically used in BVH construction for spatial partitioning.
+
+How it works:
+
+Computes the absolute extents (dx, dy, dz) of the box along each axis.
+
+Identifies the longest axis and splits it at the midpoint.
+
+Constructs two new bounding boxes:
+
+Left: from the original min to the midpoint.
+
+Right: from the midpoint to the original max.
+
+Fallback:
+If all axes are equal (cube-like box), it defaults to splitting along the x-axis.
+*/
 std::pair<bbox_t, bbox_t> bbox_t::split() const
 {
 	const double dx{ abs(max.x) + abs(min.x) };
