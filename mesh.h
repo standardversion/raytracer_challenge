@@ -3,7 +3,7 @@
 #include "geometry.h"
 #include "triangle.h"
 #include "wavefront_obj.h"
-#include "mesh_group.h"
+#include "bvh.h"
 
 /**
  * @class Mesh
@@ -19,7 +19,7 @@ public:
     /** @brief A collection of triangle primitives making up the mesh geometry. */
     std::vector<std::shared_ptr<Triangle>> triangles;
 
-    std::unique_ptr<mesh_grp_t> bvh;
+    std::unique_ptr<bvh_t> bvh;
 
     /** @brief Whether the mesh should use smooth shading (per-vertex normals). */
     bool smooth{ false };
@@ -52,17 +52,19 @@ public:
      * @brief Factory method to create a shared pointer to a Mesh from parsed OBJ data.
      * @param obj The parsed Wavefront OBJ data.
      * @param smooth Whether to use smooth shading (default is true).
+     * @param bvh_threshold The threshold (number of tris) for creating bounding volume hierarchy
      * @return Shared pointer to the newly created Mesh.
      */
-    static std::shared_ptr<Mesh> create(const wavefront_t& obj, bool smooth = true);
+    static std::shared_ptr<Mesh> create(const wavefront_t& obj, bool smooth = true, int bvh_threshold = 128);
 
     /**
      * @brief Factory method to create a shared pointer to a Mesh from a file.
      * @param obj_filename The path to the OBJ file.
      * @param smooth Whether to use smooth shading (default is true).
+     * @param bvh_threshold The threshold (number of tris) for creating bounding volume hierarchy
      * @return Shared pointer to the newly created Mesh.
      */
-    static std::shared_ptr<Mesh> create(const char* obj_filename, bool smooth = true);
+    static std::shared_ptr<Mesh> create(const char* obj_filename, bool smooth = true, int bvh_threshold = 128);
 
     /**
      * @brief Computes the intersection(s) between a ray and all triangles in the mesh.
@@ -91,5 +93,5 @@ public:
      */
     bbox_t bounds() const override;
 
-    void divide(int threshold);
+    void create_bvh(int threshold);
 };

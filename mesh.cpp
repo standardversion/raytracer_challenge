@@ -2,7 +2,7 @@
 #include "triangle.h"
 #include "phong.h"
 #include "smooth_triangle.h"
-#include "mesh_group.h"
+#include "bvh.h"
 
 Mesh::Mesh() = default;
 
@@ -54,18 +54,18 @@ Mesh::Mesh(const char* obj_filename, bool smooth)
 {
 }
 
-std::shared_ptr<Mesh> Mesh::create(const wavefront_t& obj, bool smooth)
+std::shared_ptr<Mesh> Mesh::create(const wavefront_t& obj, bool smooth, int bvh_threshold)
 {
 	auto mesh{ std::make_shared<Mesh>(obj, smooth) };
 	for (auto& tri : mesh->triangles) {
 		tri->parent = mesh;
 		tri->material = mesh->material;
 	}
-	mesh->divide(128);
+	mesh->create_bvh(bvh_threshold);
 	return mesh;
 }
 
-std::shared_ptr<Mesh> Mesh::create(const char* obj_filename, bool smooth)
+std::shared_ptr<Mesh> Mesh::create(const char* obj_filename, bool smooth, int bvh_threshold)
 {
 	auto mesh{ std::make_shared<Mesh>(obj_filename, smooth) };
 	auto phong = std::dynamic_pointer_cast<Phong>(mesh->material);
@@ -73,7 +73,7 @@ std::shared_ptr<Mesh> Mesh::create(const char* obj_filename, bool smooth)
 		tri->parent = mesh;
 		tri->material = mesh->material;
 	}
-	mesh->divide(128);
+	mesh->create_bvh(bvh_threshold);
 	return mesh;
 }
 
@@ -111,10 +111,10 @@ bbox_t Mesh::bounds() const
 	return box;
 }
 
-void Mesh::divide(int threshold) {
+void Mesh::create_bvh(int threshold) {
 	if (triangles.size() <= threshold) return;
 
-	bvh = std::make_unique<mesh_grp_t>();
+	bvh = std::make_unique<bvh_t>();
 	for (const auto& tri : triangles) {
 		bvh->add(tri);
 	}

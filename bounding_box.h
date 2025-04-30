@@ -69,9 +69,6 @@ struct bbox_t
      */
     bool intersect(const ray_t& r) const;
 
-    tuple_t centroid() const;
-
-
     std::pair<bbox_t, bbox_t> split() const;
 
     /**

@@ -5,9 +5,9 @@
 #include "bounding_box.h"
 #include "triangle.h"
 
-struct mesh_grp_t
+struct bvh_t
 {
-	std::vector<std::shared_ptr<mesh_grp_t>> mesh_grps;
+	std::vector<std::shared_ptr<bvh_t>> bvhs;
 
 	std::vector<std::shared_ptr<Triangle>> triangles;
 

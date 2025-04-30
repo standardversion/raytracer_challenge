@@ -44,38 +44,6 @@ bbox_t bbox_t::transform(const matrix_t& m) const
 	return new_box;	
 }
 
-//bool bbox_t::intersect(const ray_t& r) const
-//{
-//	++bbox_tests;
-//	auto cube = Cube::create();
-//
-//	// Construct transform from unit cube to this bounding box
-//	// cube is 2 units in every dimension
-//	const auto scale = matrix_t::scaling(
-//		(max.x - min.x) / 2,
-//		(max.y - min.y) / 2,
-//		(max.z - min.z) / 2
-//	);
-//
-//	const auto translate = matrix_t::translation(
-//		(min.x + max.x) / 2,
-//		(min.y + max.y) / 2,
-//		(min.z + max.z) / 2
-//	);
-//
-//	const matrix_t bbox_transform = translate * scale;
-//	const matrix_t inverse_bbox_transform = bbox_transform.inverse();
-//
-//	// Transform the ray into the box's space
-//	ray_t local_ray = r.transform(inverse_bbox_transform);
-//
-//	// Intersect with the unit cube at origin
-//	intersections_t intersections;
-//	cube->local_intersect(local_ray, intersections);
-//
-//	return !intersections.entries.empty();
-//}
-
 bool bbox_t::intersect(const ray_t& ray) const
 {
 	++bbox_tests;
@@ -100,12 +68,6 @@ bool bbox_t::intersect(const ray_t& ray) const
 	);
 
 	return tmin <= tmax;
-}
-
-
-tuple_t bbox_t::centroid() const
-{
-	return (min + max) * 0.5;
 }
 
 std::pair<bbox_t, bbox_t> bbox_t::split() const
