@@ -87,3 +87,10 @@ tuple_t Cylinder::local_normal_at(const tuple_t& local_point, const double alpha
 		return tuple_t::vector(local_point.x, 0, local_point.z);
 	}
 }
+
+bbox_t Cylinder::bounds() const
+{
+	tuple_t min{ minimum ? tuple_t::point(-1, minimum, -1) : tuple_t::point(-1, -INFINITY, -1) };
+	tuple_t max{ maximum ? tuple_t::point(1, maximum, 1) : tuple_t::point(1, INFINITY, 1) };
+	return bbox_t{ min, max };
+}

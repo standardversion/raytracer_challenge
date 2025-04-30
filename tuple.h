@@ -250,4 +250,6 @@ struct tuple_t
 	 */
 	tuple_t& operator/=(const double factor);
 
+	tuple_t inverse() const;
+
 };

@@ -239,6 +239,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="area_light.h" />
+    <ClInclude Include="bounding_box.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="canvas.h" />
     <ClInclude Include="checker.h" />
@@ -248,6 +249,7 @@
     <ClInclude Include="cylinder.h" />
     <ClInclude Include="exercises\area_lights.h" />
     <ClInclude Include="exercises\build_scene.h" />
+    <ClInclude Include="exercises\bvh.h" />
     <ClInclude Include="exercises\cubes.h" />
     <ClInclude Include="exercises\hexagon.h" />
     <ClInclude Include="exercises\patterns.h" />
@@ -266,6 +268,7 @@
     <ClInclude Include="matrix.h" />
     <ClInclude Include="geometry.h" />
     <ClInclude Include="mesh.h" />
+    <ClInclude Include="bvh.h" />
     <ClInclude Include="pattern.h" />
     <ClInclude Include="phong.h" />
     <ClInclude Include="plane.h" />
@@ -287,6 +290,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="area_light.cpp" />
+    <ClCompile Include="bounding_box.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="canvas.cpp" />
     <ClCompile Include="checker.cpp" />
@@ -303,6 +307,7 @@
     <ClCompile Include="matrix.cpp" />
     <ClCompile Include="geometry.cpp" />
     <ClCompile Include="mesh.cpp" />
+    <ClCompile Include="bvh.cpp" />
     <ClCompile Include="pattern.cpp" />
     <ClCompile Include="point_light.cpp" />
     <ClCompile Include="ring.cpp" />

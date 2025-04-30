@@ -143,3 +143,18 @@ TEST(cube, should_calculate_normal_at_point)
         index++;
     }
 }
+
+/*
+Scenario: A cube has a bounding box
+  Given shape ← cube()
+  When box ← bounds_of(shape)
+  Then box.min = point(-1, -1, -1)
+    And box.max = point(1, 1, 1)
+*/
+TEST(cube, should_have_a_bounding_box)
+{
+    const auto c{ Cube::create() };
+    const bbox_t box{ c->bounds() };
+    EXPECT_EQ(box.min, tuple_t::point(-1, -1, -1));
+    EXPECT_EQ(box.max, tuple_t::point(1, 1, 1));
+}

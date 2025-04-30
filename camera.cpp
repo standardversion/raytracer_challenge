@@ -1,4 +1,6 @@
 #include <cmath>
+#include <chrono>
+#include <iostream>
 #include "camera.h"
 #include "settings.h"
 
@@ -42,6 +44,7 @@ ray_t Camera::ray_for_pixel(const int x, const int y) const
 canvas_t Camera::render(const World& world) const
 {
 	canvas_t image{ hsize, vsize };
+	auto start = std::chrono::high_resolution_clock::now();
 	for (int y{ 0 }; y < vsize - 1; y++)
 	{
 		for (int x{ 0 }; x < hsize - 1; x++)
@@ -51,5 +54,9 @@ canvas_t Camera::render(const World& world) const
 			image.write_pixel(x, y, colour);
 		}
 	}
+	auto end = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> duration = end - start;
+
+	std::cout << "Render time: " << duration.count() << " seconds\n";
 	return image;
 }

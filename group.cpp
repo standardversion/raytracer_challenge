@@ -23,6 +23,7 @@ void Group::intersect(const ray_t& ray, intersections_t& intersections) const
 	{
 		if (auto geo{dynamic_pointer_cast<Geometry>(child)})
 		{
+
 			geo->intersect(transformed_ray, intersections);
 		}
 		else if (auto grp = std::dynamic_pointer_cast<Group>(child))
@@ -30,4 +31,18 @@ void Group::intersect(const ray_t& ray, intersections_t& intersections) const
 			grp->intersect(transformed_ray, intersections);
 		}
 	}
+}
+
+bbox_t Group::bounds() const
+{
+	bbox_t box{};
+	for (const auto& child : children)
+	{
+		if (const auto geo{ dynamic_pointer_cast<Geometry>(child) })
+		{
+			const bbox_t child_box{geo->bounds_in_parent_space()};
+			box += child_box;
+		}
+	}
+	return box;
 }

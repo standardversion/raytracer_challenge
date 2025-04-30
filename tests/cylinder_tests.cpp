@@ -3,6 +3,7 @@
 #include "../cylinder.h"
 #include "../ray.h"
 #include "../intersection.h"
+#include "../bounding_box.h"
 
 /*
 Scenario Outline: A ray misses a cylinder
@@ -329,4 +330,43 @@ TEST(cylinder, should_calculate_normal_at_cylinder_end_caps)
         EXPECT_EQ(n, normals[index]);
         index++;
     }
+}
+
+/*
+Scenario: An unbounded cylinder has a bounding box
+  Given shape ← cylinder()
+  When box ← bounds_of(shape)
+  Then box.min = point(-1, -infinity, -1)
+    And box.max = point(1, infinity, 1)
+*/
+TEST(cylinder, should_have_bounding_box)
+{
+    const auto c{ Cylinder::create() };
+    const bbox_t box{ c->bounds() };
+    EXPECT_EQ(box.min.x, -1);
+    EXPECT_EQ(box.min.y, -INFINITY);
+    EXPECT_EQ(box.min.z, -1);
+    EXPECT_EQ(box.max.x, 1);
+    EXPECT_EQ(box.max.y, INFINITY);
+    EXPECT_EQ(box.max.z, 1);
+    
+}
+
+/*
+Scenario: A bounded cylinder has a bounding box
+  Given shape ← cylinder()
+    And shape.minimum ← -5
+    And shape.maximum ← 3
+  When box ← bounds_of(shape)
+  Then box.min = point(-1, -5, -1)
+    And box.max = point(1, 3, 1)
+*/
+TEST(cylinder, should_have_bounding_box_for_bounded_cylinder)
+{
+    auto c{ Cylinder::create() };
+    c->minimum = -5;
+    c->maximum = 3;
+    const bbox_t box{ c->bounds() };
+    EXPECT_EQ(box.min, tuple_t::point(-1, -5, -1));
+    EXPECT_EQ(box.max, tuple_t::point(1, 3, 1));
 }

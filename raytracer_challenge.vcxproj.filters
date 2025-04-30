@@ -156,6 +156,15 @@
     <ClInclude Include="exercises\area_lights.h">
       <Filter>Exercises</Filter>
     </ClInclude>
+    <ClInclude Include="bounding_box.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bvh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="exercises\bvh.h">
+      <Filter>Exercises</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -258,6 +267,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="sequence.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bounding_box.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bvh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

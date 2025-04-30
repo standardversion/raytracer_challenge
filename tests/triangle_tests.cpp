@@ -196,3 +196,24 @@ TEST(triangle, should_have_one_intersection_when_ray_strikes_a_triangle)
     EXPECT_EQ(i[0].beta, 0.25);
     EXPECT_EQ(i[0].gamma, 0.25);
 }
+
+/*
+Scenario: A triangle has a bounding box
+  Given p1 ← point(-3, 7, 2)
+    And p2 ← point(6, 2, -4)
+    And p3 ← point(2, -1, -1)
+    And shape ← triangle(p1, p2, p3)
+  When box ← bounds_of(shape)
+  Then box.min = point(-3, -1, -4)
+    And box.max = point(6, 7, 2)
+*/
+TEST(triangle, should_has_a_bounding_box)
+{
+    const tuple_t v1{ tuple_t::point(-3, 7, 2) };
+    const tuple_t v2{ tuple_t::point(6, 2, -4) };
+    const tuple_t v3{ tuple_t::point(2, -1, -1) };
+    const auto t{ Triangle::create(v1, v2, v3) };
+    const bbox_t box{ t->bounds() };
+    EXPECT_EQ(box.min, tuple_t::point(-3, -1, -4));
+    EXPECT_EQ(box.max, tuple_t::point(6, 7, 2));
+}

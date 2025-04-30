@@ -167,7 +167,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>gtest_main.lib;gtest.lib;gmock.lib;gmock_main.lib;tuple.obj;colour.obj;canvas.obj;ppm.obj;utils.obj;matrix.obj;ray.obj;sphere.obj;intersection.obj;phong.obj;geometry.obj;scene_object.obj;light.obj;world.obj;camera.obj;plane.obj;pattern.obj;stripe.obj;gradient.obj;ring.obj;checker.obj;intersection_state.obj;cube.obj;cylinder.obj;cone.obj;group.obj;triangle.obj;wavefront_obj.obj;mesh.obj;smooth_triangle.obj;point_light.obj;area_light.obj;sequence.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gtest_main.lib;gtest.lib;gmock.lib;gmock_main.lib;tuple.obj;colour.obj;canvas.obj;ppm.obj;utils.obj;matrix.obj;ray.obj;sphere.obj;intersection.obj;phong.obj;geometry.obj;scene_object.obj;light.obj;world.obj;camera.obj;plane.obj;pattern.obj;stripe.obj;gradient.obj;ring.obj;checker.obj;intersection_state.obj;cube.obj;cylinder.obj;cone.obj;group.obj;triangle.obj;wavefront_obj.obj;mesh.obj;smooth_triangle.obj;point_light.obj;area_light.obj;sequence.obj;bounding_box.obj;bvh.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -187,7 +187,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;gtest_main.lib;gtest.lib;gmock.lib;gmock_main.lib;tuple.obj;colour.obj;canvas.obj;ppm.obj;utils.obj;matrix.obj;ray.obj;sphere.obj;intersection.obj;phong.obj;geometry.obj;scene_object.obj;light.obj;world.obj;camera.obj;plane.obj;pattern.obj;stripe.obj;gradient.obj;ring.obj;checker.obj;intersection_state.obj;cube.obj;cylinder.obj;cone.obj;group.obj;triangle.obj;wavefront_obj.obj;mesh.obj;smooth_triangle.obj;point_light.obj;area_light.obj;sequence.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;gtest_main.lib;gtest.lib;gmock.lib;gmock_main.lib;tuple.obj;colour.obj;canvas.obj;ppm.obj;utils.obj;matrix.obj;ray.obj;sphere.obj;intersection.obj;phong.obj;geometry.obj;scene_object.obj;light.obj;world.obj;camera.obj;plane.obj;pattern.obj;stripe.obj;gradient.obj;ring.obj;checker.obj;intersection_state.obj;cube.obj;cylinder.obj;cone.obj;group.obj;triangle.obj;wavefront_obj.obj;mesh.obj;smooth_triangle.obj;point_light.obj;area_light.obj;sequence.obj;bounding_box.obj;bvh.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithChecks|x64'">
@@ -212,6 +212,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="area_light_tests.cpp" />
+    <ClCompile Include="bounding_box_tests.cpp" />
+    <ClCompile Include="bvh_tests.cpp" />
     <ClCompile Include="camera_tests.cpp" />
     <ClCompile Include="canvas_tests.cpp" />
     <ClCompile Include="checker_tests.cpp" />

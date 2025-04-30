@@ -91,3 +91,22 @@ TEST(plane, should_intersect_with_a_ray_from_below)
 	EXPECT_EQ(i[0].time, 1);
 	EXPECT_EQ(i[0].object.get(), p.get());
 }
+
+/*
+Scenario: A plane has a bounding box
+  Given shape ← plane()
+  When box ← bounds_of(shape)
+  Then box.min = point(-infinity, 0, -infinity)
+	And box.max = point(infinity, 0, infinity)
+*/
+TEST(plane, should_have_a_bounding_box)
+{
+	const auto p{ Plane::create() };
+	const bbox_t box{ p->bounds() };
+	EXPECT_EQ(box.max.x, INFINITY);
+	EXPECT_EQ(box.max.y, 0);
+	EXPECT_EQ(box.max.z, INFINITY);
+	EXPECT_EQ(box.min.x, -INFINITY);
+	EXPECT_EQ(box.min.y, 0);
+	EXPECT_EQ(box.min.z, -INFINITY);
+}

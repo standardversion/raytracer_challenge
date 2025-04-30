@@ -2,6 +2,7 @@
 #include <vector>
 #include <memory>
 #include "scene_object.h"
+#include "bounding_box.h"
 
 struct intersections_t;
 
@@ -55,6 +56,16 @@ public:
      * @param intersections The list to store any intersections found.
      */
     void intersect(const ray_t& ray, intersections_t& intersections) const;
+
+    /**
+     * @brief Returns the bounding box of the group excluding non renderables.
+     *
+     * Overrides the base class implementation to provide the specific bounding box
+     * for this derived class.
+     *
+     * @return bbox_t The bounding box of the group.
+     */
+    bbox_t bounds() const;
 };
 
 
