@@ -93,5 +93,15 @@ public:
      */
     bbox_t bounds() const override;
 
+    /**
+     * @brief Builds a BVH tree for the mesh using the specified triangle threshold.
+     *
+     * This function creates a root BVH node, adds all triangles from the mesh,
+     * and recursively builds the hierarchy by splitting nodes whose triangle count
+     * exceeds the given threshold.
+     *
+     * @param threshold Maximum number of triangles allowed per BVH node before it is split.
+     */
     void create_bvh(int threshold);
+
 };

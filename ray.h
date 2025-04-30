@@ -24,6 +24,14 @@ struct ray_t
 	 */
 	tuple_t direction{};
 
+	/**
+	 * @brief Inverse of the ray direction vector (1 / direction).
+	 *
+	 * Precomputed to speed up bounding box intersection tests by avoiding
+	 * repeated division. Each component is the reciprocal of the corresponding
+	 * ray direction component. If a direction component is zero, this should be
+	 * handled appropriately to avoid division by zero.
+	 */
 	tuple_t inv_direction{};
 
 	/**

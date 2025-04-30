@@ -69,6 +69,19 @@ struct bbox_t
      */
     bool intersect(const ray_t& r) const;
 
+    /**
+     * @brief Splits the bounding box into two sub-boxes along its longest axis.
+     *
+     * This method finds the axis (x, y, or z) along which the bounding box is largest,
+     * and splits the box at its midpoint along that axis. This is typically used
+     * for spatial partitioning in BVH construction.
+     *
+     * If all extents are equal, the split defaults to the x-axis.
+     *
+     * @return A pair of bounding boxes:
+     *         - The first (left) box spans from the original min to the midpoint.
+     *         - The second (right) box spans from the midpoint to the original max.
+     */
     std::pair<bbox_t, bbox_t> split() const;
 
     /**
