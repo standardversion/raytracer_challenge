@@ -11,104 +11,173 @@
 #include "../mesh.h"
 #include "../plane.h"
 #include "../point_light.h"
+#include "../cylinder.h"
+#include "../cube.h"
+#include "../group.h"
+
+std::shared_ptr<Mesh> make_dragon(colour_t& colour, double ambient, double diffuse, double specular, double shininess)
+{
+    auto mesh{ Mesh::create(".\\assets\\dragon.obj", false) };
+    mesh->transform = matrix_t::translation(0, 0.1217, 0) * matrix_t::scaling(0.268, 0.268, 0.268);
+    auto phong = std::dynamic_pointer_cast<Phong>(mesh->material);
+    if (phong)
+    {
+        phong->colour = colour;
+        phong->ambient = ambient;
+        phong->diffuse = diffuse;
+        phong->specular = specular;
+        phong->shininess = shininess;
+    }
+
+    return mesh;
+}
+
+std::shared_ptr<Cylinder> make_pedestal()
+{
+    auto cyl{ Cylinder::create() };
+    cyl->minimum = -0.15;
+    cyl->maximum = 0;
+    cyl->closed = true;
+    auto phong = std::dynamic_pointer_cast<Phong>(cyl->material);
+    if (phong)
+    {
+        phong->colour = { 0.2, 0.2, 0.2 };
+        phong->ambient = 0;
+        phong->diffuse = 0.8;
+        phong->specular = 0;
+        phong->reflective = 0.2;
+    }
+    return cyl;
+}
+
+std::shared_ptr<Cube> make_raw_bbox()
+{
+    auto cube{ Cube::create() };
+    cube->cast_shadows = false;
+    cube->transform = matrix_t::translation(-3.9863, -0.1217, -1.1820) *
+        matrix_t::scaling(3.73335, 2.5845, 1.6283) *
+        matrix_t::translation(1, 1, 1);
+    return cube;
+}
+
+std::shared_ptr<Cube> make_bbox(double ambient, double diffuse, double specular, double transparency, double refractive_index)
+{
+    auto cube{ make_raw_bbox() };
+    auto phong = std::dynamic_pointer_cast<Phong>(cube->material);
+    if (phong)
+    {
+        phong->ambient = ambient;
+        phong->diffuse = diffuse;
+        phong->specular = specular;
+        phong->transparency = transparency;
+        phong->refractive_index = refractive_index;
+    }
+    cube->transform = matrix_t::translation(0, 0.1217, 0) * matrix_t::scaling(0.268, 0.268, 0.268) * cube->transform;
+    return cube;
+}
 
 void bvh_exercise()
 {
-    const int dragon_count = 6;
-    const double dragon_scale = 0.3;
-    const double placement_radius = 6.0;
 
-    // === Load and Place Dragon Meshes ===
-    std::vector<std::shared_ptr<Mesh>> dragons;
-    for (int i = 0; i < dragon_count; ++i) {
-        auto mesh = Mesh::create(".\\assets\\dragon.obj", true);
+    // group1
+    auto g1{ std::make_shared<Group>() };
+    g1->transform = matrix_t::translation(0, 2, 0);
+    std::shared_ptr<Cylinder> p1{ make_pedestal() };
+    g1->add(p1);
+    auto g1a{ std::make_shared<Group>() };
+    colour_t c{ 1, 0, 0.1 };
+    std::shared_ptr<Mesh> d1{ make_dragon(c, 0.1, 0.6, 0.3, 15) };
+    std::shared_ptr<Cube> bbox1{ make_bbox(0, 0.4, 0, 0.6, 1) };
+    g1a->add(d1, bbox1);
+    g1->add(g1a);
 
-        // Compute placement in circle
-        double angle = i * (2 * PI / dragon_count);
-        double x = placement_radius * std::cos(angle);
-        double z = placement_radius * std::sin(angle);
+    // group2
+    auto g2{ std::make_shared<Group>() };
+    g2->transform = matrix_t::translation(2, 1, -1);
+    std::shared_ptr<Cylinder> p2{ make_pedestal() };
+    g2->add(p2);
+    auto g2a{ std::make_shared<Group>() };
+    g2a->transform = matrix_t::scaling(0.75, 0.75, 0.75) * matrix_t::rotation_y(4);
+    colour_t c2{ 1, 0.5, 0.1 };
+    std::shared_ptr<Mesh> d2{ make_dragon(c2, 0.1, 0.6, 0.3, 15) };
+    std::shared_ptr<Cube> bbox2{ make_bbox(0, 0.2, 0, 0.8, 1) };
+    g2a->add(d2, bbox2);
+    g2->add(g2a);
 
-        mesh->transform =
-            matrix_t::translation(x, 0, z) *
-            matrix_t::rotation_y(-angle + PI) *
-            matrix_t::scaling(dragon_scale, dragon_scale, dragon_scale);
+    // group3
+    auto g3{ std::make_shared<Group>() };
+    g3->transform = matrix_t::translation(-2, 0.75, -1);
+    std::shared_ptr<Cylinder> p3{ make_pedestal() };
+    g3->add(p3);
+    auto g3a{ std::make_shared<Group>() };
+    g3a->transform = matrix_t::scaling(0.75, 0.75, 0.75) * matrix_t::rotation_y(-0.4);
+    colour_t c3{ 0.9, 0.5, 0.1 };
+    std::shared_ptr<Mesh> d3{ make_dragon(c3, 0.1, 0.6, 0.3, 15) };
+    std::shared_ptr<Cube> bbox3{ make_bbox(0, 0.2, 0, 0.8, 1) };
+    g3a->add(d3, bbox3);
+    g3->add(g3a);
 
-        // Modify the mesh's existing Phong material
-        auto phong = std::dynamic_pointer_cast<Phong>(mesh->material);
-        if (phong) {
-            switch (i) {
-            case 0:
-                phong->colour = { 1, 0.2, 0.2 }; // red
-                phong->diffuse = 0.7;
-                phong->specular = 0.3;
-                break;
-            case 1:
-                phong->colour = { 0.2, 1, 0.2 }; // green
-                phong->diffuse = 0.6;
-                phong->specular = 0.4;
-                break;
-            case 2:
-                // Softer blue, less reflectivity
-                phong->colour = { 0.1, 0.2, 0.6 };
-                phong->reflective = 0.5;
-                phong->diffuse = 0.4;
-                break;
-            case 3:
-                phong->colour = { 1, 1, 0.2 }; // yellow
-                phong->transparency = 0.5;
-                phong->refractive_index = 1.3;
-                phong->diffuse = 0.2;
-                break;
-            case 4:
-                phong->colour = { 0.7, 0.2, 1 }; // purple
-                phong->reflective = 0.5;
-                phong->specular = 0.9;
-                break;
-            case 5:
-                // Dimmer cyan, more diffuse to reduce glow
-                phong->colour = { 0.1, 0.6, 0.6 };
-                phong->transparency = 0.5;
-                phong->refractive_index = 1.1;
-                phong->diffuse = 0.3;
-                break;
-            }
-        }
+    // group4
+    auto g4{ std::make_shared<Group>() };
+    g4->transform = matrix_t::translation(-4, 0, -2);
+    std::shared_ptr<Cylinder> p4{ make_pedestal() };
+    g4->add(p4);
+    auto g4a{ std::make_shared<Group>() };
+    g4a->transform = matrix_t::scaling(0.5, 0.5, 0.5) * matrix_t::rotation_y(-0.2);
+    colour_t c4{ 1, 0.9, 0.1 };
+    std::shared_ptr<Mesh> d4{ make_dragon(c4, 0.1, 0.6, 0.3, 15) };
+    std::shared_ptr<Cube> bbox4{ make_bbox(0, 0.1, 0, 0.9, 1) };
+    g4a->add(d4, bbox4);
+    g4->add(g4a);
 
-        dragons.push_back(mesh);
-    }
+    // group5
+    auto g5{ std::make_shared<Group>() };
+    g5->transform = matrix_t::translation(4, 0, -2);
+    std::shared_ptr<Cylinder> p5{ make_pedestal() };
+    g5->add(p5);
+    auto g5a{ std::make_shared<Group>() };
+    g5a->transform = matrix_t::scaling(0.5, 0.5, 0.5) * matrix_t::rotation_y(3.3);
+    colour_t c5{ 0.9, 1, 0.1 };
+    std::shared_ptr<Mesh> d5{ make_dragon(c5, 0.1, 0.6, 0.3, 15) };
+    std::shared_ptr<Cube> bbox5{ make_bbox(0, 0.1, 0, 0.9, 1) };
+    g5a->add(d5, bbox5);
+    g5->add(g5a);
 
+    // group6
+    auto g6{ std::make_shared<Group>() };
+    g6->transform = matrix_t::translation(0, 0.5, -4);
+    std::shared_ptr<Cylinder> p6{ make_pedestal() };
+    g6->add(p6);
+    colour_t c6{ 1, 1, 1 };
+    std::shared_ptr<Mesh> d6{ make_dragon(c6, 0.1, 0.6, 0.3, 15) };
+    d6->transform = matrix_t::rotation_y(3.1415) * d6->transform;
+    g6->add(d6);
 
-    // === Ground Plane ===
-    auto ground = std::make_shared<Plane>();
-    auto ground_mat = std::dynamic_pointer_cast<Phong>(ground->material);
-    ground_mat->colour = { 0.1, 0.1, 0.1 };
-    ground_mat->specular = 0;
 
     // === Lights ===
-    auto key = std::make_shared<PointLight>(colour_t{ 1.0, 0.95, 0.9 });
-    key->transform = matrix_t::translation(-6, 6, -6);
+    auto light1 = std::make_shared<PointLight>(colour_t{ 0.8, 0.8, 0.8 });
+    light1->transform = matrix_t::translation(-10, 100, -100);
 
-    auto fill = std::make_shared<PointLight>(colour_t{ 0.4, 0.4, 0.5 });
-    fill->transform = matrix_t::translation(5, 2, -2);
 
-    auto rim = std::make_shared<PointLight>(colour_t{ 0.6, 0.6, 1.0 });
-    rim->transform = matrix_t::translation(0, 4, 6);
+    auto light2 = std::make_shared<PointLight>(colour_t{ 0.2, 0.2, 0.2 });
+    light2->transform = matrix_t::translation(100, 10, -25);
 
     // === World Setup ===
     World world{};
-    world.add_object(key);
-    world.add_object(fill);
-    world.add_object(rim);
-    world.add_object(ground);
+    world.add_object(light1);
+    world.add_object(light2);
+    world.add_object(g1);
+    world.add_object(g2);
+    world.add_object(g3);
+    world.add_object(g4);
+    world.add_object(g5);
+    world.add_object(g6);
 
-    for (const auto& dragon : dragons) {
-        world.add_object(dragon);
-    }
 
     // === Camera ===
-    Camera camera{ 960, 540, PI / 3 };
+    Camera camera{ 2000, 800, 1.2 };
     camera.transform = matrix_t::view_transform(
-        tuple_t::point(0, 5, -14),     // pulled back and up for full view
+        tuple_t::point(0, 2.5, -10),     // pulled back and up for full view
         tuple_t::point(0, 1, 0),
         tuple_t::vector(0, 1, 0)
     );
