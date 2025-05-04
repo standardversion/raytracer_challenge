@@ -4,6 +4,7 @@
 #include "tuple.h"
 #include "material.h"
 #include "geometry.h"
+#include "uv.h"
 
 struct intersections_t;
 
@@ -28,6 +29,8 @@ public:
      * @return A std::shared_ptr to a Plane instance.
      */
     static std::shared_ptr<Plane> create();
+
+    uv_t get_uv(const tuple_t& point) const override;
 
     /**
      * @brief Computes intersections between a ray and this plane in local space.

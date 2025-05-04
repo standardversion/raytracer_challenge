@@ -1,6 +1,7 @@
 #pragma once
 #include "colour.h"
 
+struct ppm_t;
 /**
  * @brief Represents a 2D drawing canvas.
  *
@@ -39,6 +40,8 @@ struct canvas_t
 	 * @param h The height of the canvas.
 	 */
 	canvas_t(const int w, const int h);
+
+	canvas_t(const ppm_t& ppm);
 
 	/**
 	 * @brief Writes a color value to a specific pixel on the canvas.

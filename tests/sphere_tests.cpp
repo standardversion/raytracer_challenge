@@ -7,6 +7,7 @@
 #include "../settings.h"
 #include "../phong.h"
 #include "../bounding_box.h"
+#include "../uv.h"
 
 /*
 Scenario: Creating and querying a sphere
@@ -379,4 +380,33 @@ TEST(sphere, should_have_bounding_box)
 	const bbox_t box{ s->bounds() };
 	EXPECT_EQ(box.min, tuple_t::point(-1, -1, -1));
 	EXPECT_EQ(box.max, tuple_t::point(1, 1, 1));
+}
+
+/*
+Scenario: Using a spherical mapping on a 3D point
+  Given p ← <point>
+  When (u, v) ← spherical_map(p)
+  Then u = <u>
+	And v = <v>
+
+  Examples:
+	| point                | u    | v    |
+	| point(0, 0, -1)      | 0.0  | 0.5  |
+	| point(1, 0, 0)       | 0.25 | 0.5  |
+	| point(0, 0, 1)       | 0.5  | 0.5  |
+	| point(-1, 0, 0)      | 0.75 | 0.5  |
+	| point(0, 1, 0)       | 0.5  | 1.0  |
+	| point(0, -1, 0)      | 0.5  | 0.0  |
+	| point(√2/2, √2/2, 0) | 0.25 | 0.75 |
+*/
+TEST(sphere, should_use_spherical_mapping_for_a_3d_point)
+{
+	const auto s{ Sphere::create() };
+	EXPECT_EQ(s->get_uv(tuple_t::point(0, 0, -1)), uv_t(0.0, 0.5));
+	EXPECT_EQ(s->get_uv(tuple_t::point(1, 0, 0)), uv_t(0.25, 0.5));
+	EXPECT_EQ(s->get_uv(tuple_t::point(0, 0, 1)), uv_t(0.5, 0.5));
+	EXPECT_EQ(s->get_uv(tuple_t::point(-1, 0, 0)), uv_t(0.75, 0.5));
+	EXPECT_EQ(s->get_uv(tuple_t::point(0, 1, 0)), uv_t(0.5, 1.0));
+	EXPECT_EQ(s->get_uv(tuple_t::point(0, -1, 0)), uv_t(0.5, 0.0));
+	EXPECT_EQ(s->get_uv(tuple_t::point(std::sqrt(2) / 2, std::sqrt(2) / 2, 0)), uv_t(0.25, 0.75));
 }

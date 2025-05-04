@@ -9,6 +9,15 @@ std::shared_ptr<Plane> Plane::create()
 	return std::make_shared<Plane>();
 }
 
+uv_t Plane::get_uv(const tuple_t& point) const
+{
+
+	const double u = point.x - std::floor(point.x); // Get fractional part of x
+	const double v = point.z - std::floor(point.z); // Get fractional part of z
+
+	return { u, v };
+}
+
 
 void Plane::local_intersect(const ray_t& local_ray, intersections_t& intersections) const
 {

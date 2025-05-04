@@ -1,7 +1,6 @@
 #include "mesh.h"
 #include "triangle.h"
 #include "phong.h"
-#include "smooth_triangle.h"
 #include "bvh.h"
 
 Mesh::Mesh() = default;
@@ -10,41 +9,27 @@ Mesh::Mesh() = default;
 Mesh::Mesh(const wavefront_t& obj, bool smooth)
 	: smooth{ smooth }
 {
-	if (!obj.vertex_normals_avg.size())
-	{
-		smooth = false; // no normal data;
-	}
 	for (const auto& face : obj.faces)
 	{
-		if (smooth)
-		{
-			triangles.push_back(
-				SmoothTriangle::create(
+		std::shared_ptr<Triangle> tri{ Triangle::create(
 					obj.vertices.at(face.a - 1),
 					obj.vertices.at(face.b - 1),
-					obj.vertices.at(face.c - 1),
-					obj.uvs.at(face.a_uv - 1),
-					obj.uvs.at(face.b_uv - 1),
-					obj.uvs.at(face.c_uv - 1),
-					obj.vertex_normals_avg.at(face.a - 1),
-					obj.vertex_normals_avg.at(face.b - 1),
-					obj.vertex_normals_avg.at(face.c - 1)
-				) 
-			);
-		}
-		else
+					obj.vertices.at(face.c - 1)
+				) };
+		if (face.has_uvs())
 		{
-			triangles.push_back(
-				Triangle::create(
-					obj.vertices.at(face.a - 1),
-					obj.vertices.at(face.b - 1),
-					obj.vertices.at(face.c - 1),
-					obj.uvs.at(face.a_uv - 1),
-					obj.uvs.at(face.b_uv - 1),
-					obj.uvs.at(face.c_uv - 1)
-				)
-			);
+			tri->v1_uv = obj.uvs.at(face.a_uv.value() - 1);
+			tri->v2_uv = obj.uvs.at(face.b_uv.value() - 1);
+			tri->v3_uv = obj.uvs.at(face.c_uv.value() - 1);
+			tri->has_uvs = true;
 		}
+		if (face.has_normals() && smooth)
+		{
+			tri->n1 = obj.vertex_normals_avg.at(face.a - 1);
+			tri->n2 = obj.vertex_normals_avg.at(face.b - 1);
+			tri->n3 = obj.vertex_normals_avg.at(face.c - 1);
+		}
+		triangles.push_back(tri);
 	}
 	bbox = bounds();
 }

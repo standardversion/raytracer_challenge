@@ -21,3 +21,5 @@
  *       result in unexpected behavior.
  */
 std::vector<std::string> split(const std::string& str, const std::string& delimeter);
+
+std::vector<std::string> get_clean_tokens(std::istream& input, const char comment_symbol = '#');

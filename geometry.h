@@ -3,6 +3,7 @@
 #include "scene_object.h"
 #include "material.h"
 #include "ray.h"
+#include "uv.h"
 #include "bounding_box.h"
 
 struct intersections_t;
@@ -17,6 +18,7 @@ class Geometry : public SceneObject
 {
 public:
     bool cast_shadows{ true };
+    bool has_uvs{ false };
     /**
      * @brief The material associated with this geometry.
      *
@@ -94,6 +96,8 @@ public:
      * @return bbox_t The bounding box of the object.
      */
     virtual bbox_t bounds() const = 0;
+
+    virtual uv_t get_uv(const tuple_t& point) const;
 
 protected:
     /**

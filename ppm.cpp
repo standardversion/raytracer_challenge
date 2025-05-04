@@ -60,20 +60,54 @@ ppm_t::ppm_t(const canvas_t& canvas, int max_chars)
 ppm_t::ppm_t(const char* filepath)
 {
 	std::ifstream infile(filepath);
-	if (!infile)
-	{
-		std::runtime_error("PPM file not found");
+	if (!infile) {
+		throw std::runtime_error("PPM file not found");
 	}
 
-	// Read the entire file into a string using a stringstream
 	std::stringstream buffer;
-	buffer << infile.rdbuf();  // Read the entire file into the stringstream
+	buffer << infile.rdbuf();
+	data = buffer.str(); // keep full string
 
-	// Convert the stringstream buffer into a std::string
-	data = buffer.str();
+	std::istringstream parser(data);
+	std::vector<std::string> tokens = get_clean_tokens(parser, '#');
 
-	infile.close();  // Close the file after reading
+	if (tokens.size() < 4) {
+		throw std::invalid_argument("PPM file too short or missing metadata");
+	}
+
+	// Parse metadata
+	const std::string& magic = tokens[0];
+	if (magic != "P3") {
+		throw std::invalid_argument("PPM file must start with P3");
+	}
+
+	width = std::stoi(tokens[1]);
+	height = std::stoi(tokens[2]);
+	max_colour_value = std::stoi(tokens[3]);
+
+	if (width <= 0 || height <= 0 || max_colour_value <= 0) {
+		throw std::invalid_argument("Invalid width/height/max_color_value");
+	}
+
+	// Parse pixel data
+	std::size_t i = 4;
+	while (i + 2 < tokens.size()) {
+		int r = std::stoi(tokens[i++]);
+		int g = std::stoi(tokens[i++]);
+		int b = std::stoi(tokens[i++]);
+
+		colour_data.emplace_back(
+			static_cast<double>(r) / max_colour_value,
+			static_cast<double>(g) / max_colour_value,
+			static_cast<double>(b) / max_colour_value
+		);
+	}
+
+	if (colour_data.size() != width * height) {
+		throw std::runtime_error("PPM pixel count doesn't match width × height");
+	}
 }
+
 
 void ppm_t::write_to_file(const char* filepath) const
 {

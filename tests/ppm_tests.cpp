@@ -202,3 +202,23 @@ TEST(ppm, should_be_able_to_read_ppm_file_from_disk)
     const ppm_t in_ppm{ "..\\..\\tests\\in.ppm" };
     EXPECT_STREQ(ppm.data.c_str(), in_ppm.data.c_str());
 }
+
+/*
+Scenario: Reading a file with the wrong magic number
+  Given ppm ← a file containing:
+    """
+    P32
+    1 1
+    255
+    0 0 0
+    """
+  Then canvas_from_ppm(ppm) should fail
+*/
+TEST(ppm, should_throw_if_ppm_magic_number_is_not_3)
+{
+    canvas_t c{ 5, 3 };
+    const colour_t red{ 1, 0, 0 };
+    c.fill(red);
+    const ppm_t ppm{ c };
+    EXPECT_THROW(ppm_t out_ppm{ "..\\..\\tests\\bad.ppm" }, std::invalid_argument);
+}

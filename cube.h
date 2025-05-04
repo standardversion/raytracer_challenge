@@ -5,8 +5,19 @@
 #include "tuple.h"
 #include "material.h"
 #include "geometry.h"
+#include "uv.h"
 
 struct intersections_t;
+
+enum Cube_Faces
+{
+    left,
+    right,
+    front,
+    back,
+    up,
+    down
+};
 
 /**
  * @class Cube
@@ -25,6 +36,10 @@ public:
      * @return A std::shared_ptr pointing to a new Cube.
      */
     static std::shared_ptr<Cube> create();
+
+    uv_t get_uv(const tuple_t& point) const override;
+
+    static Cube_Faces face_from_point(const tuple_t& p);
 
     /**
      * @brief Intersects a ray with the cube in local object space.
@@ -60,6 +75,8 @@ public:
      * @return bbox_t The bounding box of the object.
      */
     bbox_t bounds() const override;
+
+    static uv_t static_get_uv(const tuple_t& point);
 
 private:
     /**

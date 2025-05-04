@@ -50,6 +50,10 @@ public:
      */
     virtual colour_t at(const tuple_t& point) const = 0;
 
+    virtual colour_t at(const double u, const double v) const;
+
+    virtual bool supports_uv() const;
+
     /**
      * @brief Computes the pattern color at a point on a geometry object.
      *

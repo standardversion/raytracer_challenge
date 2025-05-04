@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
+#include <vector>
 #include "canvas.h"
+#include "colour.h"
 
 /**
  * @brief Represents an image encoded in the PPM (Portable Pixmap) format.
@@ -19,6 +21,13 @@ struct ppm_t
 	 */
 	std::string data{};
 
+	int width;
+
+	int height;
+
+	int max_colour_value = 255;
+
+	std::vector<colour_t> colour_data;
 	/**
 	 * @brief Constructs a `ppm_t` object from a given canvas and optional maximum
 	 *        line length for the PPM file output.

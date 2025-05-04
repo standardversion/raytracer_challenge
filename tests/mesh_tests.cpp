@@ -2,7 +2,6 @@
 #include "../mesh.h"
 #include "../wavefront_obj.h"
 #include "../phong.h"
-#include "../smooth_triangle.h"
 #include "../intersection.h"
 #include "../bounding_box.h"
 
@@ -62,8 +61,8 @@ TEST(mesh, should_create_mesh_consisting_of_smooth_triangles)
 {
 	const wavefront_t w{ "..\\..\\tests\\assets\\face.obj" };
 	const auto m{ Mesh::create(w, true) };
-	auto t1{ std::dynamic_pointer_cast<SmoothTriangle>(m->triangles[0]) };
-	auto t2{ std::dynamic_pointer_cast<SmoothTriangle>(m->triangles[1]) };
+	auto t1{ std::dynamic_pointer_cast<Triangle>(m->triangles[0]) };
+	auto t2{ std::dynamic_pointer_cast<Triangle>(m->triangles[1]) };
 	EXPECT_EQ(t1->n1, tuple_t::vector(0.0, 0.0, 1.0));
 	EXPECT_EQ(t1->n2, tuple_t::vector(0.0, 0.0, 1.0));
 	EXPECT_EQ(t1->n3, tuple_t::vector(0.0, 0.0, 1.0));

@@ -2,6 +2,7 @@
 #include "sphere.h"
 #include "phong.h"
 #include "intersection.h"
+#include "settings.h"
 
 
 Sphere::Sphere(double r)
@@ -24,6 +25,39 @@ std::shared_ptr<Sphere> Sphere::glass_sphere(double radius)
 	return s;
 }
 
+uv_t Sphere::get_uv(const tuple_t& point) const
+{
+	// compute the azimuthal angle
+	// -PI < theta <= PI
+	// angle increases clockwise as viewed from above,
+	// which is opposite of what we want, but we'll fix it later.
+	const double theta{ atan2(point.x, point.z) };
+
+	// vec is the vector pointing from the sphere's origin (the world origin)
+	// to the point, which will also happen to be exactly equal to the sphere's
+	// radius.
+	const tuple_t vec{ tuple_t::vector(point.x, point.y, point.z) };
+	const double radius{ vec.magnitude() };
+
+	// compute the polar angle
+	// 0 <= phi <= PI
+	const double phi{ acos(point.y / radius) };
+
+	// -0.5 < raw_u <= 0.5
+	const double raw_u{ theta / (2 * PI) };
+
+	// 0 <= u < 1
+	// here's also where we fix the direction of u. Subtract it from 1,
+	// so that it increases counterclockwise as viewed from above.
+	const double u{ 1 - (raw_u + 0.5) };
+
+	// we want v to be 0 at the south pole of the sphere,
+	// and 1 at the north pole, so we have to "flip it over"
+	// by subtracting it from 1.
+	const double v{ 1 - phi / PI };
+
+	return { u, v };
+}
 
 void Sphere::local_intersect(const ray_t& local_ray, intersections_t& intersections) const
 {

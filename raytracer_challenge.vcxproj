@@ -238,6 +238,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="align_check.h" />
     <ClInclude Include="area_light.h" />
     <ClInclude Include="bounding_box.h" />
     <ClInclude Include="camera.h" />
@@ -246,6 +247,7 @@
     <ClInclude Include="colour.h" />
     <ClInclude Include="cone.h" />
     <ClInclude Include="cube.h" />
+    <ClInclude Include="cube_map.h" />
     <ClInclude Include="cylinder.h" />
     <ClInclude Include="exercises\area_lights.h" />
     <ClInclude Include="exercises\build_scene.h" />
@@ -270,6 +272,7 @@
     <ClInclude Include="mesh.h" />
     <ClInclude Include="bvh.h" />
     <ClInclude Include="pattern.h" />
+    <ClInclude Include="pattern_file.h" />
     <ClInclude Include="phong.h" />
     <ClInclude Include="plane.h" />
     <ClInclude Include="point_light.h" />
@@ -279,16 +282,17 @@
     <ClInclude Include="scene_object.h" />
     <ClInclude Include="sequence.h" />
     <ClInclude Include="settings.h" />
-    <ClInclude Include="smooth_triangle.h" />
     <ClInclude Include="sphere.h" />
     <ClInclude Include="stripe.h" />
     <ClInclude Include="triangle.h" />
     <ClInclude Include="tuple.h" />
     <ClInclude Include="utils.h" />
+    <ClInclude Include="uv.h" />
     <ClInclude Include="wavefront_obj.h" />
     <ClInclude Include="world.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="align_check.cpp" />
     <ClCompile Include="area_light.cpp" />
     <ClCompile Include="bounding_box.cpp" />
     <ClCompile Include="camera.cpp" />
@@ -297,6 +301,7 @@
     <ClCompile Include="colour.cpp" />
     <ClCompile Include="cone.cpp" />
     <ClCompile Include="cube.cpp" />
+    <ClCompile Include="cube_map.cpp" />
     <ClCompile Include="cylinder.cpp" />
     <ClCompile Include="gradient.cpp" />
     <ClCompile Include="group.cpp" />
@@ -309,10 +314,10 @@
     <ClCompile Include="mesh.cpp" />
     <ClCompile Include="bvh.cpp" />
     <ClCompile Include="pattern.cpp" />
+    <ClCompile Include="pattern_file.cpp" />
     <ClCompile Include="point_light.cpp" />
     <ClCompile Include="ring.cpp" />
     <ClCompile Include="sequence.cpp" />
-    <ClCompile Include="smooth_triangle.cpp" />
     <ClCompile Include="stripe.cpp" />
     <ClCompile Include="phong.cpp" />
     <ClCompile Include="plane.cpp" />
@@ -323,6 +328,7 @@
     <ClCompile Include="triangle.cpp" />
     <ClCompile Include="tuple.cpp" />
     <ClCompile Include="utils.cpp" />
+    <ClCompile Include="uv.cpp" />
     <ClCompile Include="wavefront_obj.cpp" />
     <ClCompile Include="world.cpp" />
   </ItemGroup>

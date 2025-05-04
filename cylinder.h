@@ -5,6 +5,7 @@
 #include "tuple.h"
 #include "material.h"
 #include "geometry.h"
+#include "uv.h"
 
 struct intersections_t;
 
@@ -46,6 +47,8 @@ public:
      * @return A std::shared_ptr to the newly created Cylinder.
      */
     static std::shared_ptr<Cylinder> create();
+
+    uv_t get_uv(const tuple_t& point) const override;
 
     /**
      * @brief Computes intersections of a ray with the cylinder in local space.

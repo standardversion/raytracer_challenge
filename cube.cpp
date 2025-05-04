@@ -33,6 +33,66 @@ std::shared_ptr<Cube> Cube::create()
 	return std::make_shared<Cube>();
 }
 
+uv_t Cube::static_get_uv(const tuple_t& point)
+{
+	const Cube_Faces face{ Cube::face_from_point(point) };
+	uv_t uv{};
+
+	switch (face)
+	{
+	case Cube_Faces::left: // -X face
+		uv.u = std::fmod(point.z + 1.0, 2.0) / 2.0;
+		uv.v = std::fmod(point.y + 1.0, 2.0) / 2.0;
+		break;
+
+	case Cube_Faces::right: // +X face
+		uv.u = std::fmod(1.0 - point.z, 2.0) / 2.0;
+		uv.v = std::fmod(point.y + 1.0, 2.0) / 2.0;
+		break;
+
+	case Cube_Faces::front: // -Z face
+		uv.u = std::fmod(point.x + 1.0, 2.0) / 2.0;
+		uv.v = std::fmod(point.y + 1.0, 2.0) / 2.0;
+		break;
+
+	case Cube_Faces::back: // +Z face
+		uv.u = std::fmod(1.0 - point.x, 2.0) / 2.0;
+		uv.v = std::fmod(point.y + 1.0, 2.0) / 2.0;
+		break;
+
+	case Cube_Faces::up: // +Y face
+		uv.u = std::fmod(point.x + 1.0, 2.0) / 2.0;
+		uv.v = std::fmod(1.0 - point.z, 2.0) / 2.0;
+		break;
+
+	case Cube_Faces::down: // -Y face
+		uv.u = std::fmod(point.x + 1.0, 2.0) / 2.0;
+		uv.v = std::fmod(point.z + 1.0, 2.0) / 2.0;
+		break;
+
+	default:
+		break;
+	}
+	return uv;
+}
+
+uv_t Cube::get_uv(const tuple_t& point) const
+{
+	return Cube::static_get_uv(point);
+}
+
+Cube_Faces Cube::face_from_point(const tuple_t& p)
+{
+	double coord{ std::max(std::max(abs(p.x), abs(p.y)), abs(p.z)) };
+	if (coord == p.x) return Cube_Faces::right;
+	if (coord == -p.x) return Cube_Faces::left;
+	if (coord == p.y) return Cube_Faces::up;
+	if (coord == -p.y) return Cube_Faces::down;
+	if (coord == p.z) return Cube_Faces::front;
+
+	return Cube_Faces::back;
+}
+
 
 void Cube::local_intersect(const ray_t& local_ray, intersections_t& intersections) const
 {

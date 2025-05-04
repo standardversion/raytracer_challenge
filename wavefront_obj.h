@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <optional>
 #include "tuple.h"
 
 /**
@@ -21,22 +22,26 @@ struct face_t
     int c;
 
     /** @brief Index of the first vertex's UV coordinate. */
-    int a_uv;
+    std::optional<int> a_uv;
 
     /** @brief Index of the second vertex's UV coordinate. */
-    int b_uv;
+    std::optional<int> b_uv;
 
     /** @brief Index of the third vertex's UV coordinate. */
-    int c_uv;
+    std::optional<int> c_uv;
 
     /** @brief Index of the first vertex's normal vector. */
-    int a_normal;
+    std::optional<int> a_normal;
 
     /** @brief Index of the second vertex's normal vector. */
-    int b_normal;
+    std::optional<int> b_normal;
 
     /** @brief Index of the third vertex's normal vector. */
-    int c_normal;
+    std::optional<int> c_normal;
+
+    bool has_uvs() const;
+
+    bool has_normals() const;
 };
 
 /**

@@ -4,6 +4,7 @@
 #include "tuple.h"
 #include "material.h"
 #include "geometry.h"
+#include "uv.h"
 
 struct intersections_t;
 
@@ -48,6 +49,8 @@ public:
      * @return std::shared_ptr<Sphere> A unique pointer to the created glass Sphere.
      */
     static std::shared_ptr<Sphere> glass_sphere(double radius = 1.0);
+
+    uv_t get_uv(const tuple_t& point) const override;
 
     /**
      * @brief Computes intersections between the sphere and a given ray in object space.
