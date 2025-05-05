@@ -1,6 +1,7 @@
 ﻿#include "gtest/gtest.h"
 #include "../plane.h"
 #include "../intersection.h"
+#include "../uv.h"
 
 /*
 Scenario: The normal of a plane is constant everywhere
@@ -109,4 +110,33 @@ TEST(plane, should_have_a_bounding_box)
 	EXPECT_EQ(box.min.x, -INFINITY);
 	EXPECT_EQ(box.min.y, 0);
 	EXPECT_EQ(box.min.z, -INFINITY);
+}
+
+/*
+Scenario: Using a planar mapping on a 3D point
+  Given p ← <point>
+  When (u, v) ← planar_map(p)
+  Then u = <u>
+	And v = <v>
+
+  Examples:
+	| point                   | u    | v    |
+	| point(0.25, 0, 0.5)     | 0.25 | 0.5  |
+	| point(0.25, 0, -0.25)   | 0.25 | 0.75 |
+	| point(0.25, 0.5, -0.25) | 0.25 | 0.75 |
+	| point(1.25, 0, 0.5)     | 0.25 | 0.5  |
+	| point(0.25, 0, -1.75)   | 0.25 | 0.25 |
+	| point(1, 0, -1)         | 0.0  | 0.0  |
+	| point(0, 0, 0)          | 0.0  | 0.0  |
+*/
+TEST(plane, should_use_planar_mapping_for_a_3d_point)
+{
+	const auto p{ Plane::create() };
+	EXPECT_EQ(p->get_uv(tuple_t::point(0.25, 0, 0.5)), uv_t(0.25, 0.5));
+	EXPECT_EQ(p->get_uv(tuple_t::point(0.25, 0, -0.25)), uv_t(0.25, 0.75));
+	EXPECT_EQ(p->get_uv(tuple_t::point(0.25, 0.5, -0.25)), uv_t(0.25, 0.75));
+	EXPECT_EQ(p->get_uv(tuple_t::point(1.25, 0, 0.5)), uv_t(0.25, 0.5));
+	EXPECT_EQ(p->get_uv(tuple_t::point(0.25, 0, -1.75)), uv_t(0.25, 0.25));
+	EXPECT_EQ(p->get_uv(tuple_t::point(1, 0, -1)), uv_t(0.0, 0.0));
+	EXPECT_EQ(p->get_uv(tuple_t::point(0, 0, 0)), uv_t(0.0, 0.0));
 }

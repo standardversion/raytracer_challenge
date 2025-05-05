@@ -6,7 +6,18 @@
 
 std::shared_ptr<Plane> Plane::create()
 {
-	return std::make_shared<Plane>();
+	auto plane{ std::make_shared<Plane>() };
+	plane->has_uvs = true;
+	return plane;
+}
+
+uv_t Plane::get_uv(const tuple_t& point) const
+{
+
+	const double u = point.x - std::floor(point.x); // Get fractional part of x
+	const double v = point.z - std::floor(point.z); // Get fractional part of z
+
+	return { u, v };
 }
 
 

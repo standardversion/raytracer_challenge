@@ -1,6 +1,7 @@
 #pragma once
 #include "colour.h"
 
+struct ppm_t;
 /**
  * @brief Represents a 2D drawing canvas.
  *
@@ -39,6 +40,17 @@ struct canvas_t
 	 * @param h The height of the canvas.
 	 */
 	canvas_t(const int w, const int h);
+
+	/**
+	 * @brief Constructs a canvas_t object from a PPM image.
+	 *
+	 * Initializes the canvas using pixel data from the provided PPM image,
+	 * allowing further manipulation or rendering operations on the image content.
+	 *
+	 * @param ppm A PPM image object containing pixel data to initialize the canvas.
+	 */
+	canvas_t(const ppm_t& ppm);
+
 
 	/**
 	 * @brief Writes a color value to a specific pixel on the canvas.

@@ -1,5 +1,6 @@
 #include <algorithm>
 #include "canvas.h"
+#include "ppm.h"
 
 canvas_t::canvas_t(const int w, const int h)
 	: width{ w }, height{ h }
@@ -7,6 +8,20 @@ canvas_t::canvas_t(const int w, const int h)
 	colour_t black{ 0, 0, 0 };
 	colour_buffer = new colour_t[width * height];
 	std::fill(colour_buffer, colour_buffer + (width * height), black);
+}
+
+canvas_t::canvas_t(const ppm_t& ppm)
+	: width{ ppm.width }, height{ ppm.height }
+{
+	colour_buffer = new colour_t[width * height];
+	for (int y{ 0 }; y < height; y++)
+	{
+		for (int x{ 0 }; x < width; x++)
+		{
+			const int index{ (width * y) + x };
+			write_pixel(x, y, ppm.colour_data[index]);
+		}
+	}
 }
 
 void canvas_t::write_pixel(const int x, const int y, const colour_t& colour)

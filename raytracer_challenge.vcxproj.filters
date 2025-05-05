@@ -138,9 +138,6 @@
     <ClInclude Include="mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="smooth_triangle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="exercises\triangles.h">
       <Filter>Exercises</Filter>
     </ClInclude>
@@ -163,6 +160,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="exercises\bvh.h">
+      <Filter>Exercises</Filter>
+    </ClInclude>
+    <ClInclude Include="align_check.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cube_map.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="uv.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pattern_file.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="exercises\textured_mesh.h">
+      <Filter>Exercises</Filter>
+    </ClInclude>
+    <ClInclude Include="exercises\sky_box.h">
       <Filter>Exercises</Filter>
     </ClInclude>
   </ItemGroup>
@@ -257,9 +272,6 @@
     <ClCompile Include="mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="smooth_triangle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="point_light.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -273,6 +285,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="bvh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="align_check.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cube_map.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="uv.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pattern_file.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

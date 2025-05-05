@@ -1,4 +1,5 @@
 #pragma once
+#include <optional>
 #include "ray.h"
 #include "matrix.h"
 #include "tuple.h"
@@ -47,6 +48,15 @@ public:
     /** @brief Texture coordinates (UV) at the third vertex. */
     std::pair<double, double> v3_uv;
 
+    /** @brief The vertex normal of the triangle at vertex v1. */
+    std::optional<tuple_t> n1;
+
+    /** @brief The vertex normal of the triangle at vertex v2. */
+    std::optional<tuple_t> n2;
+
+    /** @brief The vertex normal of the triangle at vertex v3. */
+    std::optional<tuple_t> n3;
+
     /**
      * @brief Constructs a triangle from three points.
      * @param v1 First vertex of the triangle.
@@ -55,24 +65,6 @@ public:
      */
     Triangle(const tuple_t& v1, const tuple_t& v2, const tuple_t& v3);
 
-    /**
-     * @brief Constructs a triangle from three points and their corresponding UV coordinates.
-     * @param v1 First vertex of the triangle.
-     * @param v2 Second vertex of the triangle.
-     * @param v3 Third vertex of the triangle.
-     * @param v1_uv Texture coordinates at the first vertex.
-     * @param v2_uv Texture coordinates at the second vertex.
-     * @param v3_uv Texture coordinates at the third vertex.
-     */
-    Triangle
-    (
-        const tuple_t& v1,
-        const tuple_t& v2,
-        const tuple_t& v3,
-        const std::pair<double, double>& v1_uv,
-        const std::pair<double, double>& v2_uv,
-        const std::pair<double, double>& v3_uv
-    );
 
     /**
      * @brief Factory method to create a shared pointer to a Triangle.
@@ -83,24 +75,6 @@ public:
      */
     static std::shared_ptr<Triangle> create(const tuple_t& v1, const tuple_t& v2, const tuple_t& v3);
 
-    /**
-     * @brief Factory method to create a shared pointer to a Triangle.
-     * @param v1 First vertex.
-     * @param v2 Second vertex.
-     * @param v3 Third vertex.
-     * @param v1_uv Texture coordinates at the first vertex.
-     * @param v2_uv Texture coordinates at the second vertex.
-     * @param v3_uv Texture coordinates at the third vertex.
-     * @return Shared pointer to the newly created Triangle.
-     */
-    static std::shared_ptr<Triangle> create(
-        const tuple_t& v1,
-        const tuple_t& v2,
-        const tuple_t& v3,
-        const std::pair<double, double>& v1_uv,
-        const std::pair<double, double>& v2_uv,
-        const std::pair<double, double>& v3_uv
-    );
 
     /**
      * @brief Computes the intersection(s) between a ray and the triangle in local space.
@@ -128,5 +102,14 @@ public:
      * @return bbox_t The bounding box of the object.
      */
     bbox_t bounds() const override;
-};
 
+    /**
+     * @brief Computes the UV coordinates for a point on the trianlge's surface.
+     *
+     * Maps a point on a triangle face to 2D UV texture coordinates in [0, 1] range.
+     *
+     * @param point A point on the triangle in local space.
+     * @return uv_t The corresponding UV coordinates.
+     */
+    uv_t get_uv(const tuple_t& point) const override;
+};

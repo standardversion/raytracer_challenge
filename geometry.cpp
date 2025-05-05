@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include "geometry.h"
 #include "phong.h"
 
@@ -23,4 +24,9 @@ tuple_t Geometry::normal_at(const tuple_t& world_point, const double alpha, cons
 bbox_t Geometry::bounds_in_parent_space() const
 {
     return bounds().transform(transform);
+}
+
+uv_t Geometry::get_uv(const tuple_t& point) const
+{
+    throw std::runtime_error("UV mapping not supported");
 }

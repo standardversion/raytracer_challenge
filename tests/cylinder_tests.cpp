@@ -4,6 +4,7 @@
 #include "../ray.h"
 #include "../intersection.h"
 #include "../bounding_box.h"
+#include "../uv.h"
 
 /*
 Scenario Outline: A ray misses a cylinder
@@ -369,4 +370,39 @@ TEST(cylinder, should_have_bounding_box_for_bounded_cylinder)
     const bbox_t box{ c->bounds() };
     EXPECT_EQ(box.min, tuple_t::point(-1, -5, -1));
     EXPECT_EQ(box.max, tuple_t::point(1, 3, 1));
+}
+
+/*
+Scenario: Using a cylindrical mapping on a 3D point
+  Given p ← <point>
+  When (u, v) ← cylindrical_map(p)
+  Then u = <u>
+    And v = <v>
+
+  Examples:
+    | point                          | u     | v    |
+    | point(0, 0, -1)                | 0.0   | 0.0  |
+    | point(0, 0.5, -1)              | 0.0   | 0.5  |
+    | point(0, 1, -1)                | 0.0   | 0.0  |
+    | point(0.70711, 0.5, -0.70711)  | 0.125 | 0.5  |
+    | point(1, 0.5, 0)               | 0.25  | 0.5  |
+    | point(0.70711, 0.5, 0.70711)   | 0.375 | 0.5  |
+    | point(0, -0.25, 1)             | 0.5   | 0.75 |
+    | point(-0.70711, 0.5, 0.70711)  | 0.625 | 0.5  |
+    | point(-1, 1.25, 0)             | 0.75  | 0.25 |
+    | point(-0.70711, 0.5, -0.70711) | 0.875 | 0.5  |
+*/
+TEST(cylinder, should_use_cylindrical_mapping_for_a_3d_point)
+{
+    const auto c{ Cylinder::create() };
+    EXPECT_EQ(c->get_uv(tuple_t::point(0, 0, -1)), uv_t(0.0, 0.0));
+    EXPECT_EQ(c->get_uv(tuple_t::point(0, 0.5, -1)), uv_t(0.0, 0.5));
+    EXPECT_EQ(c->get_uv(tuple_t::point(0, 1, -1)), uv_t(0.0, 0.0));
+    EXPECT_EQ(c->get_uv(tuple_t::point(0.70711, 0.5, -0.70711)), uv_t(0.125, 0.5));
+    EXPECT_EQ(c->get_uv(tuple_t::point(1, 0.5, 0)), uv_t(0.25, 0.5));
+    EXPECT_EQ(c->get_uv(tuple_t::point(0.70711, 0.5, 0.70711)), uv_t(0.375, 0.5));
+    EXPECT_EQ(c->get_uv(tuple_t::point(0, -0.25, 1)), uv_t(0.5, 0.75));
+    EXPECT_EQ(c->get_uv(tuple_t::point(-0.70711, 0.5, 0.70711)), uv_t(0.625, 0.5));
+    EXPECT_EQ(c->get_uv(tuple_t::point(-1, 1.25, 0)), uv_t(0.75, 0.25));
+    EXPECT_EQ(c->get_uv(tuple_t::point(-0.70711, 0.5, -0.70711)), uv_t(0.875, 0.5));
 }

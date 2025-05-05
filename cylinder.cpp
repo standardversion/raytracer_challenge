@@ -32,7 +32,18 @@ bool Cylinder::check_cap(const ray_t& local_ray, const double time) const
 
 std::shared_ptr<Cylinder> Cylinder::create()
 {
-	return std::make_shared<Cylinder>();
+	auto cylinder{ std::make_shared<Cylinder>() };
+	cylinder->has_uvs = true;
+	return cylinder;
+}
+
+uv_t Cylinder::get_uv(const tuple_t& point) const
+{
+	const double theta{ atan2(point.x , point.z) };
+	const double raw_u{ theta / (2 * PI) };
+	const double u{ 1 - (raw_u + 0.5) };
+	const double v{ point.y - std::floor(point.y) };
+	return { u, v };
 }
 
 

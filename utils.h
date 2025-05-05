@@ -21,3 +21,25 @@
  *       result in unexpected behavior.
  */
 std::vector<std::string> split(const std::string& str, const std::string& delimeter);
+
+/**
+ * @brief Reads and tokenizes an input stream, removing comments and whitespace.
+ *
+ * This function processes the input stream, breaking it into a list of tokens
+ * (strings) while ignoring any comments and extra whitespace. By default, it
+ * treats lines starting with the specified `comment_symbol` as comments and skips them.
+ *
+ * @param input The input stream to read from. Typically a file or string stream.
+ * @param comment_symbol The character that starts a comment (default is `#`).
+ *
+ * @return A vector of strings, each representing a cleaned token from the input.
+ *         Comments and empty lines are excluded from the returned list of tokens.
+ *
+ * @note If the input stream contains a comment, the function ignores the entire
+ *       line starting from the comment symbol.
+ *
+ * @example
+ * std::ifstream file("example.txt");
+ * std::vector<std::string> tokens = get_clean_tokens(file, '#');
+ */
+std::vector<std::string> get_clean_tokens(std::istream& input, const char comment_symbol = '#');
