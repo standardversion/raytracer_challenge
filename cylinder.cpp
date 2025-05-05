@@ -32,7 +32,9 @@ bool Cylinder::check_cap(const ray_t& local_ray, const double time) const
 
 std::shared_ptr<Cylinder> Cylinder::create()
 {
-	return std::make_shared<Cylinder>();
+	auto cylinder{ std::make_shared<Cylinder>() };
+	cylinder->has_uvs = true;
+	return cylinder;
 }
 
 uv_t Cylinder::get_uv(const tuple_t& point) const

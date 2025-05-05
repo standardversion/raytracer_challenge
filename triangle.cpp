@@ -1,4 +1,5 @@
 #include <memory>
+#include <stdexcept>
 #include "triangle.h"
 #include "settings.h"
 #include "intersection.h"
@@ -61,4 +62,40 @@ bbox_t Triangle::bounds() const
 	bbox_t box{};
 	box.add(v1, v2, v3);
 	return box;
+}
+
+uv_t Triangle::get_uv(const tuple_t& point) const
+{
+	if (!has_uvs)
+	{
+		throw std::runtime_error("Triangle does not support UV mapping");
+	}
+
+	// Triangle vertices
+	const tuple_t a = v1;
+	const tuple_t b = v2;
+	const tuple_t c = v3;
+
+	// Edge vectors
+	const tuple_t ab = b - a;
+	const tuple_t ac = c - a;
+	const tuple_t ap = point - a;
+
+	// Full triangle area (ABC)
+	const double area_abc = tuple_t::cross(ab, ac).magnitude();
+
+	// Sub-triangle areas (using point P)
+	const double area_bcp = tuple_t::cross(c - point, b - point).magnitude();
+	const double area_cap = tuple_t::cross(a - point, c - point).magnitude();
+
+	// Barycentric weights
+	const double alpha = area_bcp / area_abc;
+	const double beta = area_cap / area_abc;
+	const double gamma = 1.0 - alpha - beta;
+
+	// Interpolate UVs using barycentric coordinates
+	const double u = alpha * v1_uv.first + beta * v2_uv.first + gamma * v3_uv.first;
+	const double v = alpha * v1_uv.second + beta * v2_uv.second + gamma * v3_uv.second;
+
+	return { u, v };
 }

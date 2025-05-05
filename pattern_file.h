@@ -11,6 +11,8 @@ public:
 
 	PatternFile(const char* filepath);
 
+	bool supports_uv() const override;
+
 	colour_t at(const tuple_t& point) const override;
 
 	colour_t at(const double u, const double v) const override;

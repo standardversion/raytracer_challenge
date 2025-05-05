@@ -1,6 +1,6 @@
 #include <iostream>
 #include <exception>
-#include "./exercises/bvh.h"
+#include "./exercises/textured_mesh.h"
 #include "triangle.h"
 #include "bounding_box.h"
 
@@ -8,7 +8,7 @@ int main()
 {
     try
     {
-        bvh_exercise();
+        textured_mesh_exercise();
         std::cout << "Total triangle intersection tests: " << triangle_tests << "\n";
         std::cout << "Total bbox intersection tests: " << bbox_tests << "\n";
         return 0;

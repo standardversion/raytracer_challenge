@@ -10,6 +10,11 @@ PatternFile::PatternFile(const char* filepath)
 
 }
 
+bool PatternFile::supports_uv() const
+{
+	return true;
+}
+
 colour_t PatternFile::at(const tuple_t& point) const
 {
 	return colour_t{ 0, 0, 0 };

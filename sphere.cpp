@@ -7,17 +7,22 @@
 
 Sphere::Sphere(double r)
 	: radius{r}
-{ }
+{ 
+	has_uvs = true;
+}
 
 std::shared_ptr<Sphere> Sphere::create(double radius)
 {
 
-	return std::make_shared<Sphere>(radius);
+	auto sphere{ std::make_shared<Sphere>(radius) };
+	sphere->has_uvs = true;
+	return sphere;
 }
 
 std::shared_ptr<Sphere> Sphere::glass_sphere(double radius)
 {
 	auto s{ std::make_shared<Sphere>(radius) };
+	s->has_uvs = true;
 	auto phong = std::make_shared<Phong>();
 	phong->transparency = 1.0;
 	phong->refractive_index = 1.5;

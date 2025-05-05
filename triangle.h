@@ -102,5 +102,7 @@ public:
      * @return bbox_t The bounding box of the object.
      */
     bbox_t bounds() const override;
+
+    uv_t get_uv(const tuple_t& point) const override;
 };
 

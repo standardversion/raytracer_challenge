@@ -6,7 +6,9 @@
 
 std::shared_ptr<Plane> Plane::create()
 {
-	return std::make_shared<Plane>();
+	auto plane{ std::make_shared<Plane>() };
+	plane->has_uvs = true;
+	return plane;
 }
 
 uv_t Plane::get_uv(const tuple_t& point) const

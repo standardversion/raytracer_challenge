@@ -260,6 +260,7 @@
     <ClInclude Include="exercises\reflect_refract.h" />
     <ClInclude Include="exercises\sphere_intersection.h" />
     <ClInclude Include="exercises\sphere_phong.h" />
+    <ClInclude Include="exercises\textured_mesh.h" />
     <ClInclude Include="exercises\triangles.h" />
     <ClInclude Include="gradient.h" />
     <ClInclude Include="group.h" />

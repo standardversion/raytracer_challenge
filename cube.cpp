@@ -30,7 +30,9 @@ std::pair<double, double> Cube::check_axis(const double origin, const double dir
 
 std::shared_ptr<Cube> Cube::create()
 {
-	return std::make_shared<Cube>();
+	auto cube{ std::make_shared<Cube>() };
+	cube->has_uvs = true;
+	return cube;
 }
 
 uv_t Cube::static_get_uv(const tuple_t& point)
