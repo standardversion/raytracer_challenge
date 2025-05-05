@@ -14,10 +14,6 @@ canvas_t::canvas_t(const ppm_t& ppm)
 	: width{ ppm.width }, height{ ppm.height }
 {
 	colour_buffer = new colour_t[width * height];
-	/*for (const auto& colour : ppm.colour_data)
-	{
-		std::fill(colour_buffer, colour_buffer + (width * height), colour);
-	}*/
 	for (int y{ 0 }; y < height; y++)
 	{
 		for (int x{ 0 }; x < width; x++)
