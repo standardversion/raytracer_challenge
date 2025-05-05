@@ -48,6 +48,14 @@ public:
      */
     static std::shared_ptr<Cylinder> create();
 
+    /**
+     * @brief Computes the UV coordinates for a point on the cylinder's surface.
+     *
+     * Maps a point on a cylinder face to 2D UV texture coordinates in [0, 1] range.
+     *
+     * @param point A point on the cylinder in local space.
+     * @return uv_t The corresponding UV coordinates.
+     */
     uv_t get_uv(const tuple_t& point) const override;
 
     /**
