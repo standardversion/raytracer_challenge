@@ -177,6 +177,9 @@
     <ClInclude Include="exercises\textured_mesh.h">
       <Filter>Exercises</Filter>
     </ClInclude>
+    <ClInclude Include="exercises\sky_box.h">
+      <Filter>Exercises</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
