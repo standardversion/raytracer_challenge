@@ -18,3 +18,4 @@ This repo works through the book "The Ray Tracer Challenge: A Test-Driven Guide 
 
 ![JPG](./render3.jpg)
 
+![JPG](./render4.jpg)
