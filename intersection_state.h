@@ -48,6 +48,13 @@ struct intersection_state
 	 */
 	tuple_t over_point;
 
+	/**
+	 * @brief A point slightly below the intersection point, used for refraction calculations.
+	 *
+	 * This is calculated by offsetting the original `point` slightly in the opposite direction
+	 * of the surface normal. It helps to trace refracted rays correctly by ensuring they originate
+	 * just inside the surface, avoiding issues with floating-point precision and incorrect intersections.
+	 */
 	tuple_t under_point;
 
 	/**

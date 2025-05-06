@@ -21,28 +21,54 @@ std::shared_ptr<Triangle> Triangle::create(const tuple_t& v1, const tuple_t& v2,
 
 void Triangle::local_intersect(const ray_t& local_ray, intersections_t& intersections) const
 {
-	++triangle_tests;
-	tuple_t dir_cross_e2{ tuple_t::cross(local_ray.direction, e2) };
-	double determinant{ tuple_t::dot(e1, dir_cross_e2) };
+	++triangle_tests; // For performance/statistics tracking
+
+	// Compute the cross product of the ray direction and one triangle edge
+	tuple_t dir_cross_e2 = tuple_t::cross(local_ray.direction, e2);
+
+	// Compute the determinant to check if the ray is parallel to the triangle
+	double determinant = tuple_t::dot(e1, dir_cross_e2);
+
+	// If determinant is near zero, the ray is parallel and misses the triangle
 	if (abs(determinant) < EPSILON)
 	{
 		return;
 	}
-	double f{ 1.0 / determinant };
-	tuple_t p1_to_origin{ local_ray.origin - v1 };
-	double beta{ f * tuple_t::dot(p1_to_origin, dir_cross_e2) };
+
+	// Compute inverse determinant (used to scale barycentric coordinates)
+	double f = 1.0 / determinant;
+
+	// Vector from vertex v1 to ray origin
+	tuple_t p1_to_origin = local_ray.origin - v1;
+
+	// Compute barycentric coordinate beta (how far along e1 the intersection lies)
+	double beta = f * tuple_t::dot(p1_to_origin, dir_cross_e2);
+
+	// If beta is outside [0, 1], the intersection lies outside the triangle
 	if (beta < 0 || beta > 1)
 	{
 		return;
 	}
-	tuple_t origin_cross_e1{ tuple_t::cross(p1_to_origin, e1) };
-	double gamma{ f * tuple_t::dot(local_ray.direction, origin_cross_e1) };
+
+	// Compute the cross product needed for gamma calculation
+	tuple_t origin_cross_e1 = tuple_t::cross(p1_to_origin, e1);
+
+	// Compute barycentric coordinate gamma (how far along e2 the intersection lies)
+	double gamma = f * tuple_t::dot(local_ray.direction, origin_cross_e1);
+
+	// If gamma is outside [0, 1] or beta + gamma > 1, the point lies outside the triangle
 	if (gamma < 0 || (beta + gamma) > 1)
 	{
 		return;
 	}
-	double t{ f * tuple_t::dot(e2, origin_cross_e1) };
-	double alpha{ 1 - beta - gamma };
+
+	// Compute the intersection time t along the ray
+	double t = f * tuple_t::dot(e2, origin_cross_e1);
+
+	// Compute alpha for completeness (since alpha + beta + gamma = 1)
+	double alpha = 1 - beta - gamma;
+
+	// Add the intersection, including barycentric coordinates (used for interpolation)
 	intersections.add(t, std::static_pointer_cast<const Triangle>(shared_from_this()), alpha, beta, gamma);
 	return;
 }

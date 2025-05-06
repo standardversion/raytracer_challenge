@@ -66,27 +66,39 @@ uv_t Sphere::get_uv(const tuple_t& point) const
 
 void Sphere::local_intersect(const ray_t& local_ray, intersections_t& intersections) const
 {
-	const tuple_t origin{ tuple_t::point(0, 0, 0) };
-	// sphere is at origin
-	tuple_t Sphereo_ray{ local_ray.origin - origin };
-	const double a{ tuple_t::dot(local_ray.direction, local_ray.direction) };
-	const double b{ 2 * tuple_t::dot(local_ray.direction, Sphereo_ray) };
-	const double c{ tuple_t::dot(Sphereo_ray, Sphereo_ray) - std::pow(radius, 2) };
+	// Define the origin of the sphere (at the local origin)
+	const tuple_t origin = tuple_t::point(0, 0, 0);
 
-	const double discriminant{ std::pow(b, 2) - (4 * a * c) };
+	// Vector from the sphere's center to the ray origin
+	tuple_t Sphereo_ray = local_ray.origin - origin;
+
+	// Coefficients for the quadratic equation (a*t² + b*t + c = 0)
+	const double a = tuple_t::dot(local_ray.direction, local_ray.direction);
+	const double b = 2 * tuple_t::dot(local_ray.direction, Sphereo_ray);
+	const double c = tuple_t::dot(Sphereo_ray, Sphereo_ray) - std::pow(radius, 2);
+
+	// Compute the discriminant to determine intersection type
+	const double discriminant = std::pow(b, 2) - (4 * a * c);
+
+	// If the discriminant is negative, the ray misses the sphere
 	if (discriminant >= 0)
 	{
-		double t0{ (-b - std::sqrt(discriminant)) / (2 * a) };
-		double t1{ (-b + std::sqrt(discriminant)) / (2 * a) };
+		// Compute both intersection times (t0 and t1)
+		double t0 = (-b - std::sqrt(discriminant)) / (2 * a);
+		double t1 = (-b + std::sqrt(discriminant)) / (2 * a);
 
+		// Ensure t0 is the smaller value
 		if (t0 > t1)
 		{
 			std::swap(t0, t1);
 		}
+
+		// Add both intersection points to the list
 		intersections.add(t0, std::static_pointer_cast<const Geometry>(shared_from_this()));
 		intersections.add(t1, std::static_pointer_cast<const Geometry>(shared_from_this()));
 	}
 }
+
 
 tuple_t Sphere::local_normal_at(const tuple_t& local_point, const double alpha, const double beta, const double gamma) const
 {

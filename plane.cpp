@@ -23,9 +23,16 @@ uv_t Plane::get_uv(const tuple_t& point) const
 
 void Plane::local_intersect(const ray_t& local_ray, intersections_t& intersections) const
 {
+	// Check if the ray is not parallel to the plane
+	// If the y component of the direction is nearly zero, the ray is parallel (no intersection)
 	if (abs(local_ray.direction.y) > EPSILON)
 	{
-		const double t{ -local_ray.origin.y / local_ray.direction.y };
+		// Calculate the intersection time (t) using the formula:
+		// t = -origin.y / direction.y
+		// This gives the point where the ray crosses y = 0 (the plane)
+		const double t = -local_ray.origin.y / local_ray.direction.y;
+
+		// Add the intersection with the plane at time t
 		intersections.add(t, std::static_pointer_cast<const Geometry>(shared_from_this()));
 	}
 }

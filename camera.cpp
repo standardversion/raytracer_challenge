@@ -7,7 +7,7 @@
 Camera::Camera(const int hsize, const int vsize, const double fov)
 	: SceneObject{}, hsize{ hsize }, vsize{ vsize }, field_of_view{ fov }
 {
-	double half_view{ tan(field_of_view / 2) };
+	double half_view{ tan(field_of_view / 2) }; // since image plane is 1 unit away
 	double aspect{ (hsize / (double)vsize) };
 	if (aspect >= 1)
 	{
@@ -40,6 +40,45 @@ ray_t Camera::ray_for_pixel(const int x, const int y) const
 	direction.normalize();
 	return { origin, direction };
 }
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Process the graphics pipeline stages for a raytracer
+///////////////////////////////////////////////////////////////////////////////
+// +---------------+
+// | Scene Setup   |  <-- define geometry, materials, lights, camera
+// +---------------+
+//       |
+//       v
+// +-------------------+
+// | Ray Generation    |  <-- shoot rays from camera through image plane
+// +-------------------+
+//       |
+//       v
+// +---------------------+
+// | Ray-Scene Intersection |  <-- find nearest object hit by each ray
+// +---------------------+
+//       |
+//       v
+// +-------------------+
+// | Shading / Lighting |  <-- compute color using material, lights, etc.
+// +-------------------+
+//       |
+//       v
+// +----------------+
+// | Secondary Rays |  <-- spawn reflection, refraction, shadow rays
+// +----------------+
+//       |
+//       v
+// +--------------------+
+// | Recursive Tracing  |  <-- trace secondary rays, accumulate color
+// +--------------------+
+//       |
+//       v
+// +------------------+
+// | Image Composition |  <-- write final pixel color to image
+// +------------------+
+///////////////////////////////////////////////////////////////////////////////
 
 canvas_t Camera::render(const World& world) const
 {

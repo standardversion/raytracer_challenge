@@ -90,49 +90,90 @@ colour_t World::shade_hit(const intersection_state& state, int remaining) const
 
 colour_t World::reflected_colour(const intersection_state& state, int remaining) const
 {
+	// Start with black (no reflection by default)
 	colour_t colour{ 0, 0, 0 };
+
+	// Stop recursion if no bounces remain
 	if (remaining <= 0)
 	{
 		return colour;
 	}
-	auto phong{ std::dynamic_pointer_cast<Phong>(state.object->material) };
+
+	// Attempt to cast the object's material to a Phong material (supports reflection)
+	auto phong = std::dynamic_pointer_cast<Phong>(state.object->material);
+
+	// Only proceed if the material is reflective
 	if (phong && phong->reflective > 0)
 	{
+		// Construct a reflection ray starting just above the surface to avoid self-intersection
 		const ray_t reflected_ray{ state.over_point, state.reflect_vector };
+
+		// Recursively compute the color returned by the reflected ray
 		colour = colour_at(reflected_ray, remaining - 1);
+
+		// Scale the reflected color by the material's reflectivity
 		return colour * phong->reflective;
 	}
+
+	// Material is not reflective — return black
 	return colour;
 }
 
+
 colour_t World::refracted_colour(const intersection_state& state, int remaining) const
 {
+	// Default color (white) — will be overwritten if refraction occurs
 	colour_t colour{ 1, 1, 1 };
+
+	// Stop recursion if we've reached the bounce limit
 	if (remaining <= 0)
 	{
-		return colour_t{ 0, 0, 0 };
+		return colour_t{ 0, 0, 0 }; // No light contribution
 	}
-	auto phong{ std::dynamic_pointer_cast<Phong>(state.object->material) };
+
+	// Try to get the Phong material (supports transparency)
+	auto phong = std::dynamic_pointer_cast<Phong>(state.object->material);
+
+	// Proceed only if the material is transparent
 	if (phong && phong->transparency > 0)
 	{
-		const double n_ratio{ state.n1 / state.n2 };
-		const double cos_i{ tuple_t::dot(state.eye_vector, state.normal) };
-		const double sin2_t{ pow(n_ratio, 2) * (1 - pow(cos_i, 2)) };
+		// Compute ratio of refractive indices (from -> to)
+		const double n_ratio = state.n1 / state.n2;
+
+		// Cosine of the angle between eye vector and normal
+		const double cos_i = tuple_t::dot(state.eye_vector, state.normal);
+
+		// Compute sin²(t) using Snell's Law
+		const double sin2_t = pow(n_ratio, 2) * (1 - pow(cos_i, 2));
+
+		// Total internal reflection: no refraction possible
 		if (sin2_t > 1)
 		{
-			return colour_t{ 0, 0, 0 };
+			return colour_t{ 0, 0, 0 }; // Fully reflected, no refraction contribution
 		}
-		const double cos_t{ std::sqrt(1.0 - sin2_t) };
-		const tuple_t direction{ state.normal * (n_ratio * cos_i - cos_t) - state.eye_vector * n_ratio };
+
+		// Compute cosine of the refracted angle
+		const double cos_t = std::sqrt(1.0 - sin2_t);
+
+		// Compute the direction of the refracted ray using vector refraction formula
+		const tuple_t direction = state.normal * (n_ratio * cos_i - cos_t) - state.eye_vector * n_ratio;
+
+		// Create the refracted ray starting just below the surface to avoid artifacts
 		const ray_t refract_ray{ state.under_point, direction };
+
+		// Recursively compute the refracted color, scaled by the material's transparency
 		colour = colour_at(refract_ray, remaining - 1) * phong->transparency;
 	}
 	else
 	{
+		// No transparency, no refraction contribution
 		return colour_t{ 0, 0, 0 };
 	}
+
+	// Return the calculated refracted color
 	return colour;
 }
+
 
 colour_t World::colour_at(const ray_t& ray, int remaining) const
 {
