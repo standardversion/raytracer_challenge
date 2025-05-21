@@ -3,7 +3,7 @@
 #include "cube.h"
 #include "intersection.h"
 
-int bbox_tests = 0;
+//int bbox_tests = 0;
 
 bbox_t& bbox_t::operator+=(const bbox_t& bb)
 {
@@ -52,7 +52,7 @@ bbox_t bbox_t::transform(const matrix_t& m) const
 
 bool bbox_t::intersect(const ray_t& ray) const
 {
-	++bbox_tests;  // Increment the counter to keep track of how many bounding box tests have been performed.
+	//++bbox_tests;  // Increment the counter to keep track of how many bounding box tests have been performed.
 
 	// Calculate the intersection times for each axis (x, y, z) based on the ray's direction and the bounding box's min/max values.
 	const double tmin_x = (min.x - ray.origin.x) * ray.inv_direction.x;
