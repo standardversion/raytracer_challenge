@@ -8,6 +8,8 @@ This repo works through the book "The Ray Tracer Challenge: A Test-Driven Guide 
 5. Bounding volume heirarchies
 6. UV mapping - Planar, Cubic, Cylindrical, Spherical, uvs from obj files
 7. Patterns - Checker, Gradient, Ring, Image file
+8. Multi-Threading 
+    - a. Dragon render 200xx800 single thread 44mins, 20 threads 5mins
 
 
 ## Sample Images
