@@ -14,6 +14,7 @@
 #include "../cylinder.h"
 #include "../cube.h"
 #include "../group.h"
+#include "../render_manager.h"
 
 std::shared_ptr<Mesh> make_dragon(colour_t& colour, double ambient, double diffuse, double specular, double shininess)
 {
@@ -78,7 +79,6 @@ std::shared_ptr<Cube> make_bbox(double ambient, double diffuse, double specular,
 
 void bvh_exercise()
 {
-
     // group1
     auto g1{ std::make_shared<Group>() };
     g1->transform = matrix_t::translation(0, 2, 0);
@@ -183,7 +183,10 @@ void bvh_exercise()
     );
 
     // === Render ===
-    canvas_t image{ camera.render(world) };
+    RenderManager rm{ camera, 32 };
+    canvas_t image{ rm.render(world) };
+    //canvas_t image{ camera.render(world) };
     const ppm_t ppm{ image };
-    ppm.write_to_file("./x64/Release/bvh.ppm");
+    //ppm.write_to_file("./x64/Release/bvh.ppm");
+    ppm.write_to_file("./x64/Release/bvh_concurrent.ppm");
 }

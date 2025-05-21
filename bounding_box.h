@@ -4,7 +4,7 @@
 #include "matrix.h"
 #include "ray.h"
 
-extern int bbox_tests;
+//extern int bbox_tests;
 /**
  * @brief Represents an axis-aligned bounding box in 3D space.
  *
